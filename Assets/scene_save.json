@@ -1,0 +1,195 @@
+{
+  "rootObjects": [
+    {
+      "uniqueID": "5cee38ad-aa21-48d1-9a1d-719242a4342f",
+      "name": "CraftingTable",
+      "isActive": true,
+      "position": {
+        "x": 0.0,
+        "y": 1.016,
+        "z": 1.53
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 1.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "componentSaveData": {},
+      "children": [
+        {
+          "uniqueID": "9e15b27e-47b7-4440-8e87-895acdb28ca5",
+          "name": "Ingredient_Station",
+          "isActive": true,
+          "position": {
+            "x": -0.691,
+            "y": 2.558,
+            "z": 1.23
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "IngredientStation": {}
+          },
+          "children": []
+        },
+        {
+          "uniqueID": "47d71da8-6d75-41ab-a3de-0367babe1bdd",
+          "name": "Ingredient_Station (1)",
+          "isActive": true,
+          "position": {
+            "x": 0.0,
+            "y": 2.558,
+            "z": 1.23
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "IngredientStation": {}
+          },
+          "children": []
+        },
+        {
+          "uniqueID": "6f41790e-0c51-49ba-9daa-5b58f53e8cb8",
+          "name": "Ingredient_Station (2)",
+          "isActive": true,
+          "position": {
+            "x": 0.687,
+            "y": 2.558,
+            "z": 1.23
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "IngredientStation": {}
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
+      "name": "Player",
+      "isActive": true,
+      "position": {
+        "x": 0.298556417,
+        "y": 1.07750654,
+        "z": -1.82783914
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.999639869,
+        "z": 0.0,
+        "w": 0.0268367678
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "componentSaveData": {
+        "PlayerInteraction": {
+          "playerPosition": "0.2985564,1.077507,-1.827839"
+        },
+        "PlayerInventoryManager": {
+          "inventory": "_ab776f9f-cd22-4298-b8b2-7f3eba44284c,Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee"
+        },
+        "PlayerHealth": {
+          "currentHealth": "75",
+          "maxHealth": "100"
+        }
+      },
+      "children": []
+    },
+    {
+      "uniqueID": "b46c32c9-98f6-49cb-90f0-8941305eb65b",
+      "name": "TreasureChest",
+      "isActive": true,
+      "position": {
+        "x": -3.441,
+        "y": 1.04458523,
+        "z": 4.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -1.0,
+        "z": 0.0,
+        "w": 5.960464E-07
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "componentSaveData": {
+        "TreasureChest": {
+          "isOpen": "True",
+          "items": ""
+        }
+      },
+      "children": []
+    }
+  ],
+  "savedWorldItems": [
+    {
+      "itemID": "_67b0d69e-0e75-4710-840e-4f7ffd8c329c",
+      "position": {
+        "x": 7.009945,
+        "y": 0.535215557,
+        "z": 1.145
+      },
+      "rotation": {
+        "x": 6.275514E-11,
+        "y": 8.940698E-08,
+        "z": 6.8212107E-12,
+        "w": 1.0
+      }
+    },
+    {
+      "itemID": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
+      "position": {
+        "x": 3.61306572,
+        "y": 1.16880691,
+        "z": 2.07156634
+      },
+      "rotation": {
+        "x": 3.073364E-08,
+        "y": -3.33238823E-08,
+        "z": -4.82541438E-08,
+        "w": 1.0
+      }
+    }
+  ]
+}

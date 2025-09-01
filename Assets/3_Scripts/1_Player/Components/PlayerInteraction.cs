@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CharacterController), typeof(NavMeshAgent))]
 public class PlayerInteraction : MonoBehaviour, ISaveable
@@ -18,6 +19,8 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
     [Header("Movement Settings")]
     [SerializeField] private float rotationSpeed = 10f;
 
+    private PlayerInventoryManager inventoryManager = null;
+
     // --- Component & State Variables ---
     private NavMeshAgent navMeshAgent;
     private Coroutine followAndInteractCoroutine;
@@ -31,11 +34,13 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         if (playerCamera == null) playerCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.updateRotation = false;
+
+        if (inventoryManager == null) inventoryManager = GetComponent<PlayerInventoryManager>();
     }
 
     void Update()
     {
-        FaceMovementDirection(); 
+        FaceMovementDirection();
     }
 
     public void HandleLeftClick()
@@ -44,18 +49,32 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
 
         Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue, 2.0f);
 
-        // --- Step 1: Fire a raycast to identify an interactable target ---
+        // Disable click over UI objects
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            Debug.Log("Click over a UI object");
+            return;
+        }
+
+        //Disable inventory if active and UI is not clicked
+        if (inventoryManager.GetInventoryPannel().activeSelf)
+            inventoryManager.ToggleInventoryVisibility();
+
+        // Fire a raycast to identify an interactable target
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, interactableLayer))
         {
             // Clear the ground-click debug position since we are targeting an object.
             hitPosition = Vector3.zero;
+            Debug.Log($"Raycast - hit position: {hitPosition}");
             StartInteraction(hit.collider.gameObject);
+            
             return;
         }
 
-        // --- Step 2: If no interactable was hit, check for ground to move ---
+        // If no interactable was hit, check for ground to move
         if (Physics.Raycast(ray, out RaycastHit groundHit, 100f, groundLayer))
         {
+            Debug.Log($"Raycast - hit position {groundHit.point}");
             StopInteraction();
             Move(groundHit.point);
             // Update the debug variable with the click position.
@@ -65,8 +84,10 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
 
     private void StartInteraction(GameObject target)
     {
+        Debug.Log($"Started interaction with {target}");
         StopInteraction();
         followAndInteractCoroutine = StartCoroutine(FollowAndInteractRoutine(target));
+        Debug.Log($"Coroutine - Started followAndInteractCoroutine");
     }
 
     private void StopInteraction()
@@ -74,6 +95,7 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         if (followAndInteractCoroutine != null)
         {
             StopCoroutine(followAndInteractCoroutine);
+            Debug.Log($"Coroutine - Stopped followAndInteractCoroutine");
             followAndInteractCoroutine = null;
         }
     }
@@ -87,11 +109,13 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
             yield return null;
         }
 
+        transform.LookAt(target.transform);
+
         navMeshAgent.ResetPath();
 
         if (target.TryGetComponent<IDamageable>(out var damageable))
         {
-            damageable.TakeDamage(15);
+            damageable.TakeDamage(10);
         }
         if (target.TryGetComponent<IActivatable>(out var activatable))
         {

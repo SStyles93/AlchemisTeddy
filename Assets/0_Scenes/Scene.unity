@@ -716,6 +716,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 653727160}
+    - target: {fileID: 5714471480732196756, guid: 3324f6d42634a1a4ca16bde7ed57b2c1, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 6901279915424782673, guid: 3324f6d42634a1a4ca16bde7ed57b2c1, type: 3}
       propertyPath: statusText
       value: 
@@ -779,22 +783,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3348215879420037488, guid: b092fb719822f604dbae2d3209ea4c13, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482109074274817521, guid: b092fb719822f604dbae2d3209ea4c13, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.0127
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482109074274817521, guid: b092fb719822f604dbae2d3209ea4c13, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.2261
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482109074274817521, guid: b092fb719822f604dbae2d3209ea4c13, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.1494
-      objectReference: {fileID: 0}
-    - target: {fileID: 8781320188087328958, guid: b092fb719822f604dbae2d3209ea4c13, type: 3}
-      propertyPath: m_Center.z
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1145,6 +1133,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 484465386293468325, guid: 6640c68e247b78f4eb21738613294f7b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2318603525256998113, guid: 6640c68e247b78f4eb21738613294f7b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5840824
@@ -1205,13 +1197,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6664138520656383163, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7601197051715415351, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.6133726
       objectReference: {fileID: 0}
     - target: {fileID: 7601197051715415351, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.259
+      value: 1.219
       objectReference: {fileID: 0}
     - target: {fileID: 7601197051715415351, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1248,6 +1244,10 @@ PrefabInstance:
     - target: {fileID: 8747181197904860207, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
       propertyPath: m_Name
       value: Strawberry
+      objectReference: {fileID: 0}
+    - target: {fileID: 8747181197904860207, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1365,6 +1365,14 @@ PrefabInstance:
     - target: {fileID: 3693009134779519176, guid: 1c13e09bd3aacb340bc6419be2d0a7b4, type: 3}
       propertyPath: m_Name
       value: Water
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865823297538062720, guid: 1c13e09bd3aacb340bc6419be2d0a7b4, type: 3}
+      propertyPath: m_Radius
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865823297538062720, guid: 1c13e09bd3aacb340bc6419be2d0a7b4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

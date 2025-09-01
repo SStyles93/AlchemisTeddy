@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider))]
 public class IngredientStation : MonoBehaviour, IActivatable, ISaveable
 {
     [Header("Dependencies")]
@@ -9,6 +10,8 @@ public class IngredientStation : MonoBehaviour, IActivatable, ISaveable
     [SerializeField] private InventoryUI inventoryUI;
     [Tooltip("Reference to the player's inventory manager.")]
     [SerializeField] private PlayerInventoryManager inventoryManager;
+    [Tooltip("Reference to the BoxCollider component of the station.")]
+    [SerializeField] private BoxCollider interactableCollider = null;
 
     [Header("Data")]
     [Tooltip("The item currently placed on this station.")]
@@ -18,8 +21,14 @@ public class IngredientStation : MonoBehaviour, IActivatable, ISaveable
     [SerializeField] private GameObject worldItemPosition = null;
     [SerializeField] private GameObject currentWorldItem = null; // Exposed for debugging
 
+
     public ItemData CurrentItem => currentItem;
 
+    private void Awake()
+    {
+        if(interactableCollider == null)
+        interactableCollider = GetComponent<BoxCollider>();
+    }
 
     public void Activate(GameObject activator)
     {
@@ -97,8 +106,12 @@ public class IngredientStation : MonoBehaviour, IActivatable, ISaveable
 
     private void OnDrawGizmos()
     {
+        if (interactableCollider == null)
+            interactableCollider = GetComponent<BoxCollider>();
+
         Gizmos.color = (currentItem != null) ? Color.cyan : Color.gray;
-        Gizmos.DrawWireCube(transform.position, Vector3.one);
+        Gizmos.DrawWireCube(transform.position + interactableCollider.center, interactableCollider.size);
+        
         if (currentItem != null)
         {
 #if UNITY_EDITOR

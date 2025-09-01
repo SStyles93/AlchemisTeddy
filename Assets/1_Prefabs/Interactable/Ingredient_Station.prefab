@@ -64,7 +64,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.4, z: 1}
+  m_Size: {x: 0.7, y: 0.4, z: 0.7}
   m_Center: {x: 0, y: -0.3, z: 0}
 --- !u!114 &4662989850305289044
 MonoBehaviour:
@@ -80,6 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryUI: {fileID: 0}
   inventoryManager: {fileID: 0}
+  interactableCollider: {fileID: 7947572281497778158}
   currentItem: {fileID: 0}
   worldItemPosition: {fileID: 5497489954662029111}
   currentWorldItem: {fileID: 0}
@@ -95,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bc93ad1902cc454492ee9108418ab89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueId: 
+  uniqueId: a278f786-2458-4b3a-8e64-76cad10f9054
 --- !u!1 &3383928046734527705
 GameObject:
   m_ObjectHideFlags: 0

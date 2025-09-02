@@ -11,7 +11,7 @@ public class PlayerCamera : MonoBehaviour
     private Camera m_camera;
 
     [Header("Zoom Settings")]
-    [SerializeField] private float zoomSpeed = 10f;
+    [SerializeField] private float zoomSpeed = 2f;
     [SerializeField] private Vector2 minMaxZoomDistance = new Vector2(-3, 5);
 
     [Header("Rotation Settings")]
@@ -34,11 +34,6 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (m_camera == null) return;
-
-        // Handle camera zoom based on mouse scroll wheel input
-        HandleZoom();
-
         // Handle camera rotation when the middle mouse button is held down
         HandleRotation();
 
@@ -54,38 +49,43 @@ public class PlayerCamera : MonoBehaviour
         m_camera.transform.LookAt(cameraTarget);
     }
 
-    private void HandleZoom()
+    /// <summary>
+    /// Handle camera zoom based on mouse scroll wheel input
+    /// </summary>
+    /// <param name="scrollValue"></param>
+    public void HandleZoom(float scrollValue)
     {
-        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
-        if (scrollInput != 0f)
+        if (m_camera == null) return;
+
+        if (scrollValue != 0f)
         {
             // Adjust the current zoom distance based on scroll input
-            currentZoomDistance -= scrollInput * zoomSpeed;
+            currentZoomDistance -= scrollValue * zoomSpeed;
             currentZoomDistance = Mathf.Clamp(currentZoomDistance, minMaxZoomDistance.x, minMaxZoomDistance.y);
         }
     }
 
-    private void HandleRotation()
+    public void HandleRotation()
     {
-        // Check if the middle mouse button is being held down
-        if (Input.GetMouseButton(2))
-        {
-            // Get mouse movement input
-            float mouseX = Input.GetAxis("Mouse X") * rotationSpeed;
+        //// Check if the middle mouse button is being held down
+        //if (Input.GetMouseButton(2))
+        //{
+        //    // Get mouse movement input
+        //    float mouseX = Input.GetAxis("Mouse X") * rotationSpeed;
 
-            currentRotation -= mouseX;
+        //    currentRotation -= mouseX;
 
-            currentRotation = Mathf.Clamp(currentRotation, -maxRotationAngle, maxRotationAngle);
-        }
-        else
-        {
-            if(Mathf.Abs(currentRotation) <= 0.01f)
-            {
-                currentRotation = 0f;
-                return;
-            } 
-            currentRotation = Mathf.Lerp(currentRotation, 0f, Time.deltaTime * rotationSpeed * 20.0f);
-                //Mathf.SmoothStep(currentRotation, 0, Time.deltaTime * rotationSpeed * 20.0f);
-        }
+        //    currentRotation = Mathf.Clamp(currentRotation, -maxRotationAngle, maxRotationAngle);
+        //}
+        //else
+        //{
+        //    if(Mathf.Abs(currentRotation) <= 0.01f)
+        //    {
+        //        currentRotation = 0f;
+        //        return;
+        //    } 
+        //    currentRotation = Mathf.Lerp(currentRotation, 0f, Time.deltaTime * rotationSpeed * 20.0f);
+        //        //Mathf.SmoothStep(currentRotation, 0, Time.deltaTime * rotationSpeed * 20.0f);
+        //}
     }
 }

@@ -26,6 +26,9 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
     private Coroutine followAndInteractCoroutine;
     public static event Action<WorldItem> OnCollect;
 
+    // --- Private variables ---
+    private bool isPointerOverUI = false;
+
     // --- Debug Variable ---
     private Vector3 hitPosition = Vector3.zero;
 
@@ -41,20 +44,21 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
     void Update()
     {
         FaceMovementDirection();
+        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
     }
 
-    public void HandleLeftClick()
+    public void HandleLeftClick(Vector2 mousePosition)
     {
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue, 2.0f);
-
         // Disable click over UI objects
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (isPointerOverUI)
         {
             Debug.Log("Click over a UI object");
             return;
         }
+
+        Ray ray = playerCamera.ScreenPointToRay(mousePosition);
+
+        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue, 2.0f);
 
         //Disable inventory if active and UI is not clicked
         if (inventoryManager.GetInventoryPannel().activeSelf)

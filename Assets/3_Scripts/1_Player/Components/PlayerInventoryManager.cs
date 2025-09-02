@@ -21,6 +21,7 @@ public class PlayerInventoryManager : MonoBehaviour, ISaveable
     [Tooltip("The pannel used to display the Inventory")]
     [SerializeField] private GameObject inventoryPannel = null;
     [SerializeField] private GameObject savePannel = null;
+    [SerializeField] private GameObject playerUIPannel = null;
 
     // The player's inventory is a private list. No other script can directly
     // modify this list, which prevents bugs. They must use public methods like AddItem().
@@ -31,6 +32,7 @@ public class PlayerInventoryManager : MonoBehaviour, ISaveable
     [SerializeField] private List<CraftingRecipe> availableRecipes;
 
     public GameObject GetInventoryPannel() => inventoryPannel;
+    public GameObject GetPlayerUIPannel() => playerUIPannel;
     public List<ItemData> GetInventory() => inventory;
     public List<CraftingRecipe> GetAvailableRecipes() => availableRecipes;
 
@@ -45,6 +47,7 @@ public class PlayerInventoryManager : MonoBehaviour, ISaveable
         visibleState = !visibleState;
         inventoryPannel.SetActive(visibleState);
         savePannel.SetActive(visibleState);
+        playerUIPannel.SetActive(!visibleState);
         OnInventoryChanged?.Invoke();
     }
 

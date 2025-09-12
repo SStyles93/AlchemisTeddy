@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LiquidEffect 1
+  m_Name: LiquidEffect 2
   m_Shader: {fileID: -6465566751694194690, guid: a62612a3b98cb424a83da2d285cb202f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -39,7 +39,7 @@ Material:
     m_TexEnvs:
     - _Water_Texture:
         m_Texture: {fileID: 2800000, guid: 16d790fd6c4c79a469a515f5f985f98e, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 0.6, y: 0.6}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
@@ -55,16 +55,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fill: 0.636
+    - _Fill: 0.546
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Side_Strength: 2.5
-    - _Top_Strength: 8
+    - _Side_Strength: 2.42
+    - _Top_Strength: 4
     - _WobbleX: 0
     - _WobbleZ: 0
     m_Colors:
     - _Offset_Speed: {r: 0.01, g: 0, b: 0, a: 0}
-    - _Side_Color: {r: 0.06592378, g: 0.6418742, b: 0.7433963, a: 1}
-    - _Top_Color: {r: 0.031149808, g: 0.21386579, b: 0.4716981, a: 1}
+    - _Side_Color: {r: 0.2830189, g: 0.10626555, b: 0.10626555, a: 1}
+    - _Top_Color: {r: 0.10943389, g: 0.058433563, b: 0.072551265, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -1,12 +1,13 @@
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Represents an item that exists in the game world and can be picked up.
 /// Demonstrates the use of TryGetComponent for safe component access.
 /// </summary>
 [RequireComponent(typeof(Collider))] // Ensures this object always has a collider.
-public class WorldItem : MonoBehaviour, ICollectable
+public class WorldItem : MonoBehaviour, ICollectable, IPointerEnterHandler, IPointerExitHandler
 {
     [Tooltip("The data asset that defines this item.")]
     [SerializeField]
@@ -44,7 +45,6 @@ public class WorldItem : MonoBehaviour, ICollectable
         }
     }
 
-
     private void Start()
     {
         //Ensure registering of Item
@@ -74,16 +74,15 @@ public class WorldItem : MonoBehaviour, ICollectable
         Debug.Log($"{collectorInventory.gameObject.name} collected {itemData.itemName}.");
     }
 
-    private void OnMouseEnter()
+    public void OnPointerEnter(PointerEventData eventData)
     {
         if (gameObject.layer != 10) return;
-        OnMouseOverObject?.Invoke(itemData.itemName, true);
+            OnMouseOverObject?.Invoke(itemData.itemName, true);
     }
-
-    private void OnMouseExit()
+    public void OnPointerExit(PointerEventData eventData)
     {
         if (gameObject.layer != 10) return;
-        OnMouseOverObject?.Invoke(itemData.itemName, false);
+            OnMouseOverObject?.Invoke(itemData.itemName, false);
     }
 
     /// <summary>

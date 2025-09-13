@@ -64,21 +64,21 @@ Material:
     m_Ints: []
     m_Floats:
     - _EmissiveStrenght: 2.34
-    - _Fill: 0.605
+    - _Fill: 0.58
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Side_Emissive: 1
-    - _Side_Strength: 0.8
+    - _Side_Strength: 0.63
     - _Top_Emissive: 1
-    - _Top_Strength: 1.8
+    - _Top_Strength: 2.02
     - _WobbleX: 0.00012863097
     - _WobbleZ: -0.00012916411
     m_Colors:
     - _Offset_Speed: {r: 0.01, g: 0, b: 0, a: 0}
     - _SideColor: {r: 0, g: 0.4730532, b: 0.5, a: 1}
-    - _Side_Color: {r: 0, g: 0.9461064, b: 1, a: 1}
+    - _Side_Color: {r: 0, g: 0.9450979, b: 1, a: 1}
     - _Tiling: {r: 0, g: 0, b: 0, a: 0}
     - _TopColor: {r: 0, g: 0.468388, b: 0.5660378, a: 1}
-    - _Top_Color: {r: 0, g: 0.9473069, b: 1, a: 1}
+    - _Top_Color: {r: 0, g: 0.9490199, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

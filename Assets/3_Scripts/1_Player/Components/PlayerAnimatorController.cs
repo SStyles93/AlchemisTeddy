@@ -79,7 +79,7 @@ public class PlayerAnimatorController : MonoBehaviour
     }
 
     /// <summary>
-    /// Method called by the animator to playe the Collectable in the player's hand
+    /// Method called by the animator to place the Collectable in the player's hand
     /// </summary>
     public void PlaceObjectInHand()
     {

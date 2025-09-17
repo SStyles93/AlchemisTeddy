@@ -43,7 +43,7 @@ public class WorldItemManager : MonoBehaviour
         if (!activeWorldItems.Contains(item))
         {
             activeWorldItems.Add(item);
-            Debug.Log($"Registered: {item.name}. Total items: {activeWorldItems.Count}");
+            //Debug.Log($"Registered: {item.name}. Total items: {activeWorldItems.Count}");
         }
     }
 
@@ -55,7 +55,7 @@ public class WorldItemManager : MonoBehaviour
         if (activeWorldItems.Contains(item))
         {
             activeWorldItems.Remove(item);
-            Debug.Log($"Unregistered: {item.name}. Total items: {activeWorldItems.Count}");
+            //Debug.Log($"Unregistered: {item.name}. Total items: {activeWorldItems.Count}");
         }
     }
 

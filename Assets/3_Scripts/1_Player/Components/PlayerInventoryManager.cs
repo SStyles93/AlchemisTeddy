@@ -47,7 +47,7 @@ public class PlayerInventoryManager : MonoBehaviour, ISaveable
         visibleState = !visibleState;
         inventoryPannel.SetActive(visibleState);
         savePannel.SetActive(visibleState);
-        playerUIPannel.SetActive(!visibleState);
+        //playerUIPannel.SetActive(!visibleState);
         OnInventoryChanged?.Invoke();
     }
 

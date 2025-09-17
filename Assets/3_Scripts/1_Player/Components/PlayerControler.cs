@@ -10,22 +10,19 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private PlayerActions playerActions;
     [SerializeField] private PlayerInteraction playerInteraction;
     [SerializeField] private PlayerInventoryManager playerInventoryManager;
+    [SerializeField] private float interactionDelay = 0.25f;
+
 
     public string ControlScheme { get => controlScheme; private set => controlScheme = value; }
-    public bool LeftClick { get => leftClick; private set => leftClick = value; }
-    public bool RightClick { get => rightClick; private set => rightClick = value; }
-    public bool MiddleClick { get => middleClick; private set => middleClick = value; }
-    public bool InventoryClick { get => inventoryClick; private set => inventoryClick = value; }
-    public bool Pause { get => pause; private set => pause = value; }
 
     // Private action variables
     private string controlScheme;
     private Vector2 aim;
-    private bool leftClick = false;
-    private bool rightClick = false;
-    private bool middleClick = false;
-    private bool inventoryClick = false;
+    private Vector2 startRotationPosition;
+    private bool isLeftClickPressed = false;
+    private bool isMiddleClickPressed = false;
     private bool pause = false;
+    private float currentInteractionDelay = 0.25f;
 
     private void Awake()
     {
@@ -35,52 +32,95 @@ public class PlayerControler : MonoBehaviour
         playerActions = GetComponent<PlayerActions>();
     }
 
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext value)
     {
-        //value.Get<Vector2>();
-        Debug.Log($"PlayerControler - OnMove: {value.Get<Vector2>()}");
+        //value.ReadValue<Vector2>();
+        //Debug.Log($"PlayerControler - OnMove: {value.ReadValue<Vector2>()}");
     }
 
-    public void OnLook(InputValue value)
+    public void OnLook(InputAction.CallbackContext value)
     {
-        aim = value.Get<Vector2>();
+        aim = value.ReadValue<Vector2>();
         playerActions.AimCheck(aim);
-        //Debug.Log($"PlayerControler - OnLook: {value.Get<Vector2>()}");
+        //Debug.Log($"PlayerControler - OnLook: {aim}");
+        if (isLeftClickPressed && currentInteractionDelay <= 0.0f)
+        {
+            playerInteraction.HandleLeftClick(aim);
+            currentInteractionDelay = 0.25f;
+        }
+        else
+        {
+            currentInteractionDelay -= Time.deltaTime;
+        }
+
+        if (isMiddleClickPressed)
+        {
+            if(startRotationPosition == -Vector2.one)
+                startRotationPosition = aim;
+            else
+            {
+                float rotationDelta = startRotationPosition.x - aim.x;
+                playerCamera.HandleRotation(rotationDelta);
+            }
+        }
     }
 
-    public void OnMiddleClick(InputValue value)
+    public void OnMiddleClick(InputAction.CallbackContext value)
     {
-        middleClick = value.isPressed;
-        Debug.Log($"PlayerControler - OnMiddleClick");
+        //if (value.started) Debug.Log($"PlayerControler - OnMiddleClick - Started");
+        if (value.performed)
+        {
+            isMiddleClickPressed = true;
+            playerCamera.isRotating = true;
+            startRotationPosition = -Vector3.one;
+            //Debug.Log($"PlayerControler - OnMiddleClick - Performed");
+        }
+        if (value.canceled)
+        { 
+            isMiddleClickPressed = false;
+            playerCamera.isRotating = false;
+            //Debug.Log($"PlayerControler - OnMiddleClick - Canceled");
+        }
     }
 
-    public void OnLeftClick(InputValue value)
+    public void OnLeftClick(InputAction.CallbackContext value)
     {
-        playerInteraction.HandleLeftClick(aim);
-        Debug.Log($"PlayerControler - OnLeftClick at position {aim}");
+        if (value.performed)
+        {
+            isLeftClickPressed = true;
+
+            playerInteraction.HandleLeftClick(aim);
+            //Debug.Log($"PlayerControler - OnLeftClick - Performed");
+        }
+        if(value.canceled)
+        {
+            isLeftClickPressed = false;
+            //Debug.Log($"PlayerControler - OnLeftClick - Canceled");
+        }
+        
     }
 
-    public void OnRightClick(InputValue value)
+    public void OnRightClick(InputAction.CallbackContext value)
     {
-        rightClick = value.isPressed;
+        //rightClick = value.isPressed;
         Debug.Log($"PlayerControler - OnRightClick");
     }
 
-    public void OnZoom(InputValue value)
+    public void OnZoom(InputAction.CallbackContext value)
     {
-        playerCamera.HandleZoom(value.Get<float>());
-        Debug.Log($"Zoom value: {value.Get<float>()}");
+        playerCamera.HandleZoom(value.ReadValue<float>());
+        Debug.Log($"Zoom value: {value.ReadValue<float>()}");
     }
 
-    public void OnInventory(InputValue value)
+    public void OnInventory(InputAction.CallbackContext value)
     {
         playerInventoryManager.ToggleInventoryVisibility();
         Debug.Log($"PlayerControler - OnInventory");
     }
 
-    public void OnPause(InputValue value)
+    public void OnPause(InputAction.CallbackContext value)
     {
-        if (value.isPressed)
+        if (value.performed)
         {
             pause = !pause;
         }

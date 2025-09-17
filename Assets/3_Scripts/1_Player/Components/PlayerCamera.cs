@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 public class PlayerCamera : MonoBehaviour
 {
 
-    [SerializeField] private Vector3 cameraOffset = new Vector3(0,4,-4);
+    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 4, -4);
     [SerializeField] private float targetHeightOffset = .5f;
 
     private Camera m_camera;
@@ -17,6 +17,7 @@ public class PlayerCamera : MonoBehaviour
     [Header("Rotation Settings")]
     [SerializeField] private float rotationSpeed = 0.25f;
     [SerializeField] private float maxRotationAngle = 5.0f;
+    [HideInInspector] public bool isRotating = false;
 
     private float currentZoomDistance = 0;
     private float currentRotation = 0f;
@@ -34,8 +35,9 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        // Handle camera rotation when the middle mouse button is held down
-        HandleRotation();
+        // Handle camera rotation when the middle mouse button is not held down
+        if(!isRotating)
+        ResetRotation();
 
         Vector3 tmpCameraPos = Vector3.Lerp(m_camera.transform.position, cameraOffset + new Vector3(
                 0,
@@ -65,27 +67,24 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
-    public void HandleRotation()
+    public void HandleRotation(float rotationValue)
     {
-        //// Check if the middle mouse button is being held down
-        //if (Input.GetMouseButton(2))
-        //{
-        //    // Get mouse movement input
-        //    float mouseX = Input.GetAxis("Mouse X") * rotationSpeed;
+        if(rotationValue != 0f)
+        {
+            float rotation = rotationValue * rotationSpeed * Time.deltaTime;
+            currentRotation -= rotation;
+            currentRotation = Mathf.Clamp(currentRotation, -maxRotationAngle, maxRotationAngle);
+        }
+    }
 
-        //    currentRotation -= mouseX;
-
-        //    currentRotation = Mathf.Clamp(currentRotation, -maxRotationAngle, maxRotationAngle);
-        //}
-        //else
-        //{
-        //    if(Mathf.Abs(currentRotation) <= 0.01f)
-        //    {
-        //        currentRotation = 0f;
-        //        return;
-        //    } 
-        //    currentRotation = Mathf.Lerp(currentRotation, 0f, Time.deltaTime * rotationSpeed * 20.0f);
-        //        //Mathf.SmoothStep(currentRotation, 0, Time.deltaTime * rotationSpeed * 20.0f);
-        //}
+    private void ResetRotation()
+    {
+        if (Mathf.Abs(currentRotation) <= 0.01f)
+        {
+            currentRotation = 0f;
+            return;
+        }
+        currentRotation = Mathf.Lerp(currentRotation, 0f, rotationSpeed * 5 * Time.deltaTime);
+        //Mathf.SmoothStep(currentRotation, 0, Time.deltaTime * rotationSpeed * 20.0f);
     }
 }

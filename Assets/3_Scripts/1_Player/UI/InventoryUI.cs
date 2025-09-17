@@ -62,7 +62,7 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     private void RedrawUI()
     {
-        Debug.Log("Redrawing Inventory UI...");
+        //Debug.Log("Redrawing Inventory UI...");
 
         // Clear all existing UI slots to prevent duplicates.
         foreach (Transform child in itemsParent.transform)

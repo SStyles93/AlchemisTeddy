@@ -6,9 +6,9 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(InputSystem))]
 public class PlayerControler : MonoBehaviour
 {
+    [SerializeField] private PlayerAction playerActions;
     [SerializeField] private PlayerCamera playerCamera;
-    [SerializeField] private PlayerActions playerActions;
-    [SerializeField] private PlayerInteraction playerInteraction;
+    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerInventoryManager playerInventoryManager;
     [SerializeField] private float interactionDelay = 0.25f;
 
@@ -26,11 +26,18 @@ public class PlayerControler : MonoBehaviour
 
     private void Awake()
     {
-        playerInteraction = GetComponent<PlayerInteraction>();
-        playerInventoryManager = GetComponent<PlayerInventoryManager>();
+        playerActions = GetComponent<PlayerAction>();
         playerCamera = GetComponent<PlayerCamera>();
-        playerActions = GetComponent<PlayerActions>();
+        playerInput = GetComponent<PlayerInput>();
+        playerInventoryManager = GetComponent<PlayerInventoryManager>();
     }
+
+    private void Start()
+    {
+        controlScheme = playerInput.currentControlScheme;
+    }
+
+
 
     public void OnMove(InputAction.CallbackContext value)
     {
@@ -45,7 +52,7 @@ public class PlayerControler : MonoBehaviour
         //Debug.Log($"PlayerControler - OnLook: {aim}");
         if (isLeftClickPressed && currentInteractionDelay <= 0.0f)
         {
-            playerInteraction.HandleLeftClick(aim);
+            playerActions.HandleLeftClick();
             currentInteractionDelay = 0.25f;
         }
         else
@@ -88,8 +95,8 @@ public class PlayerControler : MonoBehaviour
         if (value.performed)
         {
             isLeftClickPressed = true;
-
-            playerInteraction.HandleLeftClick(aim);
+            playerActions.AimCheck(aim);
+            playerActions.HandleLeftClick();
             //Debug.Log($"PlayerControler - OnLeftClick - Performed");
         }
         if(value.canceled)
@@ -97,7 +104,6 @@ public class PlayerControler : MonoBehaviour
             isLeftClickPressed = false;
             //Debug.Log($"PlayerControler - OnLeftClick - Canceled");
         }
-        
     }
 
     public void OnRightClick(InputAction.CallbackContext value)
@@ -127,5 +133,13 @@ public class PlayerControler : MonoBehaviour
         Time.timeScale = pause ? 0.0f : 1.0f;
 
         Debug.Log($"PlayerControler - OnPause");
+    }
+
+    /// <summary>
+    /// Updates the control scheme (Called by PlayerInput -> Controls Changed Event
+    /// </summary>
+    public void UpdateControlScheme()
+    {
+        controlScheme = playerInput.currentControlScheme;
     }
 }

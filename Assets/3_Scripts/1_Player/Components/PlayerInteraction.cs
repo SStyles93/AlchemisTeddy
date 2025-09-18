@@ -49,14 +49,9 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
 
     public void HandleLeftClick(Vector2 mousePosition)
     {
-        //// Disable click over UI objects
-        //if (isPointerOverUI)
-        //{
-        //    Debug.Log("Click over a UI object");
-        //    //return;
-        //}
-
         if (inventoryManager.GetInventoryPannel().activeInHierarchy == true && isPointerOverUI) return;
+
+        // MOVE RAY TO ACTIONS
 
         Ray ray = playerCamera.ScreenPointToRay(mousePosition);
 

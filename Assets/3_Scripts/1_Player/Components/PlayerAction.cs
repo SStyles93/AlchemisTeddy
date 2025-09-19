@@ -20,7 +20,7 @@ public class PlayerAction : MonoBehaviour
     //Reference GameObjects
     [Header("Player's targer")]
     [SerializeField] private GameObject target;
-    [SerializeField] private Image pointerImage;
+    private Image pointerImage;
 
     //List of bools used for Actions
     [Header("Action's variables")]

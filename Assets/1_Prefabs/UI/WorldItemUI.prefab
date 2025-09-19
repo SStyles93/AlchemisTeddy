@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3950157177615375073}
   - component: {fileID: 7689588939803525550}
   - component: {fileID: 7578978491350171794}
-  m_Layer: 10
+  m_Layer: 5
   m_Name: WorldItemUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

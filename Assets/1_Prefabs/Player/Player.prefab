@@ -387,7 +387,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1264102949247548089
 RectTransform:
   m_ObjectHideFlags: 0
@@ -778,7 +778,7 @@ GameObject:
   - component: {fileID: 2769361396736248584}
   - component: {fileID: 7015225192555578099}
   - component: {fileID: 2802524694656147971}
-  m_Layer: 5
+  m_Layer: 14
   m_Name: Save
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -827,7 +827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1291,7 +1291,7 @@ GameObject:
   - component: {fileID: 7019144378458065355}
   - component: {fileID: 5079598061034854666}
   - component: {fileID: 2624015115554601103}
-  m_Layer: 5
+  m_Layer: 14
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2166,7 +2166,7 @@ GameObject:
   - component: {fileID: 7605596366403342325}
   - component: {fileID: 5625425412245329537}
   - component: {fileID: 205844773415288754}
-  m_Layer: 5
+  m_Layer: 14
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3074,7 +3074,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 1008205359934680456}
   playerInteraction: {fileID: 2607751113224163249}
+  playerCamera: {fileID: 0}
+  playerScreenSpaceCanvasRaycaster: {fileID: 2822339768653679670}
+  interactableLayers:
+    serializedVersion: 2
+    m_Bits: 17408
   target: {fileID: 4792245410212834565}
+  pointerImage: {fileID: 0}
   _aimCorrection: 0
 --- !u!114 &2607751113224163249
 MonoBehaviour:
@@ -3088,7 +3094,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d040fdc457e4d74784f8135ce7a6805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
   interactionDistance: 1.4
   interactableLayer:
     serializedVersion: 2
@@ -3312,7 +3317,7 @@ GameObject:
   - component: {fileID: 8398869968387961550}
   - component: {fileID: 1355772743048582799}
   - component: {fileID: 7755426324480045854}
-  m_Layer: 5
+  m_Layer: 14
   m_Name: Load
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3361,7 +3366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

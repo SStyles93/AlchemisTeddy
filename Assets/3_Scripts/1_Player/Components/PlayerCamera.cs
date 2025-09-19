@@ -4,7 +4,6 @@ using UnityEngine.Rendering;
 
 public class PlayerCamera : MonoBehaviour
 {
-
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 4, -4);
     [SerializeField] private float targetHeightOffset = .5f;
 

@@ -53,7 +53,7 @@ public class PlayerControler : MonoBehaviour
         if (isLeftClickPressed && currentInteractionDelay <= 0.0f)
         {
             playerActions.HandleLeftClick();
-            currentInteractionDelay = 0.25f;
+            currentInteractionDelay = interactionDelay;
         }
         else
         {
@@ -109,19 +109,19 @@ public class PlayerControler : MonoBehaviour
     public void OnRightClick(InputAction.CallbackContext value)
     {
         //rightClick = value.isPressed;
-        Debug.Log($"PlayerControler - OnRightClick");
+        //Debug.Log($"PlayerControler - OnRightClick");
     }
 
     public void OnZoom(InputAction.CallbackContext value)
     {
         playerCamera.HandleZoom(value.ReadValue<float>());
-        Debug.Log($"Zoom value: {value.ReadValue<float>()}");
+        //Debug.Log($"Zoom value: {value.ReadValue<float>()}");
     }
 
     public void OnInventory(InputAction.CallbackContext value)
     {
         playerInventoryManager.ToggleInventoryVisibility();
-        Debug.Log($"PlayerControler - OnInventory");
+        //Debug.Log($"PlayerControler - OnInventory");
     }
 
     public void OnPause(InputAction.CallbackContext value)
@@ -132,7 +132,7 @@ public class PlayerControler : MonoBehaviour
         }
         Time.timeScale = pause ? 0.0f : 1.0f;
 
-        Debug.Log($"PlayerControler - OnPause");
+        //Debug.Log($"PlayerControler - OnPause");
     }
 
     /// <summary>

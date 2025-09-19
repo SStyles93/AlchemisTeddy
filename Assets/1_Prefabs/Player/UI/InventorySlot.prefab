@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6339251611556767856}
   - component: {fileID: 8232846967853248904}
   - component: {fileID: 973778100281602395}
-  m_Layer: 5
+  m_Layer: 14
   m_Name: InventorySlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}

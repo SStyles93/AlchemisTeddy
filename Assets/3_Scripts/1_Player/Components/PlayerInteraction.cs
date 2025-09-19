@@ -10,7 +10,6 @@ using UnityEngine.EventSystems;
 public class PlayerInteraction : MonoBehaviour, ISaveable
 {
     [Header("Interaction Settings")]
-    [SerializeField] private Camera playerCamera;
     [Tooltip("The distance from which the player can execute an interaction.")]
     [SerializeField] private float interactionDistance = 2f;
     [SerializeField] private LayerMask interactableLayer;
@@ -34,7 +33,6 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
 
     private void Awake()
     {
-        if (playerCamera == null) playerCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.updateRotation = false;
 
@@ -47,13 +45,9 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
     }
 
-    public void HandleLeftClick(Vector2 mousePosition)
+    public void HandleLeftClick(Ray ray)
     {
         if (inventoryManager.GetInventoryPannel().activeInHierarchy == true && isPointerOverUI) return;
-
-        // MOVE RAY TO ACTIONS
-
-        Ray ray = playerCamera.ScreenPointToRay(mousePosition);
 
         Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue, 2.0f);
 
@@ -66,8 +60,9 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         {
             // Clear the ground-click debug position since we are targeting an object.
             hitPosition = Vector3.zero;
-            Debug.Log($"Raycast - hit position: {hitPosition}");
             StartInteraction(hit.collider.gameObject);
+
+            //Debug.Log($"Raycast - hit position: {hitPosition}");
             
             return;
         }
@@ -75,20 +70,21 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         // If no interactable was hit, check for ground to move
         if (Physics.Raycast(ray, out RaycastHit groundHit, 100f, groundLayer))
         {
-            Debug.Log($"Raycast - hit position {groundHit.point}");
             StopInteraction();
             Move(groundHit.point);
             // Update the debug variable with the click position.
             hitPosition = groundHit.point;
+
+            //Debug.Log($"Raycast - hit position {groundHit.point}");
         }
     }
 
     private void StartInteraction(GameObject target)
     {
-        Debug.Log($"Started interaction with {target}");
+        //Debug.Log($"Started interaction with {target}");
         StopInteraction();
         followAndInteractCoroutine = StartCoroutine(FollowAndInteractRoutine(target));
-        Debug.Log($"Coroutine - Started followAndInteractCoroutine");
+        //Debug.Log($"Coroutine - Started followAndInteractCoroutine");
     }
 
     private void StopInteraction()
@@ -96,8 +92,8 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         if (followAndInteractCoroutine != null)
         {
             StopCoroutine(followAndInteractCoroutine);
-            Debug.Log($"Coroutine - Stopped followAndInteractCoroutine");
             followAndInteractCoroutine = null;
+            //Debug.Log($"Coroutine - Stopped followAndInteractCoroutine");
         }
     }
 

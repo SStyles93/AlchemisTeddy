@@ -1211,10 +1211,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 484465386293468325, guid: 6640c68e247b78f4eb21738613294f7b, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2318603525256998113, guid: 6640c68e247b78f4eb21738613294f7b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5840824
@@ -1275,10 +1271,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6664138520656383163, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7601197051715415351, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.6133726
@@ -1322,10 +1314,6 @@ PrefabInstance:
     - target: {fileID: 8747181197904860207, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
       propertyPath: m_Name
       value: Strawberry
-      objectReference: {fileID: 0}
-    - target: {fileID: 8747181197904860207, guid: 3b210d6f99276d645b5fa9db89d4548e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1386,14 +1374,6 @@ PrefabInstance:
     - target: {fileID: 3693009134779519176, guid: 1c13e09bd3aacb340bc6419be2d0a7b4, type: 3}
       propertyPath: m_Name
       value: Water
-      objectReference: {fileID: 0}
-    - target: {fileID: 3865823297538062720, guid: 1c13e09bd3aacb340bc6419be2d0a7b4, type: 3}
-      propertyPath: m_Radius
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 3865823297538062720, guid: 1c13e09bd3aacb340bc6419be2d0a7b4, type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -159,7 +159,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.7, y: 0.2, z: 0.7}
   m_Center: {x: 0, y: 0.034491617, z: -0.000000014901161}
@@ -187,6 +187,10 @@ PrefabInstance:
     - target: {fileID: 1936291149642421516, guid: 0e930f6838e88534698e1d509beb5f32, type: 3}
       propertyPath: m_Name
       value: WorldItemUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936291149642421516, guid: 0e930f6838e88534698e1d509beb5f32, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3950157177615375073, guid: 0e930f6838e88534698e1d509beb5f32, type: 3}
       propertyPath: m_Enabled

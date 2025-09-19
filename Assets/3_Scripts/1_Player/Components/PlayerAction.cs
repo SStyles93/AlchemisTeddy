@@ -54,6 +54,7 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void AimCheck(Vector2 mousePosition)
     {
+        if (playerCamera == null) playerCamera = Camera.main;
         // Get Ray from mouse position
         currentRay = playerCamera.ScreenPointToRay(mousePosition);
 

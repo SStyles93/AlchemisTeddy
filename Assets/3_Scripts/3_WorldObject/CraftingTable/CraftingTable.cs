@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CraftingTable : MonoBehaviour, IActivatable
+public class CraftingTable : WorldObject, IActivatable
 {
     [Header("Configuration")]
     [Tooltip("The list of ingredient stations connected to this table.")]

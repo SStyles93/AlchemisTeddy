@@ -26,7 +26,7 @@ public class InventoryUI : MonoBehaviour
 
     // State Management
     public bool isSelectionMode { get; private set; } = false;
-    private IngredientStation requestingStation;
+    private Station requestingStation;
 
     // --- Subscribing and Unsubscribing to the Event ---
 
@@ -92,7 +92,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public void OpenForSelection(IngredientStation station)
+    public void OpenForSelection(Station station)
     {
         isSelectionMode = true;
         requestingStation = station;

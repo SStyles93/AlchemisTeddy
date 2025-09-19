@@ -1,21 +1,22 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
-public class WorldItemUI : MonoBehaviour
+[RequireComponent(typeof(TextMeshPro))]
+public class WorldObjectUI : MonoBehaviour
 {
-    [SerializeField] private WorldItem worldItem;
+    [SerializeField] private WorldObject worldObject;
     [SerializeField] private TextMeshPro textMesh;
 
     private void OnEnable()
     {
-        if (worldItem != null)
-            worldItem.OnMouseOverObject += ShowName;
+        if (worldObject != null)
+            worldObject.OnMouseOverObject += ShowName;
     }
 
     private void OnDisable()
     {
-        if (worldItem != null)
-            worldItem.OnMouseOverObject -= ShowName;
+        if (worldObject != null)
+            worldObject.OnMouseOverObject -= ShowName;
     }
 
     private void Awake()
@@ -24,7 +25,7 @@ public class WorldItemUI : MonoBehaviour
             this.textMesh = textMeshPro;
         // null-coalescing assignment operator (??)
         // It only executes the right side if textMesh is null.
-        worldItem ??= GetComponentInParent<WorldItem>();
+        worldObject ??= GetComponentInParent<WorldObject>();
     }
 
     private void Start()

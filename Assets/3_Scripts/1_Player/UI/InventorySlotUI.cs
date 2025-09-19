@@ -40,14 +40,18 @@ public class InventorySlotUI : MonoBehaviour
         if (inventoryUI.isSelectionMode)
         {
             // Check if Item is an Ingredient
-            if (item.itemType == ItemType.Ingredient)
+            if (item.itemType == ItemType.Ingredient || item.itemType == ItemType.Orb)
             {
+                // Remove if it is ingredient
+                if(item.itemType == ItemType.Ingredient)
                 inventoryManager.RemoveItem(item);
+                
+                // Select the Item
                 inventoryUI.OnItemSelected(item);
             }
             else
             {
-                Debug.Log($"{item.name} is not an ingredient.");
+                Debug.Log($"{item.name} is not a valid item to place.");
             }
         }
         else

@@ -7,16 +7,14 @@ using UnityEngine.EventSystems;
 /// Demonstrates the use of TryGetComponent for safe component access.
 /// </summary>
 [RequireComponent(typeof(Collider))] // Ensures this object always has a collider.
-public class WorldItem : MonoBehaviour, ICollectable, IPointerEnterHandler, IPointerExitHandler
+public class WorldItem : WorldObject, ICollectable
 {
     [Tooltip("The data asset that defines this item.")]
     [SerializeField]
     private ItemData itemData;
 
     public ItemData GetItemData() => itemData;
-
-    public event Action<string,bool> OnMouseOverObject;
-
+    public override string DisplayName => itemData != null ? itemData.itemName : "/!\\NO ITEM DATA /!\\";
 
     /// <summary>
     /// Called when the object becomes enabled and active.
@@ -72,17 +70,6 @@ public class WorldItem : MonoBehaviour, ICollectable, IPointerEnterHandler, IPoi
         // 2. Add the item to the CORRECT player's inventory.
         collectorInventory.AddItem(itemData);
         Debug.Log($"{collectorInventory.gameObject.name} collected {itemData.itemName}.");
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (gameObject.layer != 10) return;
-            OnMouseOverObject?.Invoke(itemData.itemName, true);
-    }
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (gameObject.layer != 10) return;
-            OnMouseOverObject?.Invoke(itemData.itemName, false);
     }
 
     /// <summary>

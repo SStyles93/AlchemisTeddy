@@ -66,6 +66,11 @@ public class PlayerInventoryManager : MonoBehaviour, ISaveable
         }
         else
         {
+            if (itemToAdd is PortalOrb orb)
+            {
+                if (inventory.Contains(orb)) return;
+            }
+
             if (inventory.Count > 10)
             {
                 Debug.Log("Inventory is full");
@@ -88,7 +93,7 @@ public class PlayerInventoryManager : MonoBehaviour, ISaveable
     public void RemoveItem(ItemData itemToRemove)
     {
         if (itemToRemove == null) return;
-
+        if (itemToRemove is PortalOrb) return;
         if (inventory.Remove(itemToRemove))
         {
             Debug.Log($"Removed {itemToRemove.itemName} from inventory.");

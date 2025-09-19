@@ -1,11 +1,14 @@
+using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 /// <summary>
 /// This interface defines an object that can be activated.
 /// A lever or a button would implement this.
 /// </summary>
-public interface IActivatable
+public interface IActivatable 
 {
     /// <summary>
     /// Activates the object.

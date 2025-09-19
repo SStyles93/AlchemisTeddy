@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6b388558944d38458434791cd364077, type: 3}
+  m_Name: Orb Lab
+  m_EditorClassIdentifier: 
+  itemName: Lab Orb
+  description: The orb used to go to the Alchemist's Lab
+  value: 0
+  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  prefab: {fileID: 260771906146054547, guid: 9329bbfb7e169e444afccede62b7850c, type: 3}
+  trailColors:
+  - {r: 1, g: 0, b: 0.52359486, a: 1}
+  - {r: 0.43922853, g: 0, b: 1, a: 1}
+  itemType: 3
+  isStackable: 0
+  itemID: _4337cf3f-4cbc-42b0-a858-b8863b5e3509
+  orbScene: 0
+  savedScene: 1

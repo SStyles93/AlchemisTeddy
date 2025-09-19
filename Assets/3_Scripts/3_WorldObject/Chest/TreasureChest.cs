@@ -8,7 +8,7 @@ using UnityEngine;
 /// A treasure chest can be activated (opened) and also damaged (broken).
 /// It doesn't need to implement ICollectable, so it isn't forced to.
 /// </summary>
-public class TreasureChest : MonoBehaviour, IActivatable, IDamageable, ISaveable
+public class TreasureChest : WorldObject, IActivatable, IDamageable, ISaveable
 {
     [Header("Health")]
     [SerializeField] private int maxHealth = 50;

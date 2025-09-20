@@ -56,3 +56,10 @@ public class WorldItemSaveData
     public Vector3Data position;
     public QuaternionData rotation;
 }
+
+[System.Serializable]
+public class PlayerSaveData
+{
+    public List<string> inventoryItemIDs = new List<string>();
+    public float playerHealth = 100f;
+}

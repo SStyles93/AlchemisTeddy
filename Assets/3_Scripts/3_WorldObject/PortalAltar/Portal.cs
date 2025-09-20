@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -7,17 +8,35 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class Portal : WorldObject, IActivatable
 {
+    //Animation Settings
+    [Header("Animation Settings")]
+    [SerializeField] Animator animator;
+
+    int OpenHash = -1;
+    int CloseHash = -1;
+
     private PortalOrb orbData = null;
     private bool isPortalOpen = false;
 
     int currentSceneIndex = -1;
 
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
+
+    private void Start()
+    {
+        OpenHash = Animator.StringToHash("Open");
+        CloseHash = Animator.StringToHash("Close");
+    }
 
     public void Activate(GameObject activator)
     {
         if (isPortalOpen)
         {
             // Trigger "USE" Animation
+            
 
             //TEMP: will be called by animator
             OnPortalAnimationEnd();
@@ -29,8 +48,8 @@ public class Portal : WorldObject, IActivatable
     /// </summary>
     public void Close()
     {
-        //TODO:
-        //Trigger "Close" animation
+        //Launches the Close Animation
+        animator.SetTrigger(CloseHash);
 
         orbData = null;
     }
@@ -40,6 +59,8 @@ public class Portal : WorldObject, IActivatable
     /// </summary>
     public void OnPortalAnimationEnd()
     {
+        GameManager.Instance.SavePlayer();
+
         // If the Orb scene is the current one, send player to saved scene
         if (orbData.OrbScene == currentSceneIndex)
             SceneManager.LoadScene(orbData.SavedScene);
@@ -54,8 +75,8 @@ public class Portal : WorldObject, IActivatable
     /// <param name="orbData"></param>
     public void Open(PortalOrb orbData)
     {
-        //TODO:
-        //Trigger "Open" animation
+        //Launches the Open Animation
+        animator.SetTrigger(OpenHash);
 
         //Get ref to OrbData
         this.orbData = orbData;
@@ -69,11 +90,13 @@ public class Portal : WorldObject, IActivatable
             orbData.AssignSavedScene(currentSceneIndex);
     }
 
+    //Called by the Open Animation
     public void OnOpenAnimationEnd()
     {
         isPortalOpen = true;
     }
 
+    //Called by the Close Animation
     public void OnCloseAnimationEnd()
     {
         isPortalOpen = false;

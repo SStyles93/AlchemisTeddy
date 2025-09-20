@@ -33,7 +33,7 @@ public class WorldObjectUI : MonoBehaviour
         textMesh.enabled = false;
     }
 
-    private void ShowName(string name, bool state)
+    public void ShowName(string name, bool state)
     {
         textMesh.text = name;
         textMesh.enabled = state;

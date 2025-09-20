@@ -3,14 +3,15 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     private IDataService dataService;
-    private const string SAVE_FILE_NAME = "scene_save.json";
+    private const string PLAYER_SAVE_FILE = "player_save.json";
+    private PlayerInventoryManager inventoryManager;
+
     private Dictionary<string, SaveableEntity> allEntities;
 
     private void Awake()
@@ -21,11 +22,20 @@ public class GameManager : MonoBehaviour
         dataService = new JsonDataService();
     }
 
-    public void SaveGame()
+
+    #region SAVING
+    private string GetSceneSaveFile()
+    {
+        return $"{SceneManager.GetActiveScene().name}_scene.json";
+    }
+
+    // ---------------- SCENE SAVE ----------------
+    #region SCENE SAVING
+    public void SaveScene()
     {
         var sceneSaveData = new SceneSaveData();
 
-        // --- 1. HIERARCHICAL SAVE (for persistent scene objects) ---
+        // 1. Save root SaveableEntities
         var rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (var go in rootObjects)
         {
@@ -35,107 +45,122 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // --- 2. WORLD ITEM SAVE (for dynamically spawned items) ---
-        // Get all tracked items from the manager.
-        List<WorldItem> itemsToSave = WorldItemManager.Instance.GetAllItems();
-        foreach (WorldItem item in itemsToSave)
+        // 2. Save dynamically spawned world items
+        foreach (WorldItem item in WorldItemManager.Instance.GetAllItems())
         {
-            // Create a save data entry for each item.
-            var itemSaveData = new WorldItemSaveData
+            sceneSaveData.savedWorldItems.Add(new WorldItemSaveData
             {
                 itemID = item.GetItemData().ItemID,
                 position = new Vector3Data(item.transform.position),
                 rotation = new QuaternionData(item.transform.rotation)
-            };
-            sceneSaveData.savedWorldItems.Add(itemSaveData);
+            });
         }
 
-        // --- 3. WRITE TO FILE ---
-        dataService.Save(sceneSaveData, SAVE_FILE_NAME);
-        Debug.Log($"Game Saved. Saved {sceneSaveData.rootObjects.Count} root hierarchies and {sceneSaveData.savedWorldItems.Count} world items.");
+        // 3. Write file (per scene)
+        dataService.Save(sceneSaveData, GetSceneSaveFile());
+
+#if UNITY_EDITOR
         AssetDatabase.Refresh();
+#endif
+
+        Debug.Log($"Scene saved to {GetSceneSaveFile()}.");
     }
 
-    /// <summary>
-    /// Cleans WorldItems, Restores the state of Saveable Entities, Instantiates WorldItems at the position they where when saved
-    /// </summary>
-    public void LoadGame()
+    public void LoadScene()
     {
-        var sceneSaveData = dataService.Load(SAVE_FILE_NAME);
+        var sceneSaveData = dataService.Load<SceneSaveData>(GetSceneSaveFile());
         if (sceneSaveData == null)
         {
-            Debug.Log("No save data found.");
+            Debug.Log("No scene save found.");
             return;
         }
 
-        // --- 1. CLEANUP: Destroy all currently tracked world items ---
-        // This prevents duplicating items when loading. The manager's list will auto-clear
-        // as each item's OnDisable() is called during destruction.
-        List<WorldItem> existingItems = WorldItemManager.Instance.GetAllItems();
-        foreach (WorldItem item in existingItems)
+        // 1. Cleanup world items
+        foreach (WorldItem item in WorldItemManager.Instance.GetAllItems())
         {
             Destroy(item.gameObject);
         }
 
-        // --- 2. HIERARCHICAL LOAD (for persistent scene objects) ---
-        allEntities = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).ToDictionary(e => e.UniqueId);
+        // 2. Restore SaveableEntities
+        allEntities = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)
+                        .ToDictionary(e => e.UniqueId);
         foreach (var rootObjectData in sceneSaveData.rootObjects)
         {
             RestoreStateRecursive(rootObjectData);
         }
 
-        // --- 3. WORLD ITEM LOAD (for dynamically spawned items) ---
-        // This part requires the system to find the prefab in the ItemData.
-
-        var itemDataLookup = Resources.FindObjectsOfTypeAll<ItemData>()
-                                     .ToDictionary(item => item.ItemID);
+        // 3. Restore world items
+        var itemDataLookup = Resources.FindObjectsOfTypeAll<ItemData>().ToDictionary(item => item.ItemID);
 
         foreach (var itemSaveData in sceneSaveData.savedWorldItems)
         {
-            GameObject itemPrefab = FindItemPrefabByID(itemSaveData.itemID, itemDataLookup);
-            if (itemPrefab != null)
+            GameObject prefab = FindItemPrefabByID(itemSaveData.itemID, itemDataLookup);
+            if (prefab != null)
             {
-                // Instantiate the new item. Its OnEnable() will automatically register it.
-                Instantiate(itemPrefab, itemSaveData.position.ToVector3(), itemSaveData.rotation.ToQuaternion());
+                Instantiate(prefab, itemSaveData.position.ToVector3(), itemSaveData.rotation.ToQuaternion());
             }
             else
             {
-                Debug.LogWarning($"Could not find prefab for item ID: {itemSaveData.itemID}");
+                Debug.LogWarning($"Missing prefab for item ID {itemSaveData.itemID}");
             }
         }
 
-        Debug.Log("Game Loaded.");
+        Debug.Log($"Scene {SceneManager.GetActiveScene().name} loaded.");
+    }
+    #endregion
+    // ---------------- PLAYER SAVE ----------------
+    #region PLAYER SAVING
+    public void SavePlayer()
+    {
+        inventoryManager = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerInventoryManager>();
+        if (inventoryManager == null)
+        {
+            Debug.LogWarning("No PlayerInventoryManager found to save.");
+            return;
+        }
+
+        PlayerSaveData playerData = new PlayerSaveData
+        {
+            inventoryItemIDs = inventoryManager.GetInventoryIDs(),
+            playerHealth = 100.0f
+        };
+
+        dataService.Save(playerData, PLAYER_SAVE_FILE);
+        Debug.Log("Player saved.");
     }
 
-    /// <summary>
-    /// Finds an item's prefab by searching through a provided lookup dictionary of all ItemData assets.
-    /// </summary>
-    /// <param name="itemID">The unique ID of the item to find.</param>
-    /// <param name="itemDataLookup">A pre-built dictionary mapping ItemIDs to ItemData assets.</param>
-    /// <returns>The found GameObject prefab, or null if not found.</returns>
+    public void LoadPlayer()
+    {
+        var playerData = dataService.Load<PlayerSaveData>(PLAYER_SAVE_FILE);
+        if (playerData == null)
+        {
+            Debug.Log("No player save found.");
+            return;
+        }
+
+        inventoryManager = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerInventoryManager>();
+        if (inventoryManager != null)
+        {
+            inventoryManager.RestoreFromIDs(playerData.inventoryItemIDs);
+        }
+
+        Debug.Log("Player loaded.");
+    }
+    #endregion
+    // ---------------- HELPERS ----------------
+    #region HELPERS
     private GameObject FindItemPrefabByID(string itemID, Dictionary<string, ItemData> itemDataLookup)
     {
         if (string.IsNullOrEmpty(itemID)) return null;
-
-        // Use the fast dictionary lookup.
-        if (itemDataLookup.TryGetValue(itemID, out ItemData itemData))
-        {
-            // Return the prefab reference from the found ItemData.
-            return itemData.prefab;
-        }
-
-        // If the ID wasn't in the dictionary, return null.
-        return null;
+        return itemDataLookup.TryGetValue(itemID, out ItemData itemData) ? itemData.prefab : null;
     }
 
-    /// <summary>
-    /// Recursively captures the state of a GameObject and all its children.
-    /// </summary>
     private GameObjectSaveData CaptureStateRecursive(GameObject go)
     {
+        var entityComp = go.GetComponent<SaveableEntity>();
         var data = new GameObjectSaveData
         {
-            uniqueID = go.GetComponent<SaveableEntity>().UniqueId,
+            uniqueID = entityComp.UniqueId,
             name = go.name,
             isActive = go.activeSelf,
             position = new Vector3Data(go.transform.position),
@@ -143,18 +168,17 @@ public class GameManager : MonoBehaviour
             scale = new Vector3Data(go.transform.localScale)
         };
 
-        // Capture data from all ISaveable components on this object.
+        // Skip PlayerInventoryManager — handled in SavePlayer
         foreach (var saveable in go.GetComponents<ISaveable>())
         {
-            string componentTypeName = saveable.GetType().ToString();
-            data.componentSaveData[componentTypeName] = saveable.CaptureState();
+            // Skip PlayerInventoryManager — handled in SavePlayer
+            if (saveable is PlayerInventoryManager) continue;
+
+            data.componentSaveData[saveable.GetType().ToString()] = saveable.CaptureState();
         }
 
-        // Recurse into children.
         foreach (Transform child in go.transform)
         {
-            // IMPORTANT: We only save children that have a SaveableEntity.
-            // This prevents saving parts of complex prefabs you don't care about.
             if (child.GetComponent<SaveableEntity>() != null)
             {
                 data.children.Add(CaptureStateRecursive(child.gameObject));
@@ -163,38 +187,29 @@ public class GameManager : MonoBehaviour
         return data;
     }
 
-    /// <summary>
-    /// Recursively restores the state of a GameObject and its children from save data.
-    /// </summary>
     private void RestoreStateRecursive(GameObjectSaveData data)
     {
-        if (!allEntities.TryGetValue(data.uniqueID, out SaveableEntity entity))
-        {
-            // This object was in the save file but is no longer in the scene.
-            // In a real game, you might want to re-instantiate it from a prefab here.
-            return;
-        }
+        if (!allEntities.TryGetValue(data.uniqueID, out SaveableEntity entity)) return;
 
-        // Restore generic transform and active state.
         entity.gameObject.SetActive(data.isActive);
         entity.transform.position = data.position.ToVector3();
         entity.transform.rotation = data.rotation.ToQuaternion();
         entity.transform.localScale = data.scale.ToVector3();
 
-        // Restore specific component data.
         foreach (var saveable in entity.GetComponents<ISaveable>())
         {
-            string componentTypeName = saveable.GetType().ToString();
-            if (data.componentSaveData.TryGetValue(componentTypeName, out var componentState))
+            string typeName = saveable.GetType().ToString();
+            if (data.componentSaveData.TryGetValue(typeName, out var componentState))
             {
                 saveable.RestoreState(componentState);
             }
         }
 
-        // Recurse into children.
         foreach (var childData in data.children)
         {
             RestoreStateRecursive(childData);
         }
     }
+    #endregion
+    #endregion
 }

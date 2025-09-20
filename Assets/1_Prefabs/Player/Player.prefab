@@ -887,8 +887,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+      - m_Target: {fileID: 347648741315527835}
+        m_TargetAssemblyTypeName: SaveableEntity, Assembly-CSharp
         m_MethodName: SaveGame
         m_Mode: 1
         m_Arguments:
@@ -3080,7 +3080,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 17408
   target: {fileID: 4792245410212834565}
-  pointerImage: {fileID: 0}
   _aimCorrection: 0
 --- !u!114 &2607751113224163249
 MonoBehaviour:
@@ -3163,6 +3162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueId: 7109b370-18f3-4305-9703-85c4f8391838
+  gameManager: {fileID: 0}
 --- !u!1 &8319989948723574957
 GameObject:
   m_ObjectHideFlags: 0
@@ -3426,8 +3426,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+      - m_Target: {fileID: 347648741315527835}
+        m_TargetAssemblyTypeName: SaveableEntity, Assembly-CSharp
         m_MethodName: LoadGame
         m_Mode: 1
         m_Arguments:

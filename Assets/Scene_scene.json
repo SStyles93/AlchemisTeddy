@@ -28,7 +28,7 @@
           "isActive": true,
           "position": {
             "x": -0.691,
-            "y": 2.558,
+            "y": 2.513,
             "z": 1.23
           },
           "rotation": {
@@ -53,7 +53,7 @@
           "isActive": true,
           "position": {
             "x": 0.0,
-            "y": 2.558,
+            "y": 2.513,
             "z": 1.23
           },
           "rotation": {
@@ -78,7 +78,7 @@
           "isActive": true,
           "position": {
             "x": 0.687,
-            "y": 2.558,
+            "y": 2.513,
             "z": 1.23
           },
           "rotation": {
@@ -98,40 +98,6 @@
           "children": []
         }
       ]
-    },
-    {
-      "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
-      "name": "Player",
-      "isActive": true,
-      "position": {
-        "x": -2.15853429,
-        "y": 1.0734632,
-        "z": 2.662572
-      },
-      "rotation": {
-        "x": 0.0,
-        "y": -0.191763386,
-        "z": 0.0,
-        "w": 0.981441259
-      },
-      "scale": {
-        "x": 1.0,
-        "y": 1.0,
-        "z": 1.0
-      },
-      "componentSaveData": {
-        "PlayerInteraction": {
-          "playerPosition": "-2.158534,1.073463,2.662572"
-        },
-        "PlayerInventoryManager": {
-          "inventory": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3,_67b0d69e-0e75-4710-840e-4f7ffd8c329c,Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee"
-        },
-        "PlayerHealth": {
-          "currentHealth": "75",
-          "maxHealth": "100"
-        }
-      },
-      "children": []
     },
     {
       "uniqueID": "b46c32c9-98f6-49cb-90f0-8941305eb65b",
@@ -160,7 +126,81 @@
         }
       },
       "children": []
+    },
+    {
+      "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
+      "name": "Player",
+      "isActive": true,
+      "position": {
+        "x": -2.056589,
+        "y": 1.0734632,
+        "z": -2.49227285
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -0.7475063,
+        "z": 0.0,
+        "w": -0.6642547
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "componentSaveData": {
+        "PlayerInteraction": {
+          "playerPosition": "-2.056589,1.073463,-2.492273"
+        },
+        "PlayerHealth": {
+          "currentHealth": "75",
+          "maxHealth": "100"
+        }
+      },
+      "children": []
     }
   ],
-  "savedWorldItems": []
+  "savedWorldItems": [
+    {
+      "itemID": "Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee",
+      "position": {
+        "x": 3.584082,
+        "y": 1.5523684,
+        "z": 3.95021057
+      },
+      "rotation": {
+        "x": -1.82539154E-07,
+        "y": -0.9238796,
+        "z": -4.396752E-07,
+        "w": 0.382683277
+      }
+    },
+    {
+      "itemID": "_67b0d69e-0e75-4710-840e-4f7ffd8c329c",
+      "position": {
+        "x": 6.98003,
+        "y": 0.565999866,
+        "z": 1.145
+      },
+      "rotation": {
+        "x": 3.63797837E-12,
+        "y": 4.44089157E-16,
+        "z": 7.389644E-12,
+        "w": 1.0
+      }
+    },
+    {
+      "itemID": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
+      "position": {
+        "x": 3.612941,
+        "y": 1.16881192,
+        "z": 2.07158947
+      },
+      "rotation": {
+        "x": 3.073364E-08,
+        "y": -3.33238823E-08,
+        "z": -4.82541438E-08,
+        "w": 1.0
+      }
+    }
+  ]
 }

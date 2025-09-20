@@ -10,12 +10,13 @@ public interface IDataService
     /// </summary>
     /// <param name="data">The root object containing all hierarchical scene data.</param>
     /// <param name="fileName">The name of the file to save to.</param>
-    void Save(SceneSaveData data, string fileName);
+    void Save<T>(T data, string fileName);
+
 
     /// <summary>
     /// Loads scene data from a file.
     /// </summary>
     /// <param name="fileName">The name of the file to load from.</param>
     /// <returns>The deserialized root object containing all scene data, or null if not found.</returns>
-    SceneSaveData Load(string fileName);
+    T Load<T>(string fileName) where T : class;
 }

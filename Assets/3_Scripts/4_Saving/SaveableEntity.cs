@@ -32,4 +32,22 @@ public class SaveableEntity : MonoBehaviour
             uniqueId = Guid.NewGuid().ToString();
         }
     }
+
+    /// <summary>
+    /// Method to call SaveScene on the GameManager
+    /// </summary>
+    public void SaveGame()
+    {
+        GameManager.Instance.SaveScene();
+        GameManager.Instance.SavePlayer();
+    }
+
+    /// <summary>
+    /// Method to call LoadScene on the GameManager
+    /// </summary>
+    public void LoadGame()
+    {
+        GameManager.Instance.LoadScene();
+        GameManager.Instance.LoadPlayer();
+    }
 }

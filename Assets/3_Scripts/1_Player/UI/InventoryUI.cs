@@ -53,6 +53,7 @@ public class InventoryUI : MonoBehaviour
     private void Start()
     {
         inventoryPanel.SetActive(false);
+
         // Initial drawing of the UI when the game starts.
         RedrawUI();
     }

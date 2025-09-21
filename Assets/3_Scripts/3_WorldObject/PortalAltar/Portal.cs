@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -36,7 +37,6 @@ public class Portal : WorldObject, IActivatable
         if (isPortalOpen)
         {
             // Trigger "USE" Animation
-            
 
             //TEMP: will be called by animator
             OnPortalAnimationEnd();
@@ -60,6 +60,11 @@ public class Portal : WorldObject, IActivatable
     public void OnPortalAnimationEnd()
     {
         GameManager.Instance.SavePlayer();
+        GameManager.Instance.SaveScene();
+
+        //Disable player action before loading next scene (Removes possible Callback errors)
+        GameManager.Instance.Player.GetComponent<PlayerInput>().enabled = false;
+        GameManager.Instance.Player.GetComponent<PlayerController>().enabled = false;
 
         // If the Orb scene is the current one, send player to saved scene
         if (orbData.OrbScene == currentSceneIndex)

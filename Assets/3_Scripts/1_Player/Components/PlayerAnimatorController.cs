@@ -9,7 +9,7 @@ public class PlayerAnimatorController : MonoBehaviour
     [SerializeField]
     private NavMeshAgent navMeshAgent;
     [SerializeField]
-    private PlayerControler playerControler;
+    private PlayerController playerControler;
 
     // --- Body Parts ---
     [SerializeField]
@@ -42,7 +42,7 @@ public class PlayerAnimatorController : MonoBehaviour
         {
             animator = anim;
         }
-        if (playerControler == null && TryGetComponent<PlayerControler>(out var action))
+        if (playerControler == null && TryGetComponent<PlayerController>(out var action))
         {
             playerControler = action;
         }

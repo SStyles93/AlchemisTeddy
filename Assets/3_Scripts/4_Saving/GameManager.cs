@@ -1,16 +1,19 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public GameObject Player => player;
 
     private IDataService dataService;
     private const string PLAYER_SAVE_FILE = "player_save.json";
     private PlayerInventoryManager inventoryManager;
+    private GameObject player;
 
     private Dictionary<string, SaveableEntity> allEntities;
 
@@ -20,14 +23,11 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         dataService = new JsonDataService();
-    }
 
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
 
     #region SAVING
-    private string GetSceneSaveFile()
-    {
-        return $"{SceneManager.GetActiveScene().name}_scene.json";
-    }
 
     // ---------------- SCENE SAVE ----------------
     #region SCENE SAVING
@@ -68,6 +68,8 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+
         var sceneSaveData = dataService.Load<SceneSaveData>(GetSceneSaveFile());
         if (sceneSaveData == null)
         {
@@ -84,6 +86,7 @@ public class GameManager : MonoBehaviour
         // 2. Restore SaveableEntities
         allEntities = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)
                         .ToDictionary(e => e.UniqueId);
+
         foreach (var rootObjectData in sceneSaveData.rootObjects)
         {
             RestoreStateRecursive(rootObjectData);
@@ -106,6 +109,8 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log($"Scene {SceneManager.GetActiveScene().name} loaded.");
+
+
     }
     #endregion
     // ---------------- PLAYER SAVE ----------------
@@ -168,10 +173,10 @@ public class GameManager : MonoBehaviour
             scale = new Vector3Data(go.transform.localScale)
         };
 
-        // Skip PlayerInventoryManager — handled in SavePlayer
+        // Skip PlayerInventoryManager â€” handled in SavePlayer
         foreach (var saveable in go.GetComponents<ISaveable>())
         {
-            // Skip PlayerInventoryManager — handled in SavePlayer
+            // Skip PlayerInventoryManager â€” handled in SavePlayer
             if (saveable is PlayerInventoryManager) continue;
 
             data.componentSaveData[saveable.GetType().ToString()] = saveable.CaptureState();
@@ -209,6 +214,11 @@ public class GameManager : MonoBehaviour
         {
             RestoreStateRecursive(childData);
         }
+    }
+
+    private string GetSceneSaveFile()
+    {
+        return $"{SceneManager.GetActiveScene().name}_scene.json";
     }
     #endregion
     #endregion

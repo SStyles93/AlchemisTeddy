@@ -4,11 +4,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(PlayerControler))]
+[RequireComponent(typeof(PlayerController))]
 public class PlayerAction : MonoBehaviour
 {
     //Reference Scripts
-    [SerializeField] private PlayerControler playerController;
     [SerializeField] private PlayerInteraction playerInteraction;
     [SerializeField] private Camera playerCamera;
 
@@ -34,13 +33,12 @@ public class PlayerAction : MonoBehaviour
 
     void Awake()
     {
-        if (playerCamera == null) playerCamera = Camera.main;
-        playerController = GetComponent<PlayerControler>();
         playerInteraction = GetComponent<PlayerInteraction>();
         if (target != null) pointerImage = target.GetComponent<Image>();
     }
     private void Start()
     {
+        if (playerCamera == null) playerCamera = Camera.main;
         //aim.transform.localPosition = new Vector3(0.0f, -0.5f, 0.0f);
     }
 
@@ -55,6 +53,8 @@ public class PlayerAction : MonoBehaviour
     public void AimCheck(Vector2 mousePosition)
     {
         if (playerCamera == null) playerCamera = Camera.main;
+
+
         // Get Ray from mouse position
         currentRay = playerCamera.ScreenPointToRay(mousePosition);
 

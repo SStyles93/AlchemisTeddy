@@ -9,6 +9,7 @@ public class PortalAltar : Station
 {
     [SerializeField]
     private Portal portal = null;
+    private float interactionSafeguardTimer = 1.0f;
 
     private void Awake()
     {
@@ -18,8 +19,15 @@ public class PortalAltar : Station
             portal = GetComponentInChildren<Portal>();
     }
 
+    private void Update()
+    {
+        if(interactionSafeguardTimer > 0) interactionSafeguardTimer -= Time.deltaTime;
+    }
+
     public override void Activate(GameObject activator)
     {
+        if (interactionSafeguardTimer > 0) return;
+
         InventoryUI playerUI = activator.GetComponentInChildren<InventoryUI>(true);
         PlayerInventoryManager playerInventory = activator.GetComponent<PlayerInventoryManager>();
 

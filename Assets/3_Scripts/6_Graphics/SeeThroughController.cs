@@ -12,7 +12,7 @@ public class SeeThroughController : MonoBehaviour
     private Camera m_camera;
     private List<Collider> m_wallColliders = new List<Collider>();
 
-    private void Awake()
+    void Start()
     {
         m_camera = Camera.main;
         if (m_camera == null)
@@ -22,20 +22,6 @@ public class SeeThroughController : MonoBehaviour
             return;
         }
 
-        if (m_player == null)
-        {
-            m_player = GameObject.FindGameObjectWithTag("Player");
-            if (m_player == null)
-            {
-                Debug.LogError("SeeThroughController: Player GameObject not found! Please ensure your player is tagged as 'Player'.");
-                enabled = false; // Disable script if no player
-                return;
-            }
-        }
-    }
-
-    void Start()
-    {
         // Collect all colliders on the specified wall layer in the scene
         // Assuming walls are tagged 'Wall' for efficient lookup as discussed in analysis
         GameObject[] wallObjects = GameObject.FindGameObjectsWithTag("Wall");
@@ -63,6 +49,8 @@ public class SeeThroughController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.Player == null) return;
+
         float playerZ = m_player.transform.position.z;
         float playerY = m_player.transform.position.y;
 

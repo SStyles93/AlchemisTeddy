@@ -1,16 +1,14 @@
-using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
-[RequireComponent(typeof(InputSystem))]
-public class PlayerControler : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerAction playerActions;
     [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerInventoryManager playerInventoryManager;
     [SerializeField] private float interactionDelay = 0.25f;
+    [SerializeField] float loadingDelay = 1.5f;
 
 
     public string ControlScheme { get => controlScheme; private set => controlScheme = value; }
@@ -23,6 +21,7 @@ public class PlayerControler : MonoBehaviour
     private bool isMiddleClickPressed = false;
     private bool pause = false;
     private float currentInteractionDelay = 0.25f;
+    private float currentLoadingDelay = 1.5f;
 
     private void Awake()
     {
@@ -35,12 +34,22 @@ public class PlayerControler : MonoBehaviour
     private void Start()
     {
         controlScheme = playerInput.currentControlScheme;
+        currentInteractionDelay = interactionDelay;
+        currentLoadingDelay = loadingDelay;
     }
 
-
+    public void Update()
+    {
+        if (currentLoadingDelay > 0)
+        {
+            currentLoadingDelay -= Time.deltaTime;
+        }
+    }
 
     public void OnMove(InputAction.CallbackContext value)
     {
+        if (currentLoadingDelay > 0) return;
+
         //value.ReadValue<Vector2>();
         //Debug.Log($"PlayerControler - OnMove: {value.ReadValue<Vector2>()}");
     }
@@ -92,6 +101,8 @@ public class PlayerControler : MonoBehaviour
 
     public void OnLeftClick(InputAction.CallbackContext value)
     {
+        if (playerInput == null || currentLoadingDelay > 0) return;
+
         if (value.performed)
         {
             isLeftClickPressed = true;
@@ -108,6 +119,8 @@ public class PlayerControler : MonoBehaviour
 
     public void OnRightClick(InputAction.CallbackContext value)
     {
+        if (currentLoadingDelay > 0) return;
+
         //rightClick = value.isPressed;
         //Debug.Log($"PlayerControler - OnRightClick");
     }
@@ -120,6 +133,8 @@ public class PlayerControler : MonoBehaviour
 
     public void OnInventory(InputAction.CallbackContext value)
     {
+        if (currentLoadingDelay > 0) return;
+
         playerInventoryManager.ToggleInventoryVisibility();
         //Debug.Log($"PlayerControler - OnInventory");
     }

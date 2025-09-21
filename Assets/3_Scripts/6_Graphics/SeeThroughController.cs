@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SeeThroughController : MonoBehaviour
+public class SeeThroughController: MonoBehaviour
 {
     [SerializeField] private GameObject m_player;
     [SerializeField] private LayerMask m_wallLayer; // Assign the layer for walls in the Inspector
@@ -20,6 +20,11 @@ public class SeeThroughController : MonoBehaviour
             Debug.LogError("SeeThroughController: Main Camera not found! Please ensure your camera is tagged as 'MainCamera'.");
             enabled = false; // Disable script if no camera
             return;
+        }
+
+        if(m_player == null && GameManager.Instance.Player != null)
+        {
+            m_player = GameManager.Instance.Player;
         }
 
         // Collect all colliders on the specified wall layer in the scene
@@ -49,7 +54,10 @@ public class SeeThroughController : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.Player == null) return;
+        if (m_player == null)
+        {
+            m_player = GameManager.Instance?.Player;
+        }
 
         float playerZ = m_player.transform.position.z;
         float playerY = m_player.transform.position.y;

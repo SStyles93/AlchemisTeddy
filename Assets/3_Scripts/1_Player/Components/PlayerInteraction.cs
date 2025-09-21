@@ -106,11 +106,9 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
             yield return null;
         }
 
-        Transform lookTransf = target.transform;
-        Vector3 lookPos = lookTransf.position;
+        Vector3 lookPos = target.transform.position;
         lookPos.y = 0.5f;
-        lookTransf.position = lookPos;
-        transform.LookAt(lookTransf);
+        transform.LookAt(lookPos);
 
         navMeshAgent.ResetPath();
 

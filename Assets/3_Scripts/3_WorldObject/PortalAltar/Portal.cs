@@ -59,12 +59,12 @@ public class Portal : WorldObject, IActivatable
     /// </summary>
     public void OnPortalAnimationEnd()
     {
-        GameManager.Instance.SavePlayer();
-        GameManager.Instance.SaveScene();
+        SaveLoadManager.Instance.SavePlayer();
+        SaveLoadManager.Instance.SaveScene();
 
         //Disable player action before loading next scene (Removes possible Callback errors)
-        GameManager.Instance.Player.GetComponent<PlayerInput>().enabled = false;
-        GameManager.Instance.Player.GetComponent<PlayerController>().enabled = false;
+        SaveLoadManager.Instance.Player.GetComponent<PlayerInput>().enabled = false;
+        SaveLoadManager.Instance.Player.GetComponent<PlayerController>().enabled = false;
 
         // If the Orb scene is the current one, send player to saved scene
         if (orbData.OrbScene == currentSceneIndex)

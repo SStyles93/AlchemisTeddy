@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.roytheunissen.assetpalette": "https://github.com/RoyTheunissen/Asset-Palette.git",
     "com.unity.ai.navigation": "2.0.8",
     "com.unity.collab-proxy": "2.8.2",
     "com.unity.formats.fbx": "5.1.4",

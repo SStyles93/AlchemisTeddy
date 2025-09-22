@@ -23,9 +23,9 @@ public class WorldItem : WorldObject, ICollectable
     private void OnEnable()
     {
         // Check if the WorldItemManager instance exists to avoid errors on game quit.
-        if (WorldItemManager.Instance != null)
+        if (WorldItemTracker.Instance != null)
         {
-            WorldItemManager.Instance.Register(this);
+            WorldItemTracker.Instance.Register(this);
         }
     }
 
@@ -37,18 +37,18 @@ public class WorldItem : WorldObject, ICollectable
     {
         // Check if the WorldItemManager instance still exists.
         // This is important because on game quit, the manager might be destroyed first.
-        if (WorldItemManager.Instance != null)
+        if (WorldItemTracker.Instance != null)
         {
-            WorldItemManager.Instance.Unregister(this);
+            WorldItemTracker.Instance.Unregister(this);
         }
     }
 
     private void Start()
     {
         //Ensure registering of Item
-        if (WorldItemManager.Instance != null)
+        if (WorldItemTracker.Instance != null)
         {
-            WorldItemManager.Instance.Register(this);
+            WorldItemTracker.Instance.Register(this);
         }
         SetTrailColour();
     }

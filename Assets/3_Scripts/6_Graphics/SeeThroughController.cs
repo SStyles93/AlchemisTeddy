@@ -22,9 +22,9 @@ public class SeeThroughController: MonoBehaviour
             return;
         }
 
-        if(m_player == null && GameManager.Instance.Player != null)
+        if(m_player == null && SaveLoadManager.Instance.Player != null)
         {
-            m_player = GameManager.Instance.Player;
+            m_player = SaveLoadManager.Instance.Player;
         }
 
         // Collect all colliders on the specified wall layer in the scene
@@ -56,7 +56,7 @@ public class SeeThroughController: MonoBehaviour
     {
         if (m_player == null)
         {
-            m_player = GameManager.Instance?.Player;
+            m_player = SaveLoadManager.Instance?.Player;
         }
 
         float playerZ = m_player.transform.position.z;

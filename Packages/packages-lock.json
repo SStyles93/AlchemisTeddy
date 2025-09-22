@@ -7,6 +7,13 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.roytheunissen.assetpalette": {
+      "version": "https://github.com/RoyTheunissen/Asset-Palette.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0e46e799adf39d54a7c5ce17335187e39c3a0183"
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.8",
       "depth": 0,

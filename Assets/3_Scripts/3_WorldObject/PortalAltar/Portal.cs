@@ -13,13 +13,18 @@ public class Portal : WorldObject, IActivatable
     [Header("Animation Settings")]
     [SerializeField] Animator animator;
 
+    [Header("Scene transition settings")]
+    [SerializeField] SceneDatabase.Scenes nextScene = SceneDatabase.Scenes.ForestScene;
+
+    SceneDatabase.Scenes currentScene = SceneDatabase.Scenes.Core;
+
     int OpenHash = -1;
     int CloseHash = -1;
 
+    private GameObject player;
     private PortalOrb orbData = null;
     private bool isPortalOpen = false;
 
-    int currentSceneIndex = -1;
 
     private void Awake()
     {
@@ -34,6 +39,7 @@ public class Portal : WorldObject, IActivatable
 
     public void Activate(GameObject activator)
     {
+        player = activator;
         if (isPortalOpen)
         {
             // Trigger "USE" Animation
@@ -59,19 +65,36 @@ public class Portal : WorldObject, IActivatable
     /// </summary>
     public void OnPortalAnimationEnd()
     {
-        SaveLoadManager.Instance.SavePlayer();
-        SaveLoadManager.Instance.SaveScene();
 
-        //Disable player action before loading next scene (Removes possible Callback errors)
-        SaveLoadManager.Instance.Player.GetComponent<PlayerInput>().enabled = false;
-        SaveLoadManager.Instance.Player.GetComponent<PlayerController>().enabled = false;
+        ////Disable player action before loading next scene (Removes possible Callback errors)
+        player.GetComponent<PlayerInput>().enabled = false;
+        player.GetComponent<PlayerController>().enabled = false;
 
-        // If the Orb scene is the current one, send player to saved scene
-        if (orbData.OrbScene == currentSceneIndex)
-            SceneManager.LoadScene(orbData.SavedScene);
+        // If the Orb scene is the current one, the player is "in the orb" -> send player to saved scene
+        if (orbData.OrbScene == currentScene)
+        {
+            //Transition to Saved scene
+            SceneController.Instance
+            .NewTransition()
+            .Load(SceneDatabase.Slots.Session, orbData.SavedScene, true)
+            .Unload(SceneDatabase.Slots.Session)
+            .WithOverlay()
+            .WithClearUnusedAssets()
+            .Perform();
+
+        }
+        // Otherwise it means that the player is going to Orb Scene 
         else
-            // Otherwise it means that the player is leaving the Orb Scene
-            SceneManager.LoadScene(orbData.OrbScene);
+        {
+            SceneController.Instance
+            .NewTransition()
+            .Load(SceneDatabase.Slots.Session, orbData.OrbScene, true)
+            .Unload(SceneDatabase.Slots.Session)
+            .WithOverlay()
+            .WithClearUnusedAssets()
+            .Perform();
+        }
+            
     }
 
     /// <summary>
@@ -87,12 +110,16 @@ public class Portal : WorldObject, IActivatable
         this.orbData = orbData;
 
         // Get the current scene index
-        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        currentScene = (SceneDatabase.Scenes)SceneManager.GetActiveScene().buildIndex;
         // If the index of the scene to save != the orb's scene index
         // that means that the player is going to the "orb's scene".
-        if (currentSceneIndex != orbData.OrbScene)
+        if (currentScene != orbData.OrbScene)
             // In that case we assign the scene to return to
-            orbData.AssignSavedScene(currentSceneIndex);
+            orbData.AssignSavedScene(currentScene);
+        
+        // If no scene it set, fallback to portal's next scene
+        if(orbData.SavedScene == SceneDatabase.Scenes.Core)
+            orbData.AssignSavedScene(nextScene);
     }
 
     //Called by the Open Animation

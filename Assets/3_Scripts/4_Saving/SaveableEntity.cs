@@ -38,8 +38,8 @@ public class SaveableEntity : MonoBehaviour
     /// </summary>
     public void SaveGame()
     {
-        SaveLoadManager.Instance.SaveScene();
-        SaveLoadManager.Instance.SavePlayer();
+        SaveLoadManager.Instance.SaveSceneData();
+        SaveLoadManager.Instance.SavePlayerData();
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public class SaveableEntity : MonoBehaviour
     /// </summary>
     public void LoadGame()
     {
-        SaveLoadManager.Instance.LoadScene();
-        SaveLoadManager.Instance.LoadPlayer();
+        SaveLoadManager.Instance.LoadSceneData();
+        SaveLoadManager.Instance.LoadPlayerData();
     }
 }

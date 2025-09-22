@@ -1309,7 +1309,6 @@ GameObject:
   - component: {fileID: 3637706529857362328}
   - component: {fileID: 5384200271797752005}
   - component: {fileID: 101787540389597819}
-  - component: {fileID: 7787889570226235525}
   m_Layer: 8
   m_Name: Alchemist_Base02_001
   m_TagString: Untagged
@@ -1462,25 +1461,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1380371139488807178, guid: 3a9976cd8f58936478a22a32aa6c9fd6, type: 3}
---- !u!114 &7787889570226235525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5286399573552231997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47fcfaf1d4b912d4e94d52e0e308024a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_player: {fileID: 0}
-  m_wallLayer:
-    serializedVersion: 2
-    m_Bits: 8192
-  m_seeThroughLayer: 12
-  m_opaqueLayer: 13
-  m_playerAboveWallThreshold: 0.1
 --- !u!1 &5420018580264325760
 GameObject:
   m_ObjectHideFlags: 0

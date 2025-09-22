@@ -11,10 +11,11 @@ public class SceneDatabase : MonoBehaviour
         public const string SessionContent = "SessionContent";
     }
 
-    public class Scenes
+    public enum Scenes
     {
-        public const string MainMenu = "MainMenu";
-
-        public const string LabScene = "LabScene";
+        Core,
+        MainMenu,
+        LabScene,
+        ForestScene
     }
 }

@@ -13,14 +13,14 @@ public class WallShaderUpdater : MonoBehaviour
     private Material m_material;
 
     [Header("Cutout parameters")]
-    [SerializeField] float maskRadius = 0.5f;
+    [SerializeField] float maskRadius = 4f;
     [SerializeField] float lerpSpeed = 0.02f;
     [SerializeField] float playerHeightCorrection = 0.8f;
 
 
     [Header("Raycast Behaviour")]
     [SerializeField] float radius = 0.5f;
-    
+
     Vector3 direction;
     Vector3 currentSpherePosition;
     Vector3 targetPosition;
@@ -29,10 +29,22 @@ public class WallShaderUpdater : MonoBehaviour
     private float currentLerpTime = 0.0f;
     bool isHitting = false;
 
-
+    private void Awake()
+    {
+        if (m_player == null)
+            m_player = GameObject.FindGameObjectWithTag("Player").transform;
+        if (m_camera == null)
+            m_camera = Camera.main;
+    }
 
     void Start()
     {
+        if (m_player == null)
+            Debug.LogWarning($"{this} - Start - Player is not set");
+        if (m_player == null)
+            Debug.LogWarning($"{this} - Start - Camera is not set");
+        if (m_material == null)
+            Debug.LogWarning($"{this} - Start - Material is not set");
         currentSpherePosition = m_player.position;
         currentMaskRadius = 0.0f;
     }

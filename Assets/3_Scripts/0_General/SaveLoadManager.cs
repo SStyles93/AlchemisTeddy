@@ -12,17 +12,20 @@ public class SaveLoadManager : MonoBehaviour
 
     private IDataService dataService;
     private const string PLAYER_SAVE_FILE = "player_save.json";
-    private PlayerInventoryManager inventoryManager;
-    private GameObject player;
-
+    [SerializeField] private GameObject player;
+    [SerializeField] private PlayerInventoryManager inventoryManager;
     private Dictionary<string, SaveableEntity> allEntities;
+
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         dataService = new JsonDataService();
-
+    }
+    
+    public void InitializePlayerRef()
+    {
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -30,7 +33,7 @@ public class SaveLoadManager : MonoBehaviour
 
     // ---------------- SCENE SAVE ----------------
     #region SCENE SAVING
-    public void SaveScene()
+    public void SaveSceneData()
     {
         var sceneSaveData = new SceneSaveData();
 
@@ -65,10 +68,8 @@ public class SaveLoadManager : MonoBehaviour
         Debug.Log($"Scene saved to {GetSceneSaveFile()}.");
     }
 
-    public void LoadScene()
+    public void LoadSceneData()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-
         var sceneSaveData = dataService.Load<SceneSaveData>(GetSceneSaveFile());
         if (sceneSaveData == null)
         {
@@ -114,9 +115,17 @@ public class SaveLoadManager : MonoBehaviour
     #endregion
     // ---------------- PLAYER SAVE ----------------
     #region PLAYER SAVING
-    public void SavePlayer()
+    public void SavePlayerData()
     {
-        inventoryManager = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerInventoryManager>();
+        InitializePlayerRef();
+
+        if(player == null)
+        {
+            Debug.LogWarning($"{this} - SavePlayerData - Player is null");
+            return;
+        }
+
+        inventoryManager = player?.GetComponent<PlayerInventoryManager>();
         if (inventoryManager == null)
         {
             Debug.LogWarning("No PlayerInventoryManager found to save.");
@@ -133,8 +142,15 @@ public class SaveLoadManager : MonoBehaviour
         Debug.Log("Player saved.");
     }
 
-    public void LoadPlayer()
+    public void LoadPlayerData()
     {
+        InitializePlayerRef();
+        if(player == null)
+        {
+            Debug.LogWarning($"{this} - LoadPlayerData - Player is null");
+            return;
+        }
+
         var playerData = dataService.Load<PlayerSaveData>(PLAYER_SAVE_FILE);
         if (playerData == null)
         {
@@ -142,7 +158,7 @@ public class SaveLoadManager : MonoBehaviour
             return;
         }
 
-        inventoryManager = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerInventoryManager>();
+        inventoryManager = player?.GetComponent<PlayerInventoryManager>();
         if (inventoryManager != null)
         {
             inventoryManager.RestoreFromIDs(playerData.inventoryItemIDs);
@@ -153,6 +169,7 @@ public class SaveLoadManager : MonoBehaviour
     #endregion
     // ---------------- HELPERS ----------------
     #region HELPERS
+
     private GameObject FindItemPrefabByID(string itemID, Dictionary<string, ItemData> itemDataLookup)
     {
         if (string.IsNullOrEmpty(itemID)) return null;

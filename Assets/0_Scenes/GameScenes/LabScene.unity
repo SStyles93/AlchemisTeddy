@@ -874,26 +874,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2856196891676997428, guid: d00a89c66e4377445a9cc3ab5c559348, type: 3}
+      propertyPath: m_camera
+      value: 
+      objectReference: {fileID: 1359678589}
+    - target: {fileID: 2856196891676997428, guid: d00a89c66e4377445a9cc3ab5c559348, type: 3}
+      propertyPath: m_target
+      value: 
+      objectReference: {fileID: 8196988210365048667}
     - target: {fileID: 3397770355299257699, guid: d00a89c66e4377445a9cc3ab5c559348, type: 3}
       propertyPath: m_Name
       value: ===Environment===
       objectReference: {fileID: 0}
-    - target: {fileID: 4454425951140380845, guid: d00a89c66e4377445a9cc3ab5c559348, type: 3}
-      propertyPath: m_camera
-      value: 
-      objectReference: {fileID: 1359678589}
-    - target: {fileID: 4454425951140380845, guid: d00a89c66e4377445a9cc3ab5c559348, type: 3}
-      propertyPath: m_player
-      value: 
-      objectReference: {fileID: 8196988210365048667}
-    - target: {fileID: 6784825010878738335, guid: d00a89c66e4377445a9cc3ab5c559348, type: 3}
-      propertyPath: m_camera
-      value: 
-      objectReference: {fileID: 1359678589}
-    - target: {fileID: 6784825010878738335, guid: d00a89c66e4377445a9cc3ab5c559348, type: 3}
-      propertyPath: m_player
-      value: 
-      objectReference: {fileID: 8196988210365048667}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1218,6 +1210,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PortalOrb
       objectReference: {fileID: 0}
+    - target: {fileID: 260771906146054547, guid: 9329bbfb7e169e444afccede62b7850c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5387416620194813429, guid: 9329bbfb7e169e444afccede62b7850c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.36745545
@@ -1273,10 +1269,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1420101562153047978, guid: 9329bbfb7e169e444afccede62b7850c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9329bbfb7e169e444afccede62b7850c, type: 3}
 --- !u!1001 &8878838595337151547
 PrefabInstance:
@@ -1289,6 +1282,10 @@ PrefabInstance:
     - target: {fileID: 2658215819157722939, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
       propertyPath: m_Name
       value: Altar
+      objectReference: {fileID: 0}
+    - target: {fileID: 2658215819157722939, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4470375840551360788, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1333,13 +1330,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8345718397857442613, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 1988889236582309642, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

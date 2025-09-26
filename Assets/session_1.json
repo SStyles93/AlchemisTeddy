@@ -1,0 +1,11 @@
+{
+    "sessionID": "1",
+    "playerData": {
+        "inventoryItemIDs": [
+            "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
+            "Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee"
+        ],
+        "playerHealth": 100.0
+    },
+    "currentSceneName": "LabScene"
+}

@@ -1,22 +1,7 @@
+using System;
 using System.Collections.Generic;
 
 // --- Main Save File Structure ---
-
-/// <summary>
-/// The root container for the entire scene save data.
-/// </summary>
-[System.Serializable]
-public class SceneSaveData
-{
-    // A list of all the root-level objects in the scene that are saveable.
-    public List<GameObjectSaveData> rootObjects;
-    public List<WorldItemSaveData> savedWorldItems;
-    public SceneSaveData() 
-    {
-        rootObjects = new List<GameObjectSaveData>(); 
-        savedWorldItems = new List<WorldItemSaveData>();
-    }
-}
 
 /// <summary>
 /// Represents the saved state of a single GameObject and its children.
@@ -50,6 +35,39 @@ public class GameObjectSaveData
 }
 
 [System.Serializable]
+public class PlayerSaveData
+{
+    public List<string> inventoryItemIDs = new List<string>();
+    public float playerHealth = 100f;
+}
+
+/// <summary>
+/// The root container for the entire scene save data.
+/// </summary>
+[System.Serializable]
+public class SceneSaveData
+{
+    // A list of all the root-level objects in the scene that are saveable.
+    public List<GameObjectSaveData> rootObjects;
+    public List<WorldItemSaveData> savedWorldItems;
+    public SceneSaveData()
+    {
+        rootObjects = new List<GameObjectSaveData>();
+        savedWorldItems = new List<WorldItemSaveData>();
+    }
+}
+
+[System.Serializable]
+public class SessionSaveData
+{
+    public string sessionID;
+    public DateTime timestamp;
+    public PlayerSaveData playerData;
+    public Dictionary<string, SceneSaveData> sceneData = new Dictionary<string, SceneSaveData>();
+    public string currentSceneName;
+}
+
+[System.Serializable]
 public class WorldItemSaveData
 {
     public string itemID; // The ID of the ItemData ScriptableObject
@@ -57,9 +75,4 @@ public class WorldItemSaveData
     public QuaternionData rotation;
 }
 
-[System.Serializable]
-public class PlayerSaveData
-{
-    public List<string> inventoryItemIDs = new List<string>();
-    public float playerHealth = 100f;
-}
+

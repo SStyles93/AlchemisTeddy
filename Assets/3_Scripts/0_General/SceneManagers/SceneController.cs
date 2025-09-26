@@ -96,13 +96,6 @@ public class SceneController : MonoBehaviour
             {
                 // Activate the Scene (make it the current active scene)
                 SceneManager.SetActiveScene(newScene);
-
-                // Init the player reference in the SLManager
-                SaveLoadManager.Instance.InitializePlayerRef();
-                // Load player data
-                SaveLoadManager.Instance.LoadPlayerData();
-                // Load Scene data
-                SaveLoadManager.Instance.LoadSceneData();
             }
         }
         loadedSceneBySlot[slotKey] = sceneName;
@@ -113,9 +106,6 @@ public class SceneController : MonoBehaviour
         if (!loadedSceneBySlot.TryGetValue(slotKey, out SceneDatabase.Scenes sceneName)) yield break;
         int sceneIndex = (int)sceneName;
         if (sceneIndex == 0) yield break;
-
-        SaveLoadManager.Instance.SaveSceneData();
-        SaveLoadManager.Instance.SavePlayerData();
 
         AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(sceneIndex);
         if (unloadOp != null)

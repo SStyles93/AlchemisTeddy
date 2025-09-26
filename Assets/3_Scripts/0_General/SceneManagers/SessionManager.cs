@@ -1,0 +1,385 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using System;
+using UnityEditor.VersionControl;
+using UnityEditor;
+
+public class SessionManager : MonoBehaviour
+{
+    public static SessionManager Instance { get; private set; }
+    private IDataService dataService;
+    private const string SESSION_FILE_PREFIX = "session_";
+
+    private SessionSaveData currentSessionData;
+
+    private GameObject currentPlayerInstance;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+
+        dataService = new JsonDataService(); // Possible improvement: MessagePack or Protocol Buffers 
+    }
+
+    // ---------------- SAVE ----------------
+    #region SAVING
+    public void SaveSession(string sessionName)
+    {
+        if (string.IsNullOrEmpty(sessionName))
+        {
+            Debug.LogError("Session name cannot be empty.");
+            return;
+        }
+
+        currentSessionData = new SessionSaveData
+        {
+            sessionID = sessionName,
+            timestamp = DateTime.Now,
+            currentSceneName = SceneManager.GetActiveScene().name
+        };
+
+        // 1. Save Player Data
+        CapturePlayerData();
+
+        // 2. Save all loaded scenes data
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            //Avoid trying to save the Core scene or the Session Scene (Managers)
+            if (scene.buildIndex == (int)SceneDatabase.Scenes.Core || scene.buildIndex == (int)SceneDatabase.Scenes.Session) continue;
+            if (scene.isLoaded)
+            {
+                currentSessionData.sceneData[scene.name] = CaptureSceneData(scene);
+            }
+        }
+
+        // 3. Save the session file
+        if (dataService.Save(currentSessionData, GetSessionFileName(sessionName), true))
+        {
+            Debug.Log($"Session '{sessionName}' saved successfully.");
+#if UNITY_EDITOR
+            AssetDatabase.Refresh();
+#endif
+        }
+        else
+        {
+            Debug.LogError($"Failed to save session '{sessionName}'.");
+        }
+    }
+
+    private void CapturePlayerData()
+    {
+        // Find the player if not already referenced
+        if (currentPlayerInstance == null)
+        {
+            currentPlayerInstance = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        if (currentPlayerInstance == null)
+        {
+            Debug.LogWarning("Player GameObject not found. Player data will not be saved.");
+            currentSessionData.playerData = null;
+            return;
+        }
+
+        PlayerSaveData playerData = new PlayerSaveData();
+
+        // Example: Save inventory (requires PlayerInventoryManager component on player)
+        PlayerInventoryManager inventoryManager = currentPlayerInstance.GetComponent<PlayerInventoryManager>();
+        if (inventoryManager != null)
+        {
+            playerData.inventoryItemIDs = inventoryManager.GetInventoryIDs();
+        }
+        else
+        {
+            Debug.LogWarning("PlayerInventoryManager not found on player. Inventory will not be saved.");
+        }
+
+        // Example: Save player health (requires a Health component on player)
+        // Health playerHealthComponent = currentPlayerInstance.GetComponent<Health>();
+        // if (playerHealthComponent != null)
+        // {
+        //     playerData.playerHealth = playerHealthComponent.CurrentHealth;
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("Health component not found on player. Health will not be saved.");
+        // }
+
+        currentSessionData.playerData = playerData;
+    }
+
+    private SceneSaveData CaptureSceneData(Scene scene)
+    {
+        SceneSaveData sceneSaveData = new SceneSaveData();
+
+        // 1. Save root SaveableEntities
+        var rootObjects = scene.GetRootGameObjects();
+        foreach (var go in rootObjects)
+        {
+            SaveableEntity entity = go.GetComponent<SaveableEntity>();
+            if (entity != null)
+            {
+                sceneSaveData.rootObjects.Add(CaptureGameObjectRecursive(go));
+            }
+        }
+
+        // 2. Save dynamically spawned world items
+        if (WorldItemTracker.Instance != null)
+        {
+            foreach (WorldItem item in WorldItemTracker.Instance.GetAllItems().Where(item => item.gameObject.scene == scene))
+            {
+                sceneSaveData.savedWorldItems.Add(new WorldItemSaveData
+                {
+                    itemID = item.GetItemData().ItemID,
+                    position = new Vector3Data(item.transform.position),
+                    rotation = new QuaternionData(item.transform.rotation)
+                });
+            }
+        }
+
+        return sceneSaveData;
+    }
+
+    private GameObjectSaveData CaptureGameObjectRecursive(GameObject go)
+    {
+        var entityComp = go.GetComponent<SaveableEntity>();
+        var data = new GameObjectSaveData
+        {
+            uniqueID = entityComp.UniqueId,
+            name = go.name,
+            isActive = go.activeSelf,
+            position = new Vector3Data(go.transform.position),
+            rotation = new QuaternionData(go.transform.rotation),
+            scale = new Vector3Data(go.transform.localScale)
+        };
+
+        // Skip PlayerInventoryManager — handled in SavePlayer
+        foreach (var saveable in go.GetComponents<ISaveable>())
+        {
+            // Skip PlayerInventoryManager — handled in SavePlayer
+            if (saveable is PlayerInventoryManager) continue;
+
+            data.componentSaveData[saveable.GetType().ToString()] = saveable.CaptureState();
+        }
+
+        foreach (Transform child in go.transform)
+        {
+            if (child.GetComponent<SaveableEntity>() != null)
+            {
+                data.children.Add(CaptureGameObjectRecursive(child.gameObject));
+            }
+        }
+        return data;
+    }
+    #endregion
+
+    #region LOADING
+    // ---------------- LOAD ----------------
+    public void LoadSession(string sessionName)
+    {
+        if (string.IsNullOrEmpty(sessionName))
+        {
+            Debug.LogError("Session name cannot be empty.");
+            return;
+        }
+
+        SessionSaveData loadedData = dataService.Load<SessionSaveData>(GetSessionFileName(sessionName));
+        if (loadedData == null)
+        {
+            Debug.LogWarning($"No session '{sessionName}' found.");
+            return;
+        }
+
+        currentSessionData = loadedData;
+
+        // 1. Load the scene the player was in
+        LoadSceneAndRestoreState(currentSessionData.currentSceneName);
+    }
+
+    private void LoadSceneAndRestoreState(string sceneName)
+    {
+        // Unload all currently loaded scenes except the persistent one (if any)
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.isLoaded && scene.name != "Core" && scene.name != sceneName)
+            {
+                SceneManager.UnloadSceneAsync(scene);
+            }
+        }
+
+        // Load the target scene additively if it's not already loaded
+        if (!SceneManager.GetSceneByName(sceneName).isLoaded)
+        {
+            SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        }
+        else
+        {
+            // If already loaded, just restore state
+            RestoreSessionStateAfterSceneLoad();
+        }
+    }
+
+    // This method should be called after the target scene has finished loading
+    // e.g., by subscribing to SceneManager.sceneLoaded event
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == currentSessionData.currentSceneName)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded; // Unsubscribe to prevent multiple calls
+            RestoreSessionStateAfterSceneLoad();
+        }
+    }
+
+    private void RestoreSessionStateAfterSceneLoad()
+    {
+        if (currentSessionData == null) return; // Should not happen if called correctly
+
+        // 2. Restore Player Data
+        RestorePlayerData();
+
+        // 3. Restore all scenes data (only for scenes that were loaded when saved)
+        foreach (var sceneEntry in currentSessionData.sceneData)
+        {
+            Scene scene = SceneManager.GetSceneByName(sceneEntry.Key);
+            if (scene.isLoaded)
+            {
+                RestoreSceneData(scene, sceneEntry.Value);
+            }
+        }
+
+        Debug.Log($"Session '{currentSessionData.sessionID}' loaded successfully.");
+    }
+
+    private void RestorePlayerData()
+    {
+        if (currentSessionData.playerData == null)
+        {
+            Debug.LogWarning("No player data to restore.");
+            return;
+        }
+
+        // Instantiate player if not present, or find existing one
+        if (currentPlayerInstance == null)
+        {
+            currentPlayerInstance = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        // Restore inventory
+        PlayerInventoryManager inventoryManager = currentPlayerInstance.GetComponent<PlayerInventoryManager>();
+        if (inventoryManager != null)
+        {
+            inventoryManager.RestoreFromIDs(currentSessionData.playerData.inventoryItemIDs);
+        }
+
+    }
+
+    private void RestoreSceneData(Scene scene, SceneSaveData sceneSaveData)
+    {
+        // Clear existing dynamic world items in the scene before restoring
+        if (WorldItemTracker.Instance != null)
+        {
+            foreach (WorldItem item in WorldItemTracker.Instance.GetAllItems().Where(item => item.gameObject.scene == scene).ToList())
+            {
+                Destroy(item.gameObject);
+            }
+        }
+
+        // Create a lookup for existing SaveableEntities in the scene by their UniqueId
+        Dictionary<string, SaveableEntity> sceneEntities = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)
+                                                            .Where(e => e.gameObject.scene == scene)
+                                                            .ToDictionary(e => e.UniqueId);
+
+        // Restore root SaveableEntities
+        foreach (var rootObjectData in sceneSaveData.rootObjects)
+        {
+            RestoreGameObjectRecursive(rootObjectData, sceneEntities);
+        }
+
+        // Restore dynamically spawned world items
+        var itemDataLookup = Resources.FindObjectsOfTypeAll<ItemData>().ToDictionary(item => item.ItemID);
+        foreach (var itemSaveData in sceneSaveData.savedWorldItems)
+        {
+            GameObject prefab = FindItemPrefabByID(itemSaveData.itemID, itemDataLookup);
+            if (prefab != null)
+            {
+                Instantiate(prefab, itemSaveData.position.ToVector3(), itemSaveData.rotation.ToQuaternion());
+            }
+            else
+            {
+                Debug.LogWarning($"Missing prefab for item ID {itemSaveData.itemID} in scene {scene.name}");
+            }
+        }
+    }
+
+    private void RestoreGameObjectRecursive(GameObjectSaveData data, Dictionary<string, SaveableEntity> sceneEntities)
+    {
+        if (!sceneEntities.TryGetValue(data.uniqueID, out SaveableEntity entity)) return;
+
+        entity.gameObject.SetActive(data.isActive);
+        entity.transform.position = data.position.ToVector3();
+        entity.transform.rotation = data.rotation.ToQuaternion();
+        entity.transform.localScale = data.scale.ToVector3();
+
+        foreach (var saveable in entity.GetComponents<ISaveable>())
+        {
+            string typeName = saveable.GetType().ToString();
+            if (data.componentSaveData.TryGetValue(typeName, out var componentState))
+            {
+                saveable.RestoreState(componentState);
+            }
+        }
+
+        foreach (var childData in data.children)
+        {
+            RestoreGameObjectRecursive(childData, sceneEntities);
+        }
+    }
+
+    #endregion
+
+    #region HELPERS
+    private GameObject FindItemPrefabByID(string itemID, Dictionary<string, ItemData> itemDataLookup)
+    {
+        if (string.IsNullOrEmpty(itemID)) return null;
+        return itemDataLookup.TryGetValue(itemID, out ItemData itemData) ? itemData.prefab : null;
+    }
+
+    private string GetSessionFileName(string sessionName)
+    {
+        return $"{SESSION_FILE_PREFIX}{sessionName}.json";
+    }
+
+    // Call this method to initialize the player reference if it's not set via Inspector
+    public void InitializePlayerRef()
+    {
+        if (currentPlayerInstance == null)
+        {
+            currentPlayerInstance = GameObject.FindGameObjectWithTag("Player");
+        }
+    }
+
+    // Public method to get current session data (e.g., for UI display)
+    public SessionSaveData GetCurrentSessionData()
+    {
+        return currentSessionData;
+    }
+
+    // Method to list available save sessions
+    public IEnumerable<string> ListAvailableSessions()
+    {
+        // This assumes IDataService.ListSaves() can filter by prefix or that all session files follow the naming convention.
+        // A more robust implementation might involve reading metadata from each save file.
+        return dataService.ListSaves().Where(fileName => fileName.StartsWith(SESSION_FILE_PREFIX) && fileName.EndsWith(".json"))
+                           .Select(fileName => fileName.Replace(SESSION_FILE_PREFIX, "").Replace(".json", ""));
+    }
+
+    // Ensure to subscribe to sceneLoaded event when initiating a load operation
+    // Example: SceneManager.sceneLoaded += SessionManager.Instance.OnSceneLoaded;
+    #endregion
+}
+

@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Wall_Universal
+  m_Name: Wall_Universal(DOS)
   m_Shader: {fileID: -6465566751694194690, guid: ef2c963da0fe97844b84f67ae15c2964, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -92,11 +92,12 @@ Material:
     - _Emission: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Radius: 0
+    - _Radius: 3.921947e-13
     - _Smoothness: 0.5
     m_Colors:
+    - _Base_Colour: {r: 1, g: 1, b: 1, a: 0}
     - _Emissive_Colour: {r: 0, g: 0, b: 0, a: 1}
     - _MaskEdges: {r: -0.2, g: 0.6, b: 0, a: 0}
-    - _PlayerPosition: {r: 0, g: 1.873431, b: -3, a: 0}
+    - _PlayerPosition: {r: 0.9912395, g: 1.8734634, b: 0.66222817, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

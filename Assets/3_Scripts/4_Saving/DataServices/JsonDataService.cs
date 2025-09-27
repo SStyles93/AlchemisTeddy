@@ -1,6 +1,6 @@
-using UnityEngine;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 using Newtonsoft.Json;
 
 public class JsonDataService : IDataService
@@ -16,7 +16,8 @@ public class JsonDataService : IDataService
                 return false;
             }
 
-            string json = JsonUtility.ToJson(data, true);
+            // Use JsonConvert from Newtonsoft.Json
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
             File.WriteAllText(path, json);
             return true;
         }
@@ -39,7 +40,8 @@ public class JsonDataService : IDataService
             }
 
             string json = File.ReadAllText(path);
-            return JsonUtility.FromJson<T>(json);
+            // Use JsonConvert from Newtonsoft.Json
+            return JsonConvert.DeserializeObject<T>(json);
         }
         catch (System.Exception e)
         {
@@ -66,8 +68,6 @@ public class JsonDataService : IDataService
 
     public void ClearAllData()
     {
-        // This method should be implemented carefully, potentially deleting all save files.
-        // For now, it's left as a placeholder or to be implemented with specific file patterns.
         Debug.LogWarning("ClearAllData not fully implemented. Implement with caution.");
     }
 
@@ -81,6 +81,10 @@ public class JsonDataService : IDataService
 
     private string GetPath(string fileName)
     {
+#if UNITY_EDITOR
         return Path.Combine(Application.dataPath, fileName);
+#else
+        return Path.Combine(Application.persistentDataPath, fileName);
+#endif
     }
 }

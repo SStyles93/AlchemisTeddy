@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -15,8 +17,9 @@ public class Portal : WorldObject, IActivatable
 
     [Header("Scene transition settings")]
     [SerializeField] SceneDatabase.Scenes nextScene = SceneDatabase.Scenes.ForestScene;
+    public string NextScene { get => nextScene.ToString();}
 
-    SceneDatabase.Scenes currentScene = SceneDatabase.Scenes.Core;
+    string currentScene = "";
 
     int OpenHash = -1;
     int CloseHash = -1;
@@ -70,29 +73,34 @@ public class Portal : WorldObject, IActivatable
         player.GetComponent<PlayerInput>().enabled = false;
         player.GetComponent<PlayerController>().enabled = false;
 
-        // If the Orb scene is the current one, the player is "in the orb" -> send player to saved scene
+        // Player going OUT of ORB
         if (orbData.OrbScene == currentScene)
         {
-            //Transition to Saved scene
-            SceneController.Instance
-            .NewTransition()
-            .Load(SceneDatabase.Slots.Session, orbData.SavedScene, true)
-            .Unload(SceneDatabase.Slots.Session)
-            .WithOverlay()
-            .WithClearUnusedAssets()
-            .Perform();
+            if(orbData.SavedScenes.Count <= 1)
+            {
+                orbData.AddSavedScene(NextScene);
+                orbData.AssignActiveScene(NextScene);
+                SessionManager.Instance.LoadScene(NextScene);
+            }
+            else
+                //Transition to Saved scene
+                SessionManager.Instance.LoadScenes(orbData.SavedScenes, orbData.ActiveScene);
 
         }
-        // Otherwise it means that the player is going to Orb Scene 
+        // Player going IN ORB
         else
         {
-            SceneController.Instance
-            .NewTransition()
-            .Load(SceneDatabase.Slots.Session, orbData.OrbScene, true)
-            .Unload(SceneDatabase.Slots.Session)
-            .WithOverlay()
-            .WithClearUnusedAssets()
-            .Perform();
+            // The player is going to the "orb's scene".
+            if (currentScene != orbData.OrbScene)
+            {
+                // Assign scene to return to
+                orbData.AssignActiveScene(currentScene);
+                // Assign all the loaded scenes
+                orbData.AddSavedScenes(SceneController.Instance.GetLoadedScenes());
+            }
+
+            // Transition to OrbScene
+            SessionManager.Instance.LoadScene(orbData.OrbScene);
         }
             
     }
@@ -110,16 +118,7 @@ public class Portal : WorldObject, IActivatable
         this.orbData = orbData;
 
         // Get the current scene index
-        currentScene = (SceneDatabase.Scenes)SceneManager.GetActiveScene().buildIndex;
-        // If the index of the scene to save != the orb's scene index
-        // that means that the player is going to the "orb's scene".
-        if (currentScene != orbData.OrbScene)
-            // In that case we assign the scene to return to
-            orbData.AssignSavedScene(currentScene);
-        
-        // If no scene it set, fallback to portal's next scene
-        if(orbData.SavedScene == SceneDatabase.Scenes.Core)
-            orbData.AssignSavedScene(nextScene);
+        currentScene = SceneManager.GetActiveScene().name;
     }
 
     //Called by the Open Animation

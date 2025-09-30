@@ -177,7 +177,7 @@ MonoBehaviour:
   maskRadius: 4
   lerpSpeed: 0.02
   playerHeightCorrection: 0.8
-  radius: 0.5
+  radius: 1
 --- !u!1001 &2310232566088700602
 PrefabInstance:
   m_ObjectHideFlags: 0

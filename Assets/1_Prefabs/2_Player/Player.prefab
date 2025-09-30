@@ -908,7 +908,6 @@ GameObject:
   - component: {fileID: 1098816028488634686}
   - component: {fileID: 2115469196655399957}
   - component: {fileID: 6780481143385483952}
-  - component: {fileID: 2693844830918312092}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1358,19 +1357,6 @@ MonoBehaviour:
   navMeshAgent: {fileID: 5630482857562946837}
   playerControler: {fileID: 0}
   playerRightHand: {fileID: 1344207274457864620}
---- !u!114 &2693844830918312092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3165869313887906202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bc93ad1902cc454492ee9108418ab89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uniqueId: 7109b370-18f3-4305-9703-85c4f8391838
 --- !u!1 &3182914799219377543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1492,8 +1478,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2693844830918312092}
-        m_TargetAssemblyTypeName: SaveableEntity, Assembly-CSharp
+      - m_Target: {fileID: 6784366298546426809}
+        m_TargetAssemblyTypeName: PlayerSaving, Assembly-CSharp
         m_MethodName: SaveGame
         m_Mode: 1
         m_Arguments:
@@ -1727,6 +1713,7 @@ GameObject:
   - component: {fileID: 5441420013343315133}
   - component: {fileID: 3385733124379637991}
   - component: {fileID: 4848320956324607120}
+  - component: {fileID: 6784366298546426809}
   m_Layer: 5
   m_Name: Save Pannel
   m_TagString: Untagged
@@ -1793,6 +1780,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6784366298546426809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3693094194142672934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f3294b7584ad14bb4a0b412e4d4988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3806349261770231098
 GameObject:
   m_ObjectHideFlags: 0
@@ -2598,8 +2597,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2693844830918312092}
-        m_TargetAssemblyTypeName: SaveableEntity, Assembly-CSharp
+      - m_Target: {fileID: 6784366298546426809}
+        m_TargetAssemblyTypeName: PlayerSaving, Assembly-CSharp
         m_MethodName: LoadGame
         m_Mode: 1
         m_Arguments:

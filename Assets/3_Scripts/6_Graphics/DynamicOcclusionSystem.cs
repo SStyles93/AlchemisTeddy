@@ -2,6 +2,7 @@
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
+using static UnityEngine.PlayerLoop.PreUpdate;
 
 public class WallShaderUpdater : MonoBehaviour
 {
@@ -51,6 +52,12 @@ public class WallShaderUpdater : MonoBehaviour
 
     void Update()
     {
+        if (m_player == null)
+        {
+            m_player = SessionManager.Instance.CurrentPlayerInstance.transform;
+            return;
+        }
+
         Vector3 playerPosition = m_player.position + (Vector3.up * playerHeightCorrection);
         // Perform Sphere cast from player to camera
         direction = m_camera.transform.position - m_player.position;
@@ -94,7 +101,7 @@ public class WallShaderUpdater : MonoBehaviour
         {
             if (m_player == null) return;
 
-            Vector3 origin = m_player.position;
+            Vector3 origin = m_player.position + (Vector3.up * playerHeightCorrection);
             Vector3 dir = direction.normalized;
             Vector3 end = m_camera.transform.position;
 
@@ -115,7 +122,7 @@ public class WallShaderUpdater : MonoBehaviour
             if (Physics.SphereCast(origin, radius, dir, out RaycastHit hit, 50.0f))
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(hit.point, radius);
+                Gizmos.DrawSphere(hit.point, radius);
             }
         }
     }

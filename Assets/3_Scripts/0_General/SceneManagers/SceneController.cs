@@ -1,9 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Linq;
 
 public class SceneController : MonoBehaviour
 {
@@ -24,8 +24,10 @@ public class SceneController : MonoBehaviour
     [SerializeField] private LoadingOverlay loadingOverlay;
 
     // Changed to track scenes by their actual name, as SessionManager will provide names
-    private Dictionary<string, SceneDatabase.Scenes> loadedSceneBySlot = new();
+    private Dictionary<string, List<string>> loadedSceneBySlot = new();
     private bool isBusy = false;
+
+    public event Action OnSceneTransitionComplete;
 
     // API
 
@@ -56,24 +58,16 @@ public class SceneController : MonoBehaviour
         // Load scenes
         foreach (string sceneName in scenesToLoadNames)
         {
-            // Attempt to parse scene name to enum for SceneController\'s internal tracking
-            if (System.Enum.TryParse(sceneName, out SceneDatabase.Scenes sceneEnum))
-            {
-                plan.Load(sceneName, sceneEnum, sceneName == activeSceneName);
-            }
-            else
-            {
-                Debug.LogWarning($"Scene \'{sceneName}\' not found in SceneDatabase.Scenes enum. Skipping internal tracking for this scene.");
-                // Still add to ScenesToLoad for the actual loading process, but without enum mapping
-                plan.ScenesToLoad[sceneName] = SceneDatabase.Scenes.Null; // Use a default/dummy enum value if not found
-                if (sceneName == activeSceneName) plan.ActiveSceneStringName = activeSceneName; // Ensure active scene is set
-            }
+
+            plan.Load(SceneDatabase.Slots.SessionContent, sceneName);
+
+            if (sceneName == activeSceneName) plan.ActiveScene = activeSceneName; // Ensure active scene is set
         }
 
         if (showOverlay) plan.WithOverlay();
         if (clearAssets) plan.WithClearUnusedAssets();
 
-        yield return ExecutePlan(plan.AsSessionLoad());
+        yield return ExecutePlan(plan);
     }
 
     private IEnumerator ExecutePlan(SceneTransitionPlan plan)
@@ -92,7 +86,6 @@ public class SceneController : MonoBehaviour
         if (plan.Overlay)
         {
             yield return loadingOverlay.FadeInBlack();
-            //yield return new WaitForSeconds(0.5f);
         }
 
         // Unload scenes specified in the plan
@@ -106,15 +99,28 @@ public class SceneController : MonoBehaviour
         // Load scenes specified in the plan
         foreach (var kvp in plan.ScenesToLoad)
         {
-            string sceneName = kvp.Key; // The actual scene name string
-            SceneDatabase.Scenes sceneEnum = kvp.Value; // The enum value (might be dummy if not found)
+            string sceneSlot = kvp.Key; // Slot
+            string sceneName = kvp.Value; // The actual scene name string
 
             // Check if scene is already loaded by its name
             if (SceneManager.GetSceneByName(sceneName).isLoaded)
             {
-                // If already loaded, ensure it\'s tracked and potentially set active
-                loadedSceneBySlot[sceneName] = sceneEnum;
-                if (plan.ActiveSceneStringName == sceneName)
+                // Make sure the dictionary has a list for this slot
+                if (!loadedSceneBySlot.ContainsKey(sceneSlot))
+                    loadedSceneBySlot[sceneSlot] = new List<string>();
+
+                // Exclusive slots (overwrite)
+                if (sceneSlot == SceneDatabase.Slots.Menu || sceneSlot == SceneDatabase.Slots.Session)
+                {
+                    loadedSceneBySlot[sceneSlot] = new List<string> { sceneName };
+                }
+                else // Multi-slot: append
+                {
+                    if (!loadedSceneBySlot[sceneSlot].Contains(sceneName))
+                        loadedSceneBySlot[sceneSlot].Add(sceneName);
+                }
+
+                if (plan.ActiveScene == sceneName)
                 {
                     Scene newScene = SceneManager.GetSceneByName(sceneName);
                     if (newScene.IsValid() && newScene.isLoaded)
@@ -125,16 +131,13 @@ public class SceneController : MonoBehaviour
             }
             else
             {
-                yield return LoadAdditiveRoutine(sceneName, sceneEnum, plan.ActiveSceneStringName == sceneName);
+                yield return LoadAdditiveRoutine(sceneSlot, sceneName, plan.ActiveScene == sceneName);
             }
         }
 
-        // If this transition was initiated by the SessionManager, notify it to restore state
-        if (plan.IsSessionLoad)
-        {
-            SessionManager.Instance?.OnSceneTransitionComplete();
-        }
-        
+        // Notify scene transition complete
+        OnSceneTransitionComplete?.Invoke();
+
         if (plan.Overlay)
         {
             yield return loadingOverlay.FadeOutBlack();
@@ -142,7 +145,7 @@ public class SceneController : MonoBehaviour
         isBusy = false;
     }
 
-    private IEnumerator LoadAdditiveRoutine(string sceneName, SceneDatabase.Scenes sceneEnum, bool setActive)
+    private IEnumerator LoadAdditiveRoutine(string slot, string sceneName, bool setActive)
     {
         // Use sceneName directly for loading, as sceneIndex might not be reliable if not in build settings
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
@@ -167,7 +170,19 @@ public class SceneController : MonoBehaviour
                 SceneManager.SetActiveScene(newScene);
             }
         }
-        loadedSceneBySlot[sceneName] = sceneEnum; // Track by name
+
+        // If the slot is exclusive (only one scene allowed)
+        if (slot == SceneDatabase.Slots.Menu || slot == SceneDatabase.Slots.Session)
+        {
+            loadedSceneBySlot[slot] = new List<string> { sceneName };
+        }
+        else
+        {
+            if (!loadedSceneBySlot.ContainsKey(slot))
+                loadedSceneBySlot[slot] = new List<string>();
+
+            loadedSceneBySlot[slot].Add(sceneName);
+        }
     }
 
     private IEnumerator UnloadSceneRoutine(string sceneName)
@@ -184,10 +199,20 @@ public class SceneController : MonoBehaviour
                 yield return null;
             }
         }
-        // Remove from loadedSceneBySlot if it was tracked by its name
-        if (loadedSceneBySlot.ContainsKey(sceneName))
+
+        // Remove from loadedSceneBySlot
+        foreach (var kvp in loadedSceneBySlot.ToList()) // safe copy for iteration
         {
-            loadedSceneBySlot.Remove(sceneName);
+            if (kvp.Value.Contains(sceneName))
+            {
+                kvp.Value.Remove(sceneName);
+
+                // If this slot is now empty, remove the slot entry
+                if (kvp.Value.Count == 0)
+                    loadedSceneBySlot.Remove(kvp.Key);
+
+                break; // scene found, stop
+            }
         }
     }
 
@@ -203,22 +228,20 @@ public class SceneController : MonoBehaviour
     // Transition Plan Class
     public class SceneTransitionPlan
     {
-        // Key is sceneName (string), Value is SceneDatabase.Scenes enum (for internal tracking if needed)
-        public Dictionary<string, SceneDatabase.Scenes> ScenesToLoad { get; } = new();
+        // Key is slotName (string), Value is SceneDatabase.Scenes enum (for internal tracking if needed)
+        public Dictionary<string, string> ScenesToLoad { get; } = new();
         public List<string> ScenesToUnload { get; } = new(); // List of scene names to unload
-        public SceneDatabase.Scenes ActiveSceneNameEnum { get; private set; } // Renamed to avoid confusion with string name
-        public string ActiveSceneStringName { get; set; } // Store string name for comparison
+        public string ActiveScene;// Renamed to avoid confusion with string name
         public bool ClearUnusedAssets { get; private set; } = false;
         public bool Overlay { get; private set; } = false;
         public bool IsSessionLoad { get; private set; } = false;
 
-        public SceneTransitionPlan Load(string sceneName, SceneDatabase.Scenes sceneEnum, bool setActive = false)
+        public SceneTransitionPlan Load(string slotName, string scene, bool setActive = false)
         {
-            ScenesToLoad[sceneName] = sceneEnum;
+            ScenesToLoad[slotName] = scene;
             if (setActive)
             {
-                ActiveSceneNameEnum = sceneEnum;
-                ActiveSceneStringName = sceneName;
+                ActiveScene = scene;
             }
             return this;
         }
@@ -237,11 +260,6 @@ public class SceneController : MonoBehaviour
             ClearUnusedAssets = true;
             return this;
         }
-        public SceneTransitionPlan AsSessionLoad()
-        {
-            IsSessionLoad = true;
-            return this;
-        }
 
         public IEnumerator Perform()
         {
@@ -249,23 +267,25 @@ public class SceneController : MonoBehaviour
         }
     }
 
-    public void AttributeLoadedScene(string slotKey, int sceneIndex)
+    public List<string> GetLoadedScenes()
     {
-        // This method seems to be for tracking scenes loaded by the SceneController itself.
-        // If slotKey is now the scene name, this might need adjustment.
-        if (System.Enum.IsDefined(typeof(SceneDatabase.Scenes), sceneIndex))
+        List<string> sceneList = new List<string>();
+        foreach (string sceneName in loadedSceneBySlot[SceneDatabase.Slots.SessionContent])
         {
-            loadedSceneBySlot[slotKey] = (SceneDatabase.Scenes)sceneIndex;
+            sceneList.Add(sceneName);
         }
-        else
-        {
-            Debug.LogWarning($"Invalid sceneIndex {sceneIndex} for slotKey {slotKey}. Not attributing.");
-        }
+        return sceneList;
     }
 
     // Helper to get scene name from enum (assuming SceneDatabase.Scenes is an enum of scene names)
     private string GetSceneNameFromEnum(SceneDatabase.Scenes sceneEnum)
     {
         return sceneEnum.ToString();
+    }
+
+    private SceneDatabase.Scenes GetEnumFromSceneName(string sceneName)
+    {
+        Enum.TryParse(sceneName, out SceneDatabase.Scenes scene);
+        return scene;
     }
 }

@@ -29,7 +29,7 @@ public class SavedGameManager : MonoBehaviour
     {
         SceneController.Instance
             .NewTransition()
-            .Load(SceneDatabase.Slots.Menu, SceneDatabase.Scenes.MainMenu)
+            .Load(SceneDatabase.Slots.Menu, SceneDatabase.Scenes.MainMenu.ToString())
             .Unload(SceneDatabase.Slots.Menu)
             .WithOverlay()
             .WithClearUnusedAssets()

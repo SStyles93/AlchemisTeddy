@@ -13,6 +13,12 @@ public class HUDCanvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(player == null)
+        {
+            player = SessionManager.Instance.CurrentPlayerInstance;
+            return;
+        }
+
         transform.position = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
 
         Vector3 cameraOpposite = transform.position - (Camera.main.transform.position - transform.position);

@@ -2,19 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static System.Collections.Specialized.BitVector32;
+using UnityEngine.UIElements;
 
 public class SessionManager : MonoBehaviour
 {
     public static SessionManager Instance { get; private set; }
+    public GameObject CurrentPlayerInstance => currentPlayerInstance;
+
+    [SerializeField] GameObject playerPrefab;
+
     private IDataService dataService;
     private const string SESSION_FILE_PREFIX = "session_";
-
     private SessionSaveData currentSessionData;
-
     private GameObject currentPlayerInstance;
 
     private void Awake()
@@ -24,6 +25,18 @@ public class SessionManager : MonoBehaviour
         //DontDestroyOnLoad(gameObject);
 
         dataService = new JsonDataService(); // Or any other IDataService implementation
+    }
+
+    private void OnEnable()
+    {
+        // This method is called by the SceneController when the scene transition is complete
+        SceneController.Instance.OnSceneTransitionComplete += RestoreSessionStateAfterSceneLoad;
+    }
+
+    private void OnDisable()
+    {
+        // This method is called by the SceneController when the scene transition is complete
+        SceneController.Instance.OnSceneTransitionComplete -= RestoreSessionStateAfterSceneLoad;
     }
 
     // ---------------- SAVE ----------------
@@ -83,6 +96,10 @@ public class SessionManager : MonoBehaviour
         }
 
         PlayerSaveData playerData = new PlayerSaveData();
+
+        playerData.position = new Vector3Data(currentPlayerInstance.transform.position);
+        playerData.rotation = new QuaternionData(currentPlayerInstance.transform.rotation);
+        playerData.scale = new Vector3Data(currentPlayerInstance.transform.localScale);
 
         // Example: Save inventory (requires PlayerInventoryManager component on player)
         PlayerInventoryManager inventoryManager = currentPlayerInstance.GetComponent<PlayerInventoryManager>();
@@ -218,57 +235,105 @@ public class SessionManager : MonoBehaviour
                 true  // clearAssets
             ));
         }
-        else
+    }
+
+    public void LoadScenes(List<string> scenesToLoad, string activeSceneName)
+    {
+        if (currentSessionData != null)
         {
-            Debug.LogError("SceneController.Instance is null. Cannot perform session scene transition.");
-            // Fallback to simpler loading if SceneController is not available
-            StartCoroutine(LoadScenesAdditiveAndRestoreStateFallback(currentSessionData.currentSceneName, currentSessionData.sceneData.Keys.ToList()));
+            string sessionID = currentSessionData.sessionID;
+            sessionID ??= "1";
+            SessionSaveData loadedData = dataService.Load<SessionSaveData>(GetSessionFileName(sessionID));
+            if (loadedData == null)
+            {
+                Debug.LogWarning($"No session \'{sessionID}\' found.");
+                return;
+            }
+            currentSessionData = loadedData;
+        }
+
+        // Use SceneController for multi-scene loading
+        if (SceneController.Instance != null)
+        {
+            List<string> scenesToUnload = new List<string>();
+
+            // Determine which currently loaded scenes are NOT in the save data and should be unloaded
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                Scene scene = SceneManager.GetSceneAt(i);
+                // Exclude persistent scenes or scenes that are part of the new session
+                if (scene.name == "Core" || scene.name == "Session") continue;
+                if (scene.isLoaded && !scenesToLoad.Contains(scene.name))
+                {
+                    scenesToUnload.Add(scene.name);
+                }
+            }
+
+            // Start the scene transition via SceneController
+            StartCoroutine(SceneController.Instance.PerformSessionSceneTransition(
+            scenesToLoad,
+            scenesToUnload,
+            activeSceneName,
+            true, // showOverlay
+            true  // clearAssets
+            ));
         }
     }
 
-    // Fallback method if SceneController is not available (previous implementation)
-    private IEnumerator LoadScenesAdditiveAndRestoreStateFallback(string activeSceneName, List<string> scenesToLoad)
+    public void LoadScene(string sceneToLoad)
     {
-        // 1. Unload all currently loaded scenes except the persistent one (if any)
-        List<Scene> loadedScenes = new List<Scene>();
-        for (int i = 0; i < SceneManager.sceneCount; i++)
+        if (currentSessionData != null)
         {
-            loadedScenes.Add(SceneManager.GetSceneAt(i));
-        }
-
-        foreach (Scene scene in loadedScenes)
-        {
-            // Keep the persistent scene (if any)
-            if (scene.name != "Core" || scene.name != "Session") continue;
-            // and scenes that are part of the new session
-            if (scene.isLoaded && !scenesToLoad.Contains(scene.name))
+            string sessionID = currentSessionData.sessionID;
+            sessionID ??= "1";
+            SessionSaveData loadedData = dataService.Load<SessionSaveData>(GetSessionFileName(sessionID));
+            if (loadedData == null)
             {
-                yield return SceneManager.UnloadSceneAsync(scene);
+                Debug.LogWarning($"No session \'{sessionID}\' found.");
+                return;
             }
+
+            currentSessionData = loadedData;
         }
 
-        // 2. Load all required scenes additively
-        foreach (string sceneName in scenesToLoad)
+
+        // Use SceneController for multi-scene loading
+        if (SceneController.Instance != null)
         {
-            if (!SceneManager.GetSceneByName(sceneName).isLoaded)
+            List<string> scenesToUnload = new List<string>();
+
+            // Determine which currently loaded scenes are NOT in the save data and should be unloaded
+            for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                Scene scene = SceneManager.GetSceneAt(i);
+                // Exclude persistent scenes or scenes that are part of the new session
+                if (scene.name == "Core" || scene.name == "Session") continue;
+                if (scene.isLoaded && sceneToLoad != scene.name)
+                {
+                    scenesToUnload.Add(scene.name);
+                }
             }
+
+            List<string> scenesToLoad = new List<string>() { sceneToLoad };
+            // Start the scene transition via SceneController
+            StartCoroutine(SceneController.Instance.PerformSessionSceneTransition(
+                scenesToLoad,
+                scenesToUnload,
+                sceneToLoad,
+                true, // showOverlay
+                true  // clearAssets
+            ));
         }
-
-        // 3. Set the player\'s scene as the active scene
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeSceneName));
-
-        // 4. Restore the session state
-        RestoreSessionStateAfterSceneLoad();
-
-        Debug.Log($"Session \'{currentSessionData.sessionID}\' loaded successfully with multiple scenes (Fallback).");
     }
 
     // This method is now called after SceneController finishes its transition
     public void RestoreSessionStateAfterSceneLoad()
     {
         if (currentSessionData == null) return; // Should not happen if called correctly
+
+
+        //Instanciate player
+        InstantiatePlayer();
 
         // 1. Restore Player Data
         RestorePlayerData();
@@ -300,6 +365,10 @@ public class SessionManager : MonoBehaviour
             Debug.LogError("Player prefab not assigned and player not found in scene. Cannot restore player.");
             return;
         }
+
+        currentPlayerInstance.transform.position = currentSessionData.playerData.position.ToVector3();
+        currentPlayerInstance.transform.rotation = currentSessionData.playerData.rotation.ToQuaternion();
+        currentPlayerInstance.transform.localScale = currentSessionData.playerData.scale.ToVector3();
 
         // Restore inventory
         PlayerInventoryManager inventoryManager = currentPlayerInstance.GetComponent<PlayerInventoryManager>();
@@ -388,12 +457,11 @@ public class SessionManager : MonoBehaviour
     }
 
     // Call this method to initialize the player reference if it\'s not set via Inspector
-    public void InitializePlayerRef()
+    public void InstantiatePlayer()
     {
-        if (currentPlayerInstance == null)
-        {
-            currentPlayerInstance = GameObject.FindGameObjectWithTag("Player");
-        }
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) Destroy(player);
+        currentPlayerInstance = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
     }
 
     // Public method to get current session data (e.g., for UI display)
@@ -409,12 +477,6 @@ public class SessionManager : MonoBehaviour
         // A more robust implementation might involve reading metadata from each save file.
         return dataService.ListSaves().Where(fileName => fileName.StartsWith(SESSION_FILE_PREFIX) && fileName.EndsWith(".json"))
                            .Select(fileName => fileName.Replace(SESSION_FILE_PREFIX, "").Replace(".json", ""));
-    }
-
-    // This method is called by the SceneController when the scene transition is complete
-    public void OnSceneTransitionComplete()
-    {
-        RestoreSessionStateAfterSceneLoad();
     }
 }
 

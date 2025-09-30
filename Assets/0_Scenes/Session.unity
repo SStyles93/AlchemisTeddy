@@ -200,6 +200,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4660268681460240097, guid: ad89cb6ebad133c479682994c8c28ce1, type: 3}
+      propertyPath: playerPrefab
+      value: 
+      objectReference: {fileID: 3165869313887906202, guid: 7a165ecc07896214985caa0fc9147d3d, type: 3}
     - target: {fileID: 7322750442579272465, guid: ad89cb6ebad133c479682994c8c28ce1, type: 3}
       propertyPath: m_Name
       value: SessionManager

@@ -32,6 +32,8 @@ public class Barrel : Moveable
             return;
         }
 
+        if (!PlayerIsFacing()) return;
+
         Vector3 correctedPosition = ComputeOppositePosition(position);
 
         // Move north

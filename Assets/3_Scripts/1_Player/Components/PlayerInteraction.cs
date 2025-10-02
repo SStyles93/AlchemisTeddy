@@ -66,13 +66,14 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         {
             if (isInteracting && currentMoveable != null)
             {
+                
+
                 if (hit.collider.TryGetComponent<Button3D>(out var button))
                 {
                     currentButton3D = button;
                     currentButton3D.Press();
                     return;
                 }
-
             }
 
             // Clear the ground-click debug position since we are targeting an object.
@@ -99,7 +100,6 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
                     ClearInteractingMode();
                     //Debug.Log("Ground click cleared interaction mode!");
                 }
-
             }
 
             StopInteraction();

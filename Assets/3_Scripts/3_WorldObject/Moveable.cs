@@ -34,7 +34,7 @@ public class Moveable : WorldObject, IActivatable, IMoveable
 
     private void OnEnable()
     {
-        foreach(Button3D button in buttons)
+        foreach (Button3D button in buttons)
         {
             button.OnPressedEvents += Move;
             button.OnReleasedEvents += ResetPlayerPlacing;
@@ -85,6 +85,14 @@ public class Moveable : WorldObject, IActivatable, IMoveable
             button.DisableButton();
         }
     }
+
+    private void FaceObject()
+    {
+        Vector3 objectDirection = (transform.position - player.transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(objectDirection);
+        player.transform.rotation = Quaternion.Slerp(player.transform.rotation, lookRotation, Time.deltaTime * 2.0f);
+    }
+
     public virtual void Move(Vector3 position)
     {
         if (!isPlayerPlaced)
@@ -92,11 +100,12 @@ public class Moveable : WorldObject, IActivatable, IMoveable
             StartPlacement(position);
             return;
         }
+        if (!PlayerIsFacing()) return;
     }
 
     public void ResetPlayerPlacing()
     {
-        
+
         isPlayerPlaced = false;
         isPlacing = false;
     }
@@ -128,19 +137,25 @@ public class Moveable : WorldObject, IActivatable, IMoveable
 
         //Debug.Log($"Player placed at {player.transform.position}");
 
-        // TODO player face object
-        //Use DOT product to check player rotation
-        while (!player.GetComponent<PlayerAnimatorController>().IsFacing(this.gameObject))
-        {
-            player.transform.LookAt(this.transform);
+        // TODO:  //FaceObject(); <== Has to be in and Update !
+        while (!PlayerIsFacing())
             yield return null;
-        }
 
         // Activate hand IK Rig
         player.GetComponent<PlayerAnimatorController>().SetActiveMoveable(this);
 
         isPlayerPlaced = true;
         isPlacing = false;
+    }
+
+    public bool PlayerIsFacing()
+    {
+        Vector3 objectDirection = (transform.position - player.transform.position).normalized;
+        if (Vector3.Dot(objectDirection, player.transform.forward) >= 0.9f)
+        {
+            return true;
+        }
+        else return false;
     }
 
     private void OnDrawGizmosSelected()
@@ -152,7 +167,7 @@ public class Moveable : WorldObject, IActivatable, IMoveable
         Gizmos.DrawSphere(this.transform.position, playerOffset);
 
         Gizmos.color = Color.green;
-        Gizmos.DrawCube(handPosition, new Vector3(1f,.1f,1f));
+        Gizmos.DrawCube(handPosition, new Vector3(1f, .1f, 1f));
 
         if (playerIntendedPosition == Vector3.zero) return;
         Gizmos.color = Color.yellow;

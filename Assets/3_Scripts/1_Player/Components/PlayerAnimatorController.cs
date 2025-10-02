@@ -81,16 +81,6 @@ public class PlayerAnimatorController : MonoBehaviour
         }
     }
 
-    public bool IsFacing(GameObject gameObject)
-    {
-        Vector3 objectDirection = (gameObject.transform.position - transform.position).normalized;
-        if (Vector3.Dot(objectDirection, transform.forward) >= 0.9f)
-        {
-            return true;
-        }
-        else return false;
-    }
-
     /// <summary>
     /// Triggers the beginning of the Pickup animation
     /// </summary>

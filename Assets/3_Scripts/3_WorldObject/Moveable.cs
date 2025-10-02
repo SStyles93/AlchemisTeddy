@@ -127,9 +127,14 @@ public class Moveable : WorldObject, IActivatable, IMoveable
             yield return null;
 
         //Debug.Log($"Player placed at {player.transform.position}");
-        
+
         // TODO player face object
         //Use DOT product to check player rotation
+        while (!player.GetComponent<PlayerAnimatorController>().IsFacing(this.gameObject))
+        {
+            player.transform.LookAt(this.transform);
+            yield return null;
+        }
 
         // Activate hand IK Rig
         player.GetComponent<PlayerAnimatorController>().SetActiveMoveable(this);

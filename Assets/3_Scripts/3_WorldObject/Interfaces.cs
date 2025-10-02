@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// This interface defines an object that can be activated.
@@ -40,6 +41,19 @@ public interface IDamageable
     event Action<int, int> OnHealthChanged;
 
 }
+
+/// <summary>
+/// This interface defines an object that can be Moved
+/// </summary>
+public interface IMoveable
+{
+    /// <summary>
+    /// Moves the IMoveable object by a certain amount
+    /// </summary>
+    /// <param name="position">The position at whitch the object is moved</param>
+    void Move(Vector3 position);
+}
+
 
 public interface ISaveable
 {

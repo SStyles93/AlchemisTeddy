@@ -23,8 +23,7 @@ public class WorldObjectUI : MonoBehaviour
     {
         if (textMesh == null && TryGetComponent<TextMeshPro>(out var textMeshPro))
             this.textMesh = textMeshPro;
-        // null-coalescing assignment operator (??)
-        // It only executes the right side if textMesh is null.
+
         worldObject ??= GetComponentInParent<WorldObject>();
     }
 

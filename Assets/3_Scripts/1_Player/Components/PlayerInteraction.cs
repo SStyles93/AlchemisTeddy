@@ -1,10 +1,12 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController), typeof(NavMeshAgent))]
 public class PlayerInteraction : MonoBehaviour, ISaveable
@@ -27,9 +29,13 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
 
     // --- Private variables ---
     private bool isPointerOverUI = false;
+    private bool isInteracting = false;
+    private Moveable currentMoveable = null;
+    private Button3D currentButton3D;
 
     // --- Debug Variable ---
     private Vector3 hitPosition = Vector3.zero;
+
 
     private void Awake()
     {
@@ -58,18 +64,44 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         // Fire a raycast to identify an interactable target
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, interactableLayer))
         {
+            if (isInteracting && currentMoveable != null)
+            {
+                if (hit.collider.TryGetComponent<Button3D>(out var button))
+                {
+                    currentButton3D = button;
+                    currentButton3D.Press();
+                    return;
+                }
+
+            }
+
             // Clear the ground-click debug position since we are targeting an object.
             hitPosition = Vector3.zero;
             StartInteraction(hit.collider.gameObject);
 
             //Debug.Log($"Raycast - hit position: {hitPosition}");
-            
             return;
         }
 
         // If no interactable was hit, check for ground to move
         if (Physics.Raycast(ray, out RaycastHit groundHit, 100f, groundLayer))
         {
+            if (isInteracting && currentMoveable != null)
+            {
+                float distance = Vector3.Distance(currentMoveable.transform.position, groundHit.point);
+                if (distance < currentMoveable.RaycastBlockingRadius)
+                {
+                    //Debug.Log("Ground click blocked near interactable!");
+                    return;
+                }
+                else
+                {
+                    ClearInteractingMode();
+                    //Debug.Log("Ground click cleared interaction mode!");
+                }
+
+            }
+
             StopInteraction();
             Move(groundHit.point);
             // Update the debug variable with the click position.
@@ -79,21 +111,49 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         }
     }
 
-    private void StartInteraction(GameObject target)
+    /// <summary>
+    /// Handles the Release of the Left click
+    /// </summary>
+    public void HandleLeftClickUp()
     {
-        //Debug.Log($"Started interaction with {target}");
-        StopInteraction();
-        followAndInteractCoroutine = StartCoroutine(FollowAndInteractRoutine(target));
-        //Debug.Log($"Coroutine - Started followAndInteractCoroutine");
+        if (currentButton3D != null)
+        {
+            currentButton3D.Release();
+            currentButton3D = null;
+        }
     }
 
-    private void StopInteraction()
+    public void Move(Vector3 destination)
     {
-        if (followAndInteractCoroutine != null)
+        navMeshAgent.SetDestination(destination);
+    }
+
+    /// <summary>
+    /// Sets the interacting mode on the Player
+    /// </summary>
+    /// <param name="setter">The IMoveable setter that asks for the mode</param>
+    public void SetInteractingMode(Moveable setter)
+    {
+        isInteracting = true;
+        currentMoveable = setter;
+    }
+
+    public void ClearInteractingMode()
+    {
+        currentMoveable.Disable();
+        isInteracting = false;
+        currentMoveable = null;
+    }
+
+    // --- PRIVATE ---
+
+    private void FaceMovementDirection()
+    {
+        if (navMeshAgent.velocity.sqrMagnitude > 0.1f)
         {
-            StopCoroutine(followAndInteractCoroutine);
-            followAndInteractCoroutine = null;
-            //Debug.Log($"Coroutine - Stopped followAndInteractCoroutine");
+            Vector3 direction = navMeshAgent.velocity.normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
         }
     }
 
@@ -129,20 +189,24 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         followAndInteractCoroutine = null;
     }
 
-    public void Move(Vector3 destination)
+    private void StartInteraction(GameObject target)
     {
-        navMeshAgent.SetDestination(destination);
+        //Debug.Log($"Started interaction with {target}");
+        StopInteraction();
+        followAndInteractCoroutine = StartCoroutine(FollowAndInteractRoutine(target));
+        //Debug.Log($"Coroutine - Started followAndInteractCoroutine");
     }
 
-    private void FaceMovementDirection()
+    private void StopInteraction()
     {
-        if (navMeshAgent.velocity.sqrMagnitude > 0.1f)
+        if (followAndInteractCoroutine != null)
         {
-            Vector3 direction = navMeshAgent.velocity.normalized;
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+            StopCoroutine(followAndInteractCoroutine);
+            followAndInteractCoroutine = null;
+            //Debug.Log($"Coroutine - Stopped followAndInteractCoroutine");
         }
     }
+
 
     // --- GIZMOS FOR VISUAL DEBUGGING ---
 

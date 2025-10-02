@@ -113,6 +113,7 @@ public class PlayerController : MonoBehaviour
         if(value.canceled)
         {
             isLeftClickPressed = false;
+            playerActions.HandleLeftClickUp();
             //Debug.Log($"PlayerControler - OnLeftClick - Canceled");
         }
     }

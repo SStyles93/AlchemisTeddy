@@ -125,6 +125,14 @@ public class PlayerAction : MonoBehaviour
         playerInteraction.HandleLeftClick(currentRay);
     }
 
+    /// <summary>
+    /// Handles the Left Click when released
+    /// </summary>
+    public void HandleLeftClickUp()
+    {
+        playerInteraction.HandleLeftClickUp();
+    }
+
     bool DetectInteractableUIUnderPointer(Vector2 mousePosition)
     {
         PointerEventData pointerData = new PointerEventData(EventSystem.current)

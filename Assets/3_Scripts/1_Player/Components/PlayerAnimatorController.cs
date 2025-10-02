@@ -1,26 +1,37 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerAnimatorController : MonoBehaviour
 {
     // --- Components ---
-    [SerializeField]
-    private Animator animator;
-    [SerializeField]
-    private NavMeshAgent navMeshAgent;
-    [SerializeField]
-    private PlayerController playerControler;
+    [Header("Player Components")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private NavMeshAgent navMeshAgent;
+    [SerializeField] private PlayerController playerControler;
 
     // --- Body Parts ---
-    [SerializeField]
-    private Transform playerRightHand;
+    [Header("Body Parts")]
+    [SerializeField] private Transform rightHand;
 
+    // --- IK ---
+    [Header("IK")]
+    [SerializeField] private Rig HandIkRig;
+    [SerializeField] private Transform rightHandTarget;
+    private Vector3 initialRightHandPosition;
+    [SerializeField] private Transform leftHandTarget;
+    private Vector3 initialLeftHandPosition;
+
+
+    // --- Animation Parameters ---
     private WorldItem currentlyHeldItem;
+    private Moveable currentMoveable = null;
 
     int MovementSpeed = 0;
     int PickUpTrigger = 0;
 
     float savedNavMeshSpeed = 0;
+
 
     private void OnEnable()
     {
@@ -46,10 +57,18 @@ public class PlayerAnimatorController : MonoBehaviour
         {
             playerControler = action;
         }
+        if (HandIkRig == null)
+        {
+            HandIkRig.GetComponentInChildren<Rig>();
+        }
+
+        initialRightHandPosition = rightHandTarget.transform.localPosition;
+        initialLeftHandPosition = leftHandTarget.transform.localPosition;
     }
 
     void Start()
     {
+        HandIkRig.weight = 0;
         MovementSpeed = Animator.StringToHash("MovementSpeed");
         PickUpTrigger = Animator.StringToHash("PickUp");
     }
@@ -59,6 +78,10 @@ public class PlayerAnimatorController : MonoBehaviour
         if (animator != null && navMeshAgent != null)
         {
             animator.SetFloat(MovementSpeed, navMeshAgent.velocity.magnitude);
+        }
+        if(currentMoveable != null)
+        {
+            PositionHandIK();
         }
     }
 
@@ -78,6 +101,20 @@ public class PlayerAnimatorController : MonoBehaviour
         }
     }
 
+    public void SetActiveMoveable(Moveable movable)
+    {
+        currentMoveable = movable;
+        if(currentMoveable != null) HandIkRig.weight = 1.0f;
+        else HandIkRig.weight = 0.0f;
+    }
+    private void PositionHandIK()
+    {
+        if (currentMoveable == null) return;
+
+        rightHandTarget.transform.position = currentMoveable.transform.position + currentMoveable.HandPosition;
+        leftHandTarget.transform.position = currentMoveable.transform.position + currentMoveable.HandPosition;
+    }
+
     /// <summary>
     /// Method called by the animator to place the Collectable in the player's hand
     /// </summary>
@@ -85,17 +122,17 @@ public class PlayerAnimatorController : MonoBehaviour
     {
         currentlyHeldItem.GetComponent<Collider>().enabled = false;
         currentlyHeldItem.GetComponent<Rigidbody>().isKinematic = true;
-        currentlyHeldItem.transform.position = playerRightHand.transform.position;
-        currentlyHeldItem.transform.parent = playerRightHand.transform;
-        currentlyHeldItem.transform.rotation = playerRightHand.rotation;
+        currentlyHeldItem.transform.position = rightHand.transform.position;
+        currentlyHeldItem.transform.parent = rightHand.transform;
+        currentlyHeldItem.transform.rotation = rightHand.rotation;
     }
-  
+
     /// <summary>
     /// Method called by the animator to destroy the collectable at the correct moment
     /// </summary>
     public void EndCollection()
     {
-        if(navMeshAgent != null) navMeshAgent.speed = savedNavMeshSpeed;
+        if (navMeshAgent != null) navMeshAgent.speed = savedNavMeshSpeed;
         Destroy(currentlyHeldItem.gameObject);
         currentlyHeldItem = null;
     }

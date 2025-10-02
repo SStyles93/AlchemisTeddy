@@ -4,7 +4,9 @@ using UnityEngine.Rendering;
 
 public class PlayerCamera : MonoBehaviour
 {
-    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 4, -4);
+    public Transform target = null;
+
+    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 6, -6);
     [SerializeField] private float targetHeightOffset = .5f;
 
     private Camera m_camera;
@@ -34,18 +36,21 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (target == null) target = transform;
+
         // Handle camera rotation when the middle mouse button is not held down
         if(!isRotating)
         ResetRotation();
 
-        Vector3 tmpCameraPos = Vector3.Lerp(m_camera.transform.position, cameraOffset + new Vector3(
-                0,
-                (transform.position.y + currentZoomDistance),
-                (transform.position.z - currentZoomDistance)), Time.deltaTime);
-        tmpCameraPos.x = cameraOffset.x + (transform.position.x + currentRotation);
+        Vector3 tmpCameraPos = Vector3.Lerp(
+            m_camera.transform.position,
+            cameraOffset + new Vector3(0,(target.position.y + currentZoomDistance),(target.position.z - currentZoomDistance)),
+            Time.deltaTime);
+
+        tmpCameraPos.x = cameraOffset.x + (target.position.x + currentRotation);
         m_camera.transform.position = tmpCameraPos;
 
-        Vector3 cameraTarget = transform.position;
+        Vector3 cameraTarget = target.position;
         cameraTarget.y += targetHeightOffset;
         m_camera.transform.LookAt(cameraTarget);
     }

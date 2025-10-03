@@ -77,7 +77,7 @@ public class PlayerAnimatorController : MonoBehaviour
     {
         if (animator != null && navMeshAgent != null)
         {
-            animator.SetFloat(MovementSpeed, navMeshAgent.velocity.magnitude);
+            animator.SetFloat(MovementSpeed, navMeshAgent.velocity.magnitude/5f);
         }
     }
 
@@ -97,6 +97,17 @@ public class PlayerAnimatorController : MonoBehaviour
         }
     }
 
+    public void ClearActiveMoveable()
+    {
+        if (currentMoveable != null)
+        {
+            HandIkRig.weight = 0.0f;
+            rightHandTarget.transform.localPosition = initialRightHandPosition;
+            leftHandTarget.transform.localPosition = initialLeftHandPosition;
+            currentMoveable = null;
+        }
+    }
+
     public void SetActiveMoveable(Moveable movable)
     {
         currentMoveable = movable;
@@ -105,19 +116,13 @@ public class PlayerAnimatorController : MonoBehaviour
             PositionHandIK();
             HandIkRig.weight = 1.0f;
         }
-        else
-        {
-            HandIkRig.weight = 0.0f;
-            rightHandTarget.transform.localPosition = initialRightHandPosition;
-            leftHandTarget.transform.localPosition = initialLeftHandPosition;
-        }
     }
 
     private void PositionHandIK()
     {
         Vector3 rightHandDirection = (currentMoveable.transform.position + currentMoveable.HandPosition) - rightHandTarget.transform.position;
         Ray rightHandRay = new Ray(rightHandTarget.transform.position, rightHandDirection);
-        //Debug.DrawRay(rightHandRay.origin, rightHandRay.direction * 10, Color.green, 2.0f);
+        Debug.DrawRay(rightHandRay.origin, rightHandRay.direction * 10, Color.green, 2.0f);
 
         //Check if layer is interactable ((1 << 10) = 1024 = interactableLayer)
         if (Physics.Raycast(rightHandRay, out RaycastHit rightHit, 5.0f, 1 << 10))
@@ -128,7 +133,7 @@ public class PlayerAnimatorController : MonoBehaviour
 
         Vector3 leftHandDirection = (currentMoveable.transform.position + currentMoveable.HandPosition) - leftHandTarget.transform.position;
         Ray leftHandRay = new Ray(leftHandTarget.transform.position, leftHandDirection);
-        //Debug.DrawRay(leftHandRay.origin, leftHandRay.direction * 10, Color.green, 2.0f);
+        Debug.DrawRay(leftHandRay.origin, leftHandRay.direction * 10, Color.green, 2.0f);
 
         if (Physics.Raycast(leftHandRay, out RaycastHit leftHit, 5.0f, 1 << 10))
         {

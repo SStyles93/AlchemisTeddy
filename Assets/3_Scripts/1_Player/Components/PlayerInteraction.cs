@@ -1,14 +1,15 @@
-﻿using UnityEngine;
-using UnityEngine.AI;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System;
-using UnityEngine.EventSystems;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
-[RequireComponent(typeof(CharacterController), typeof(NavMeshAgent))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class PlayerInteraction : MonoBehaviour, ISaveable
 {
     [Header("Interaction Settings")]
@@ -30,8 +31,10 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
     // --- Private variables ---
     private bool isPointerOverUI = false;
     private bool isInteracting = false;
+    private bool enableObjectFacing = true;
     private Moveable currentMoveable = null;
     private Button3D currentButton3D;
+    private Coroutine moveAndPlaceCoroutine;
 
     // --- Debug Variable ---
     private Vector3 hitPosition = Vector3.zero;
@@ -49,6 +52,11 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
     {
         FaceMovementDirection();
         isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+        if (enableObjectFacing && currentMoveable != null) FaceObject(currentMoveable.gameObject);
+        if (currentMoveable != null && currentButton3D != null)
+        {
+            navMeshAgent.SetDestination(currentMoveable.GetPlayerPositionFromButton(currentButton3D));
+        }
     }
 
     public void HandleLeftClick(Ray ray)
@@ -66,10 +74,9 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         {
             if (isInteracting && currentMoveable != null)
             {
-                
-
                 if (hit.collider.TryGetComponent<Button3D>(out var button))
                 {
+                    StartPlacement(currentMoveable.GetPlayerPositionFromButton(button));
                     currentButton3D = button;
                     currentButton3D.Press();
                     return;
@@ -98,6 +105,7 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
                 else
                 {
                     ClearInteractingMode();
+                    StopPlacement();
                     //Debug.Log("Ground click cleared interaction mode!");
                 }
             }
@@ -128,24 +136,15 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         navMeshAgent.SetDestination(destination);
     }
 
-    /// <summary>
-    /// Sets the interacting mode on the Player
-    /// </summary>
-    /// <param name="setter">The IMoveable setter that asks for the mode</param>
-    public void SetInteractingMode(Moveable setter)
-    {
-        isInteracting = true;
-        currentMoveable = setter;
-    }
-
-    public void ClearInteractingMode()
+    // --- PRIVATE ---
+    private void ClearInteractingMode()
     {
         currentMoveable.Disable();
         isInteracting = false;
         currentMoveable = null;
+        GetComponent<PlayerCamera>().ClearTarget();
+        GetComponent<PlayerAnimatorController>().ClearActiveMoveable();
     }
-
-    // --- PRIVATE ---
 
     private void FaceMovementDirection()
     {
@@ -155,6 +154,15 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
         }
+    }
+
+    private void FaceObject(GameObject gameObject)
+    {
+        if (navMeshAgent.velocity.sqrMagnitude > 0.01f) return;
+
+        Vector3 direction = gameObject.transform.position - transform.position;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
     }
 
     private IEnumerator FollowAndInteractRoutine(GameObject target)
@@ -185,8 +193,57 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
             OnCollect?.Invoke(collectable as WorldItem);
             collectable.Collect(transform.GetComponent<PlayerInventoryManager>());
         }
+        if (target.TryGetComponent<Moveable>(out var moveable))
+        {
+            SetInteractingMode(moveable);
+        }
 
         followAndInteractCoroutine = null;
+    }
+
+    private IEnumerator PlacePlayer(Vector3 position)
+    {
+        GetComponent<PlayerAnimatorController>().ClearActiveMoveable();
+        currentMoveable.SetCanMove(false);
+
+        var agent = GetComponent<NavMeshAgent>();
+        agent.SetDestination(position);
+
+        while (Vector3.Distance(transform.position, position) > 0.1f)
+            yield return null;
+
+
+        //Debug.Log($"Player placed at {player.transform.position}");
+
+        while (!IsFacing(currentMoveable.gameObject))
+        {
+            enableObjectFacing = true;
+            yield return null;
+        }
+        enableObjectFacing = false;
+
+        // Activate hand IK Rig
+        GetComponent<PlayerAnimatorController>().SetActiveMoveable(currentMoveable);
+
+        currentMoveable.SetCanMove(true);
+        moveAndPlaceCoroutine = null;
+    }
+
+    private bool IsFacing(GameObject gameObject)
+    {
+        Vector3 objectDirection = (gameObject.transform.position - transform.position).normalized;
+        if (Vector3.Dot(objectDirection, transform.forward) <= 0.98f)
+        {
+            return false;
+        }
+        else return true;
+    }
+
+    private void SetInteractingMode(Moveable moveable)
+    {
+        currentMoveable = moveable;
+        isInteracting = true;
+        GetComponent<PlayerCamera>().SetTarget(currentMoveable.gameObject);
     }
 
     private void StartInteraction(GameObject target)
@@ -195,6 +252,21 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         StopInteraction();
         followAndInteractCoroutine = StartCoroutine(FollowAndInteractRoutine(target));
         //Debug.Log($"Coroutine - Started followAndInteractCoroutine");
+    }
+
+    public void StartPlacement(Vector3 position)
+    {
+        StopPlacement();
+        moveAndPlaceCoroutine = StartCoroutine(PlacePlayer(position));
+    }
+
+    private void StopPlacement()
+    {
+        if (moveAndPlaceCoroutine != null)
+        {
+            StopCoroutine(moveAndPlaceCoroutine);
+            moveAndPlaceCoroutine = null;
+        }
     }
 
     private void StopInteraction()

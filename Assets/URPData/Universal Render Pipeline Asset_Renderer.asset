@@ -140,10 +140,10 @@ MonoBehaviour:
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 10231
+    m_Bits: 26615
   m_TransparentLayerMask:
     serializedVersion: 2
-    m_Bits: 10231
+    m_Bits: 26615
   m_DefaultStencilState:
     overrideStencilState: 0
     stencilReference: 0

@@ -1,44 +1,47 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class Button3D : MonoBehaviour/*, IPointerDownHandler, IPointerUpHandler*/
 {
-    [SerializeField] private MeshRenderer buttonRenderer;
     [SerializeField] private float fadeTime = 1.0f;
+
+    private MeshRenderer buttonRenderer;
+    private BoxCollider buttonCollider;
+
+    private bool isEnabled = false;
     public bool buttonPressed;
-    private bool isFading = false;
 
     public event Action<Vector3> OnPressedEvents;
     public event Action OnReleasedEvents;
 
+    private Coroutine currentFadeRoutine = null;
 
     private void Awake()
     {
         buttonRenderer = GetComponent<MeshRenderer>();
+        buttonCollider = GetComponent<BoxCollider>();
     }
     private void Start()
     {
-        gameObject.SetActive(false);
+        buttonCollider.enabled = false;
         buttonRenderer.material.color = new Color(1, 1, 1, 0);
+        buttonRenderer.enabled = false;
     }
 
     private void Update()
     {
-        if (isFading) return;
-
+        if (currentFadeRoutine != null) return;
         if (buttonPressed)
         {
-            OnPressedEvents?.Invoke(this.transform.position);
+            OnPressedEvents?.Invoke(this.transform.localPosition);
+            //Debug.Log($"{this.gameObject} is pressed");
         }
     }
 
     private void LateUpdate()
     {
-        if (isFading) return;
+        if (currentFadeRoutine != null || !isEnabled) return;
 
         if (buttonPressed)
         {
@@ -81,8 +84,12 @@ public class Button3D : MonoBehaviour/*, IPointerDownHandler, IPointerUpHandler*
     /// </summary>
     public void DisableButton()
     {
+        if (!isEnabled) return;
         buttonRenderer.material.color = Color.white;
-        StartCoroutine(FadeButtonTo(0.0f, fadeTime, true));
+        if (currentFadeRoutine != null)
+            StopCoroutine(currentFadeRoutine);
+        currentFadeRoutine = StartCoroutine(FadeOutButton());
+        isEnabled = false;
     }
 
     /// <summary>
@@ -90,29 +97,42 @@ public class Button3D : MonoBehaviour/*, IPointerDownHandler, IPointerUpHandler*
     /// </summary>
     public void EnableButton()
     {
-        StartCoroutine(FadeButtonTo(1.0f, fadeTime));
+        if (isEnabled) return;
+        if (currentFadeRoutine != null)
+            StopCoroutine(currentFadeRoutine);
+        currentFadeRoutine = StartCoroutine(FadeInButton());
+        isEnabled = true;
     }
 
-    private IEnumerator FadeButtonTo(float targetAlpha, float duration, bool disableButtonAfterFade = false)
+    private IEnumerator FadeButtonTo(float targetAlpha, float duration)
     {
-        isFading = true;
-
-        Color arrowColor = buttonRenderer.material.color;
+        Color buttonColor = buttonRenderer.material.color;
         float startAlpha = buttonRenderer.material.color.a;
         float elapsed = 0f;
         while (elapsed < fadeTime)
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-            arrowColor.a = Mathf.Lerp(startAlpha, targetAlpha, t);
-            buttonRenderer.material.color = arrowColor;
+            buttonColor.a = Mathf.Lerp(startAlpha, targetAlpha, t);
+            buttonRenderer.material.color = buttonColor;
             yield return null;
         }
-        buttonRenderer.material.color = arrowColor;
+        buttonRenderer.material.color = buttonColor;
 
-        // Disable the button after the fade out
-        isFading = false;
-        if (disableButtonAfterFade) gameObject.SetActive(false);
+        currentFadeRoutine = null;
+    }
 
+    private IEnumerator FadeInButton()
+    {
+        buttonRenderer.enabled = true;
+        buttonCollider.enabled = true;
+        yield return FadeButtonTo(1.0f, fadeTime);
+    }
+
+    private IEnumerator FadeOutButton()
+    {
+        buttonCollider.enabled = false;
+        yield return FadeButtonTo(0.0f, fadeTime);
+        buttonRenderer.enabled = false;
     }
 }

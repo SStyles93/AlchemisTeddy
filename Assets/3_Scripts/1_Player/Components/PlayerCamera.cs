@@ -55,6 +55,11 @@ public class PlayerCamera : MonoBehaviour
         m_camera.transform.LookAt(cameraTarget);
     }
 
+    public void ClearTarget()
+    {
+        target = transform;
+    }
+
     /// <summary>
     /// Handle camera zoom based on mouse scroll wheel input
     /// </summary>
@@ -81,6 +86,11 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
+    public void SetTarget(GameObject gameObject)
+    {
+        target = gameObject.transform;
+    }
+
     private void ResetRotation()
     {
         if (Mathf.Abs(currentRotation) <= 0.01f)
@@ -91,4 +101,5 @@ public class PlayerCamera : MonoBehaviour
         currentRotation = Mathf.Lerp(currentRotation, 0f, rotationSpeed * 5 * Time.deltaTime);
         //Mathf.SmoothStep(currentRotation, 0, Time.deltaTime * rotationSpeed * 20.0f);
     }
+
 }

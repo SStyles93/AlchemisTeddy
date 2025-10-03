@@ -92,12 +92,12 @@ Material:
     - _Emission: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Radius: 0
+    - _Radius: 2.7494874e-13
     - _Smoothness: 0.5
     m_Colors:
     - _Base_Colour: {r: 1, g: 1, b: 1, a: 0}
     - _Emissive_Colour: {r: 0, g: 0, b: 0, a: 1}
     - _MaskEdges: {r: -0.2, g: 0.6, b: 0, a: 0}
-    - _PlayerPosition: {r: -3.1378489, g: 1.8734632, b: -1.0954175, a: 0}
+    - _PlayerPosition: {r: 1.9930917, g: 1.8734633, b: 0.003226837, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

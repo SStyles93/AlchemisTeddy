@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class TriggerTransition : MonoBehaviour
 {
@@ -27,11 +28,17 @@ public class TriggerTransition : MonoBehaviour
             GameObject player = other.gameObject;
             if (nextScene != SceneDatabase.Scenes.Null)
             {
+                SessionManager.Instance?.SaveScene(SceneManager.GetActiveScene().name);
                 player.GetComponent<PlayerInput>().enabled = false;
                 player.GetComponent<PlayerController>().enabled = false;
                 SessionManager.Instance?.LoadScene(NextScene);
 
             }
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        DrawArrow.ForGizmo(transform.localPosition + Vector3.forward, transform.position - (transform.localPosition + Vector3.forward) , Color.blueViolet);
     }
 }

@@ -11,6 +11,7 @@ public class MainMenuManager : MonoBehaviour
             .Unload(SceneDatabase.Scenes.MainMenu.ToString())
             .WithOverlay()
             .WithClearUnusedAssets()
+            .WithNewSession()
             .Perform();
     }
 

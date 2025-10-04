@@ -1,110 +1,14 @@
 {
   "sessionID": "1",
-  "timestamp": "2025-10-04T16:15:22.5688371+02:00",
+  "timestamp": "2025-10-04T20:02:07.6607737+02:00",
   "playerData": {
-    "position": {
-      "x": 2.14221239,
-      "y": 1.113045,
-      "z": -0.6313074
-    },
-    "rotation": {
-      "x": 0.0,
-      "y": -0.715911865,
-      "z": 0.0,
-      "w": 0.698190749
-    },
-    "scale": {
-      "x": 1.0,
-      "y": 1.0,
-      "z": 1.0
-    },
-    "inventoryItemIDs": [
-      "_4337cf3f-4cbc-42b0-a858-b8863b5e3509"
-    ],
+    "inventoryItemIDs": [],
     "playerHealth": 100.0
   },
   "sceneData": {
     "Core": {
-      "rootObjects": [
-        {
-          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
-          "name": "Player(Clone)",
-          "isActive": true,
-          "position": {
-            "x": 2.14221239,
-            "y": 1.113045,
-            "z": -0.6313074
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": -0.715911865,
-            "z": 0.0,
-            "w": 0.698190749
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "componentSaveData": {
-            "PlayerInteraction": {
-              "playerPosition": "2.142212,1.113045,-0.6313074"
-            },
-            "PlayerHealth": {
-              "currentHealth": "75",
-              "maxHealth": "100"
-            }
-          },
-          "children": []
-        }
-      ],
-      "savedWorldItems": [
-        {
-          "itemID": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
-          "position": {
-            "x": 1.91418016,
-            "y": 1.16483355,
-            "z": 3.08348036
-          },
-          "rotation": {
-            "x": 3.352761E-08,
-            "y": -4.86907E-08,
-            "z": -4.87198051E-08,
-            "w": 1.0
-          },
-          "scale": null
-        },
-        {
-          "itemID": "Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee",
-          "position": {
-            "x": 3.58408141,
-            "y": 1.5523684,
-            "z": 3.95021057
-          },
-          "rotation": {
-            "x": -1.82539139E-07,
-            "y": -0.9238796,
-            "z": -4.39766154E-07,
-            "w": 0.382683277
-          },
-          "scale": null
-        },
-        {
-          "itemID": "_67b0d69e-0e75-4710-840e-4f7ffd8c329c",
-          "position": {
-            "x": 6.98003,
-            "y": 0.5659996,
-            "z": 1.145
-          },
-          "rotation": {
-            "x": 6.8212094E-12,
-            "y": 1.33226752E-15,
-            "z": 1.47792872E-11,
-            "w": 1.0
-          },
-          "scale": null
-        }
-      ]
+      "rootObjects": [],
+      "savedWorldItems": []
     },
     "Session": {
       "rootObjects": [],
@@ -263,13 +167,44 @@
           "children": []
         },
         {
+          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
+          "name": "Player",
+          "isActive": true,
+          "position": {
+            "x": -1.73964965,
+            "y": 1.0734632,
+            "z": 0.135645777
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": -0.6293839,
+            "z": 1.401298E-45,
+            "w": 0.777094543
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "PlayerInteraction": {
+              "playerPosition": "-1.73965,1.073463,0.1356458"
+            },
+            "PlayerHealth": {
+              "currentHealth": "75",
+              "maxHealth": "100"
+            }
+          },
+          "children": []
+        },
+        {
           "uniqueID": "a87bd3df-196e-44d2-b3fb-d5efb7f5c4eb",
           "name": "Barrel_02_CV01_001",
           "isActive": true,
           "position": {
             "x": 4.422,
             "y": 1.0,
-            "z": 0.340520471
+            "z": -0.723
           },
           "rotation": {
             "x": -3.28312253E-17,
@@ -286,8 +221,69 @@
           "children": []
         }
       ],
-      "savedWorldItems": []
+      "savedWorldItems": [
+        {
+          "itemID": "Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee",
+          "position": {
+            "x": 3.58408141,
+            "y": 1.5523684,
+            "z": 3.95021057
+          },
+          "rotation": {
+            "x": -1.82539139E-07,
+            "y": -0.9238796,
+            "z": -4.39766154E-07,
+            "w": 0.382683277
+          },
+          "scale": null
+        },
+        {
+          "itemID": "_67b0d69e-0e75-4710-840e-4f7ffd8c329c",
+          "position": {
+            "x": 6.98003,
+            "y": 0.5659996,
+            "z": 1.145
+          },
+          "rotation": {
+            "x": 6.8212094E-12,
+            "y": 1.33226752E-15,
+            "z": 1.47792872E-11,
+            "w": 1.0
+          },
+          "scale": null
+        },
+        {
+          "itemID": "_4337cf3f-4cbc-42b0-a858-b8863b5e3509",
+          "position": {
+            "x": -4.481,
+            "y": 1.29693,
+            "z": -2.379
+          },
+          "rotation": {
+            "x": -2.27830158E-10,
+            "y": -4.20728549E-15,
+            "z": 1.14122241E-08,
+            "w": 1.0
+          },
+          "scale": null
+        },
+        {
+          "itemID": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
+          "position": {
+            "x": 1.91418016,
+            "y": 1.16483355,
+            "z": 3.08348036
+          },
+          "rotation": {
+            "x": 3.352761E-08,
+            "y": -4.86907E-08,
+            "z": -4.87198051E-08,
+            "w": 1.0
+          },
+          "scale": null
+        }
+      ]
     }
   },
-  "currentSceneName": "Core"
+  "currentSceneName": "LabScene"
 }

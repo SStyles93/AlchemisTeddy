@@ -135,6 +135,11 @@ public class SceneController : MonoBehaviour
             }
         }
 
+        if (plan.IsNewSession)
+        {
+            SessionManager.Instance.CreateNewSession();
+        }
+
         // Notify scene transition complete
         OnSceneTransitionComplete?.Invoke();
 
@@ -234,7 +239,7 @@ public class SceneController : MonoBehaviour
         public string ActiveScene;// Renamed to avoid confusion with string name
         public bool ClearUnusedAssets { get; private set; } = false;
         public bool Overlay { get; private set; } = false;
-        public bool IsSessionLoad { get; private set; } = false;
+        public bool IsNewSession { get; private set; } = false;
 
         public SceneTransitionPlan Load(string slotName, string scene, bool setActive = false)
         {
@@ -258,6 +263,11 @@ public class SceneController : MonoBehaviour
         public SceneTransitionPlan WithClearUnusedAssets()
         {
             ClearUnusedAssets = true;
+            return this;
+        }
+        public SceneTransitionPlan WithNewSession()
+        {
+            IsNewSession = true;
             return this;
         }
 

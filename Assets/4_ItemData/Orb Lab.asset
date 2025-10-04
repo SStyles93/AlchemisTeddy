@@ -24,5 +24,4 @@ MonoBehaviour:
   isStackable: 0
   itemID: _4337cf3f-4cbc-42b0-a858-b8863b5e3509
   orbScene: 4
-  savedScenes:
-  - ForestScene
+  savedScenes: []

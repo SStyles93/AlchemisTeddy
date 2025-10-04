@@ -6,10 +6,6 @@ using System.Collections.Generic;
 [System.Serializable]
 public class PlayerSaveData
 {
-    public Vector3Data position;
-    public QuaternionData rotation;
-    public Vector3Data scale;
-
     public List<string> inventoryItemIDs = new List<string>();
     public float playerHealth = 100f;
 }

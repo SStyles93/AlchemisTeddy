@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/0_Scenes/Menus/MainMenu.unity
     guid: 232871630ace3f149bf23ad4ee246aa8
   - enabled: 1
-    path: Assets/0_Scenes/Menus/SavedGameMenu.unity
+    path: Assets/0_Scenes/Menus/SavedGamesMenu.unity
     guid: ab35b59aa21e4c04a867ccfb131b095e
   - enabled: 1
     path: Assets/0_Scenes/Session.unity
@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/0_Scenes/GameScenes/LabScene.unity
     guid: affb091a269f84b4b8fcdb4d51353c31
+  - enabled: 1
+    path: Assets/0_Scenes/GameScenes/LabCave.unity
+    guid: 6f8ff1900153b454eaf55853e4c4538b
   - enabled: 1
     path: Assets/0_Scenes/GameScenes/ForestScene.unity
     guid: 2bf35cff85482824f8638578947d92de

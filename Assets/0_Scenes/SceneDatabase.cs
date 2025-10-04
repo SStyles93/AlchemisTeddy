@@ -21,6 +21,7 @@ public class SceneDatabase : MonoBehaviour
         SavedGamesMenu,
         Session,
         LabScene,
+        LabCave,
         ForestScene
     }
 }

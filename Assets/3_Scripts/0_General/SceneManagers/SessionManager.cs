@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class SessionManager : MonoBehaviour
 {
@@ -37,6 +35,20 @@ public class SessionManager : MonoBehaviour
     {
         // This method is called by the SceneController when the scene transition is complete
         SceneController.Instance.OnSceneTransitionComplete -= RestoreSessionStateAfterSceneLoad;
+    }
+
+    // --------------- CREATE SESSION -------------
+
+    /// <summary>
+    /// Creates a temporary SessionSaveData
+    /// </summary>
+    public void CreateNewSession()
+    {
+        currentSessionData = new SessionSaveData
+        {
+            sessionID = "TEMP",
+            timestamp = DateTime.Now,
+        };
     }
 
     // ---------------- SAVE ----------------
@@ -80,6 +92,23 @@ public class SessionManager : MonoBehaviour
         }
     }
 
+    public void SaveScene(string sceneName)
+    {
+        // 1. Save Player Data
+        CapturePlayerData();
+
+        // 2. Save all loaded scenes data
+        for (int i = 0; i < SceneManager.sceneCount;
+         i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.isLoaded)
+            {
+                currentSessionData.sceneData[scene.name] = CaptureSceneData(scene);
+            }
+        }
+    }
+
     private void CapturePlayerData()
     {
         // Find the player if not already referenced
@@ -97,9 +126,6 @@ public class SessionManager : MonoBehaviour
 
         PlayerSaveData playerData = new PlayerSaveData();
 
-        playerData.position = new Vector3Data(currentPlayerInstance.transform.position);
-        playerData.rotation = new QuaternionData(currentPlayerInstance.transform.rotation);
-        playerData.scale = new Vector3Data(currentPlayerInstance.transform.localScale);
 
         // Example: Save inventory (requires PlayerInventoryManager component on player)
         PlayerInventoryManager inventoryManager = currentPlayerInstance.GetComponent<PlayerInventoryManager>();
@@ -342,10 +368,19 @@ public class SessionManager : MonoBehaviour
         foreach (var sceneEntry in currentSessionData.sceneData)
         {
             Scene scene = SceneManager.GetSceneByName(sceneEntry.Key);
+            if (scene.name == "Core" || scene.name == "Session") continue;
             if (scene.isLoaded)
             {
                 RestoreSceneData(scene, sceneEntry.Value);
             }
+        }
+
+        // If there is no data of the currently active scene place the player at the "StartPosition" in that scene
+        if (!currentSessionData.sceneData.ContainsKey(SceneManager.GetActiveScene().name))
+        {
+            Transform playerStartTransform = GameObject.FindGameObjectWithTag("PlayerStart").transform;
+            currentPlayerInstance.transform.SetPositionAndRotation(playerStartTransform.position, playerStartTransform.rotation);
+            // Possible scale of player (TO SEE LATER);
         }
 
         Debug.Log($"Session \'{currentSessionData.sessionID}\' loaded successfully.");
@@ -365,10 +400,6 @@ public class SessionManager : MonoBehaviour
             Debug.LogError("Player prefab not assigned and player not found in scene. Cannot restore player.");
             return;
         }
-
-        currentPlayerInstance.transform.position = currentSessionData.playerData.position.ToVector3();
-        currentPlayerInstance.transform.rotation = currentSessionData.playerData.rotation.ToQuaternion();
-        currentPlayerInstance.transform.localScale = currentSessionData.playerData.scale.ToVector3();
 
         // Restore inventory
         PlayerInventoryManager inventoryManager = currentPlayerInstance.GetComponent<PlayerInventoryManager>();
@@ -481,8 +512,9 @@ public class SessionManager : MonoBehaviour
     public void InstantiatePlayer()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) Destroy(player);
-        currentPlayerInstance = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        if (player == null)
+            currentPlayerInstance = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        else currentPlayerInstance = player;
     }
 
     // Public method to get current session data (e.g., for UI display)

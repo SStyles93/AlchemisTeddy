@@ -121,7 +121,7 @@ public class DynamicOcclusionCutoutSystem : MonoBehaviour
 
         if (m_target == null || m_camera == null || m_material == null || !enableGizmos) return;
 
-        Vector3 origin = m_target.position;
+        Vector3 origin = m_target.position + (Vector3.up * targetHeightCorrection);
         Vector3 dir = direction.normalized;
         Vector3 end = m_camera.transform.position;
 

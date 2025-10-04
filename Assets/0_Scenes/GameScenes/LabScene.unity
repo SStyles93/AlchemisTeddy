@@ -430,6 +430,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3176067851068555302, guid: 7a165ecc07896214985caa0fc9147d3d, type: 3}
   m_PrefabInstance: {fileID: 2260780331648317353}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1222375670
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1222375671}
+  m_Layer: 0
+  m_Name: PlayerStart
+  m_TagString: PlayerStart
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1222375671
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222375670}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -3.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1359678587
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,6 +879,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Altar
       objectReference: {fileID: 0}
+    - target: {fileID: 3774837381287935534, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3774837381287935534, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b6d36d4d650ba754e9590f0a597a795f, type: 2}
+    - target: {fileID: 3774837381287935534, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b6d36d4d650ba754e9590f0a597a795f, type: 2}
     - target: {fileID: 4470375840551360788, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.48988
@@ -910,6 +953,22 @@ PrefabInstance:
     - target: {fileID: 1919126896603618001, guid: 4f15ee181b7923643bdb4f83352c2110, type: 3}
       propertyPath: m_Name
       value: Barrel_02_CV01_001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161276440430360203, guid: 4f15ee181b7923643bdb4f83352c2110, type: 3}
+      propertyPath: directions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161276440430360203, guid: 4f15ee181b7923643bdb4f83352c2110, type: 3}
+      propertyPath: 'directions.Array.data[1]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161276440430360203, guid: 4f15ee181b7923643bdb4f83352c2110, type: 3}
+      propertyPath: 'directions.Array.data[2]'
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161276440430360203, guid: 4f15ee181b7923643bdb4f83352c2110, type: 3}
+      propertyPath: 'directions.Array.data[3]'
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8498303272480906165, guid: 4f15ee181b7923643bdb4f83352c2110, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1400,13 +1459,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 908827633077093374, guid: 001eb62f59167554da3cd450e6e65380, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2077714655869771409, guid: 001eb62f59167554da3cd450e6e65380, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.25
+      value: 2.375
       objectReference: {fileID: 0}
     - target: {fileID: 2077714655869771409, guid: 001eb62f59167554da3cd450e6e65380, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.385
+      value: 2.6350002
       objectReference: {fileID: 0}
     - target: {fileID: 2077714655869771409, guid: 001eb62f59167554da3cd450e6e65380, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1811,3 +1874,4 @@ SceneRoots:
   - {fileID: 1891987636}
   - {fileID: 363707857}
   - {fileID: 5262257542399131691}
+  - {fileID: 1222375671}

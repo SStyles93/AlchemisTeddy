@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Wall_Universal(DOS)
-  m_Shader: {fileID: -6465566751694194690, guid: ef2c963da0fe97844b84f67ae15c2964, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: f908f11020abebc4eb586b980e5e76e4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,7 +38,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Base_Map:
-        m_Texture: {fileID: 2800000, guid: 86a189d1b84d02a4cb78b7cf201ac803, type: 3}
+        m_Texture: {fileID: 2800000, guid: 76f9c2454ae384a45a58e7fc274ea8f5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emission_Map:
@@ -56,6 +56,10 @@ Material:
     - _MaskTexture:
         m_Texture: {fileID: 2800000, guid: 16d790fd6c4c79a469a515f5f985f98e, type: 3}
         m_Scale: {x: 0, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask_Texture:
+        m_Texture: {fileID: 2800000, guid: 16d790fd6c4c79a469a515f5f985f98e, type: 3}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Metallic_Map:
         m_Texture: {fileID: 2800000, guid: 21a02b57675efeb4fb9c74ad6c52d85d, type: 3}
@@ -90,14 +94,16 @@ Material:
     - _BOOLEAN: 0
     - _Edge: 4
     - _Emission: 0
+    - _Metalness: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Radius: 0.0006663004
+    - _Radius: 0
     - _Smoothness: 0.5
     m_Colors:
     - _Base_Colour: {r: 1, g: 1, b: 1, a: 0}
     - _Emissive_Colour: {r: 0, g: 0, b: 0, a: 1}
     - _MaskEdges: {r: -0.2, g: 0.6, b: 0, a: 0}
-    - _PlayerPosition: {r: 2.0988808, g: 1.9127477, b: -0.6351324, a: 0}
+    - _PlayerPosition: {r: -0.7471421, g: 1.8734624, b: -0.224759, a: 0}
+    - _Target_Position: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

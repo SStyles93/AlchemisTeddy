@@ -3,6 +3,26 @@ using System.Collections.Generic;
 
 // --- Main Save File Structure ---
 
+[System.Serializable]
+public class PlayerSaveData
+{
+    public Vector3Data position;
+    public QuaternionData rotation;
+    public Vector3Data scale;
+
+    public List<string> inventoryItemIDs = new List<string>();
+    public float playerHealth = 100f;
+}
+
+[System.Serializable]
+public class WorldItemSaveData
+{
+    public string itemID; // The ID of the ItemData ScriptableObject
+    public Vector3Data position;
+    public QuaternionData rotation;
+    public Vector3Data scale;
+}
+
 /// <summary>
 /// Represents the saved state of a single GameObject and its children.
 /// </summary>
@@ -20,7 +40,6 @@ public class GameObjectSaveData
     public Vector3Data scale;
 
     // Specific Component Data
-    // Key: The component's Type name (e.g., "PlayerHealth").
     // Value: The state data for that specific component.
     public Dictionary<string, Dictionary<string, string>> componentSaveData;
 
@@ -34,16 +53,7 @@ public class GameObjectSaveData
     }
 }
 
-[System.Serializable]
-public class PlayerSaveData
-{
-    public Vector3Data position;
-    public QuaternionData rotation;
-    public Vector3Data scale;
 
-    public List<string> inventoryItemIDs = new List<string>();
-    public float playerHealth = 100f;
-}
 
 /// <summary>
 /// The root container for the entire scene save data.
@@ -64,19 +74,13 @@ public class SceneSaveData
 [System.Serializable]
 public class SessionSaveData
 {
-    public string sessionID;
-    public DateTime timestamp;
-    public PlayerSaveData playerData;
-    public Dictionary<string, SceneSaveData> sceneData = new Dictionary<string, SceneSaveData>();
-    public string currentSceneName;
+    public string sessionID; // ID or name of the session
+    public DateTime timestamp; // Date-Time at which the game was saved
+    public PlayerSaveData playerData; // The data of the player
+    public Dictionary<string, SceneSaveData> sceneData = new Dictionary<string, SceneSaveData>(); // The dictionary holding the kvp sceneName - SceneSave Data
+    public string currentSceneName; // The current active scene when saving
 }
 
-[System.Serializable]
-public class WorldItemSaveData
-{
-    public string itemID; // The ID of the ItemData ScriptableObject
-    public Vector3Data position;
-    public QuaternionData rotation;
-}
+
 
 

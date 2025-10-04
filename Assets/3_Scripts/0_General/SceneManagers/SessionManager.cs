@@ -219,7 +219,7 @@ public class SessionManager : MonoBehaviour
             {
                 Scene scene = SceneManager.GetSceneAt(i);
                 // Exclude persistent scenes or scenes that are part of the new session
-                if (scene.name != "Core" || scene.name != "Session") continue;
+                if (scene.name == "Core" || scene.name == "Session") continue;
                 if (scene.isLoaded && !scenesToLoad.Contains(scene.name))
                 {
                     scenesToUnload.Add(scene.name);
@@ -445,11 +445,32 @@ public class SessionManager : MonoBehaviour
         }
     }
 
+    // --- HELPERS ---
+
     private GameObject FindItemPrefabByID(string itemID, Dictionary<string, ItemData> itemDataLookup)
     {
         if (string.IsNullOrEmpty(itemID)) return null;
         return itemDataLookup.TryGetValue(itemID, out ItemData itemData) ? itemData.prefab : null;
     }
+
+    public SessionSaveData GetSessionFileInfo(string sessionName)
+    {
+        if (string.IsNullOrEmpty(sessionName))
+        {
+            Debug.LogError("Session name cannot be empty.");
+            return null;
+        }
+
+        SessionSaveData loadedData = dataService.Load<SessionSaveData>(GetSessionFileName(sessionName));
+        if (loadedData == null)
+        {
+            Debug.LogWarning($"No session \'{sessionName}\' found.");
+            return null;
+        }
+
+        return loadedData;
+    }
+
 
     private string GetSessionFileName(string sessionName)
     {

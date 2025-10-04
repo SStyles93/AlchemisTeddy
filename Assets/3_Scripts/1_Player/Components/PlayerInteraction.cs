@@ -357,7 +357,7 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
                 // to avoid conflicts with the physics/navigation systems.
                 transform.position = new Vector3(x, y, z);
             }
-            navMeshAgent.destination = transform.position;
+            navMeshAgent.Warp(transform.position);
         }
     }
 

@@ -261,9 +261,9 @@ public class SceneController : MonoBehaviour
             return this;
         }
 
-        public IEnumerator Perform()
+        public void Perform()
         {
-            yield return SceneController.Instance.ExecutePlan(this);
+            SceneController.Instance.StartCoroutine(SceneController.Instance.ExecutePlan(this));
         }
     }
 

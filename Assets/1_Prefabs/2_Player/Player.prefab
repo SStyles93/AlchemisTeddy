@@ -1153,6 +1153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3176067851068555302}
   - component: {fileID: 6750853280577945244}
+  - component: {fileID: 4527443461171355350}
   - component: {fileID: 5630482857562946837}
   - component: {fileID: 5817914505625111359}
   - component: {fileID: 8737750922930600569}
@@ -1216,10 +1217,33 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &4527443461171355350
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3165869313887906202}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!195 &5630482857562946837
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1610,7 +1634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d040fdc457e4d74784f8135ce7a6805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionDistance: 1.4
+  interactionDistance: 1.5
   interactableLayer:
     serializedVersion: 2
     m_Bits: 17408
@@ -1803,8 +1827,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4635088944312255447}
-        m_TargetAssemblyTypeName: SaveableEntity, Assembly-CSharp
+      - m_Target: {fileID: 9073789194449591258}
+        m_TargetAssemblyTypeName: PlayerSaving, Assembly-CSharp
         m_MethodName: SaveGame
         m_Mode: 1
         m_Arguments:
@@ -2038,6 +2062,7 @@ GameObject:
   - component: {fileID: 5441420013343315133}
   - component: {fileID: 3385733124379637991}
   - component: {fileID: 4848320956324607120}
+  - component: {fileID: 9073789194449591258}
   m_Layer: 5
   m_Name: Save Pannel
   m_TagString: Untagged
@@ -2104,6 +2129,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9073789194449591258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3693094194142672934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 137220a1ee9a2f943aebc2f8a9aa9014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4046977663444089131
 GameObject:
   m_ObjectHideFlags: 0
@@ -2547,8 +2584,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4635088944312255447}
-        m_TargetAssemblyTypeName: SaveableEntity, Assembly-CSharp
+      - m_Target: {fileID: 9073789194449591258}
+        m_TargetAssemblyTypeName: PlayerSaving, Assembly-CSharp
         m_MethodName: LoadGame
         m_Mode: 1
         m_Arguments:

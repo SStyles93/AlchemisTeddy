@@ -73,10 +73,39 @@ public class JsonDataService : IDataService
 
     public IEnumerable<string> ListSaves()
     {
-        // This method should return a list of available save files.
-        // For now, it's left as a placeholder.
-        Debug.LogWarning("ListSaves not fully implemented. Implement with caution.");
-        return new List<string>();
+        string directoryPath;
+
+#if UNITY_EDITOR
+        directoryPath = Application.dataPath;
+#else
+    directoryPath = Application.persistentDataPath;
+#endif
+
+        try
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Debug.LogWarning($"Directory not found: {directoryPath}");
+                return new List<string>();
+            }
+
+            // Get all files starting with "session_" and ending with ".json"
+            string[] files = Directory.GetFiles(directoryPath, "session_*.json");
+
+            // Convert full paths to file names only (without directory)
+            List<string> saveFiles = new List<string>();
+            foreach (string file in files)
+            {
+                saveFiles.Add(Path.GetFileName(file));
+            }
+
+            return saveFiles;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Could not list save files: {e.Message}");
+            return new List<string>();
+        }
     }
 
     private string GetPath(string fileName)

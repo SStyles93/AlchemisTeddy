@@ -8,7 +8,7 @@ public class MainMenuManager : MonoBehaviour
             .NewTransition()
             .Load(SceneDatabase.Slots.Session, SceneDatabase.Scenes.Session.ToString())
             .Load(SceneDatabase.Slots.SessionContent, SceneDatabase.Scenes.LabScene.ToString())
-            .Unload(SceneDatabase.Slots.Menu)
+            .Unload(SceneDatabase.Scenes.MainMenu.ToString())
             .WithOverlay()
             .WithClearUnusedAssets()
             .Perform();
@@ -18,8 +18,9 @@ public class MainMenuManager : MonoBehaviour
     {
         SceneController.Instance
             .NewTransition()
+            .Load(SceneDatabase.Slots.Session, SceneDatabase.Scenes.Session.ToString())
             .Load(SceneDatabase.Slots.Menu, SceneDatabase.Scenes.SavedGamesMenu.ToString())
-            .Unload(SceneDatabase.Slots.Menu)
+            .Unload(SceneDatabase.Scenes.MainMenu.ToString())
             .WithOverlay()
             .WithClearUnusedAssets()
             .Perform();

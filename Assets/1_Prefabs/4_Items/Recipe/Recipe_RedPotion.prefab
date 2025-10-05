@@ -18,7 +18,7 @@ GameObject:
   m_Layer: 10
   m_Name: Recipe_RedPotion
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -175,6 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17373cd7b95bf4145a491b3748e04793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectName: 
   itemData: {fileID: 11400000, guid: 8f506fef7d6970442991c72ef9a64e76, type: 2}
 --- !u!1001 &1672164839363648589
 PrefabInstance:

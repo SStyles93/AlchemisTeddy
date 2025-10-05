@@ -17,7 +17,7 @@ GameObject:
   m_Layer: 10
   m_Name: PortalOrb
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.5, y: 1.92, z: -1.701}
-  m_LocalScale: {x: 0.51386, y: 0.51386005, z: 0.51386}
+  m_LocalScale: {x: 0.36745545, y: 0.36745548, z: 0.36745545}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7857515748856341781}

@@ -8,6 +8,7 @@ public class TriggerTransition : MonoBehaviour
     [SerializeField] SceneDatabase.Scenes nextScene = SceneDatabase.Scenes.Null;
     public string NextScene { get => nextScene.ToString(); }
 
+    [SerializeField] Transform playerPostition;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +29,7 @@ public class TriggerTransition : MonoBehaviour
             GameObject player = other.gameObject;
             if (nextScene != SceneDatabase.Scenes.Null)
             {
-                SessionManager.Instance?.SaveScene(SceneManager.GetActiveScene().name);
+                SessionManager.Instance?.SaveScene(SceneManager.GetActiveScene().name, playerPostition);
                 player.GetComponent<PlayerInput>().enabled = false;
                 player.GetComponent<PlayerController>().enabled = false;
                 SessionManager.Instance?.LoadScene(NextScene);
@@ -39,6 +40,17 @@ public class TriggerTransition : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        DrawArrow.ForGizmo(transform.localPosition + Vector3.forward, transform.position - (transform.localPosition + Vector3.forward) , Color.blueViolet);
+        DrawArrow.ForGizmo(
+            transform.localPosition + transform.forward, 
+            transform.position - (transform.localPosition + transform.forward), 
+            Color.blueViolet,
+            .5f,20,0.05f);
+
+        DrawArrow.ForGizmo(
+            playerPostition.position, 
+            (playerPostition.transform.position + playerPostition.transform.forward) -  playerPostition.transform.position,
+            Color.green,
+            .25f, 20, 0.05f);
+
     }
 }

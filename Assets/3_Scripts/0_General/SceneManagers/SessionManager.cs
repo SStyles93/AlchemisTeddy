@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 public class SessionManager : MonoBehaviour
@@ -52,9 +53,9 @@ public class SessionManager : MonoBehaviour
     }
 
     // ---------------- SAVE ----------------
-    public void SaveSession(string sessionName)
+    public void SaveSession(string sessionID)
     {
-        if (string.IsNullOrEmpty(sessionName))
+        if (string.IsNullOrEmpty(sessionID))
         {
             Debug.LogError("Session name cannot be empty.");
             return;
@@ -62,7 +63,7 @@ public class SessionManager : MonoBehaviour
 
         currentSessionData = new SessionSaveData
         {
-            sessionID = sessionName,
+            sessionID = sessionID,
             timestamp = DateTime.Now,
             currentSceneName = SceneManager.GetActiveScene().name
         };
@@ -81,15 +82,8 @@ public class SessionManager : MonoBehaviour
             }
         }
 
-        // 3. Save the session file
-        if (dataService.Save(currentSessionData, GetSessionFileName(sessionName), true))
-        {
-            Debug.Log($"Session \'{sessionName}\' saved successfully.");
-        }
-        else
-        {
-            Debug.LogError($"Failed to save session \'{sessionName}\'\n");
-        }
+        // 3. Save file changes
+        SaveFile(sessionID);
     }
 
     public void SaveScene(string sceneName)
@@ -98,8 +92,7 @@ public class SessionManager : MonoBehaviour
         CapturePlayerData();
 
         // 2. Save all loaded scenes data
-        for (int i = 0; i < SceneManager.sceneCount;
-         i++)
+        for (int i = 0; i < SceneManager.sceneCount; i++)
         {
             Scene scene = SceneManager.GetSceneAt(i);
             if (scene.isLoaded)
@@ -107,6 +100,37 @@ public class SessionManager : MonoBehaviour
                 currentSessionData.sceneData[scene.name] = CaptureSceneData(scene);
             }
         }
+
+        // 3. Save the session file
+        SaveFile(currentSessionData.sessionID);
+    }
+
+    public void SaveScene(string sceneName, Transform savedTransform)
+    {
+        // 1. Save Player Data
+        CapturePlayerData();
+
+        // 2. Save all loaded scenes data
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.name == "Core" || scene.name == "Session") continue;
+            if (scene.isLoaded)
+            {
+                currentSessionData.sceneData[scene.name] = CaptureSceneData(scene);
+
+                // Save the position of the player
+                currentSessionData.sceneData[scene.name].playerSavedPosition = new PlayerSavedPosition()
+                {
+                    position = new Vector3Data(savedTransform.position),
+                    rotation = new QuaternionData(savedTransform.rotation),
+                    scale = new Vector3Data(savedTransform.localScale)
+                };
+            }
+        }
+
+        // 3. Save the session file
+        SaveFile(currentSessionData.sessionID);
     }
 
     private void CapturePlayerData()
@@ -372,15 +396,27 @@ public class SessionManager : MonoBehaviour
             if (scene.isLoaded)
             {
                 RestoreSceneData(scene, sceneEntry.Value);
+
+                // If player had a saved position place him there
+                if (sceneEntry.Value.playerSavedPosition != null)
+                {
+                    // Set of the player's transform 
+                    currentPlayerInstance.transform.SetPositionAndRotation(
+                       sceneEntry.Value.playerSavedPosition.position.ToVector3(),
+                       sceneEntry.Value.playerSavedPosition.rotation.ToQuaternion());
+                    currentPlayerInstance.transform.localScale = sceneEntry.Value.playerSavedPosition.scale.ToVector3();
+                    currentPlayerInstance.GetComponent<NavMeshAgent>().Warp(currentPlayerInstance.transform.position);
+                }
             }
         }
 
-        // If there is no data of the currently active scene place the player at the "StartPosition" in that scene
+        // If there is no data for the currently active scene place the player at the "StartPosition" in that scene
         if (!currentSessionData.sceneData.ContainsKey(SceneManager.GetActiveScene().name))
         {
             Transform playerStartTransform = GameObject.FindGameObjectWithTag("PlayerStart").transform;
             currentPlayerInstance.transform.SetPositionAndRotation(playerStartTransform.position, playerStartTransform.rotation);
-            // Possible scale of player (TO SEE LATER);
+            currentPlayerInstance.transform.localScale = playerStartTransform.localScale;
+            currentPlayerInstance.GetComponent<NavMeshAgent>().Warp(currentPlayerInstance.transform.position);
         }
 
         Debug.Log($"Session \'{currentSessionData.sessionID}\' loaded successfully.");
@@ -484,6 +520,12 @@ public class SessionManager : MonoBehaviour
         return itemDataLookup.TryGetValue(itemID, out ItemData itemData) ? itemData.prefab : null;
     }
 
+    // Public method to get current session data (e.g., for UI display)
+    public SessionSaveData GetCurrentSessionData()
+    {
+        return currentSessionData;
+    }
+
     public SessionSaveData GetSessionFileInfo(string sessionName)
     {
         if (string.IsNullOrEmpty(sessionName))
@@ -502,7 +544,6 @@ public class SessionManager : MonoBehaviour
         return loadedData;
     }
 
-
     private string GetSessionFileName(string sessionName)
     {
         return $"{SESSION_FILE_PREFIX}{sessionName}.json";
@@ -517,12 +558,6 @@ public class SessionManager : MonoBehaviour
         else currentPlayerInstance = player;
     }
 
-    // Public method to get current session data (e.g., for UI display)
-    public SessionSaveData GetCurrentSessionData()
-    {
-        return currentSessionData;
-    }
-
     // Method to list available save sessions
     public IEnumerable<string> ListAvailableSessions()
     {
@@ -530,6 +565,19 @@ public class SessionManager : MonoBehaviour
         // A more robust implementation might involve reading metadata from each save file.
         return dataService.ListSaves().Where(fileName => fileName.StartsWith(SESSION_FILE_PREFIX) && fileName.EndsWith(".json"))
                            .Select(fileName => fileName.Replace(SESSION_FILE_PREFIX, "").Replace(".json", ""));
+    }
+
+    private void SaveFile(string sessionID, bool writeOverride = true)
+    {
+        // 3. Save the session file
+        if (dataService.Save(currentSessionData, GetSessionFileName(sessionID), writeOverride))
+        {
+            Debug.Log($"Session \'{sessionID}\' saved successfully.");
+        }
+        else
+        {
+            Debug.LogError($"Failed to save session \'{sessionID}\'\n");
+        }
     }
 }
 

@@ -1,19 +1,11 @@
 {
   "sessionID": "1",
-  "timestamp": "2025-10-04T20:02:07.6607737+02:00",
+  "timestamp": "2025-10-05T11:38:25.5704958+02:00",
   "playerData": {
     "inventoryItemIDs": [],
     "playerHealth": 100.0
   },
   "sceneData": {
-    "Core": {
-      "rootObjects": [],
-      "savedWorldItems": []
-    },
-    "Session": {
-      "rootObjects": [],
-      "savedWorldItems": []
-    },
     "LabScene": {
       "rootObjects": [
         {
@@ -171,15 +163,15 @@
           "name": "Player",
           "isActive": true,
           "position": {
-            "x": -1.73964965,
-            "y": 1.0734632,
-            "z": 0.135645777
+            "x": 1.66266179,
+            "y": 1.1053592,
+            "z": -0.7599756
           },
           "rotation": {
-            "x": 0.0,
-            "y": -0.6293839,
-            "z": 1.401298E-45,
-            "w": 0.777094543
+            "x": 0.0008359688,
+            "y": -0.7380432,
+            "z": -0.0009143772,
+            "w": -0.6747524
           },
           "scale": {
             "x": 1.0,
@@ -188,7 +180,7 @@
           },
           "componentSaveData": {
             "PlayerInteraction": {
-              "playerPosition": "-1.73965,1.073463,0.1356458"
+              "playerPosition": "1.662662,1.105359,-0.7599756"
             },
             "PlayerHealth": {
               "currentHealth": "75",
@@ -223,31 +215,46 @@
       ],
       "savedWorldItems": [
         {
+          "itemID": "_67b0d69e-0e75-4710-840e-4f7ffd8c329c",
+          "position": {
+            "x": 6.98003,
+            "y": 0.5659994,
+            "z": 1.145
+          },
+          "rotation": {
+            "x": 1.00044409E-11,
+            "y": 1.77635663E-15,
+            "z": 2.22826167E-11,
+            "w": 1.0
+          },
+          "scale": null
+        },
+        {
           "itemID": "Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee",
           "position": {
-            "x": 3.58408141,
+            "x": 3.584081,
             "y": 1.5523684,
             "z": 3.95021057
           },
           "rotation": {
             "x": -1.82539139E-07,
             "y": -0.9238796,
-            "z": -4.39766154E-07,
+            "z": -4.398571E-07,
             "w": 0.382683277
           },
           "scale": null
         },
         {
-          "itemID": "_67b0d69e-0e75-4710-840e-4f7ffd8c329c",
+          "itemID": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
           "position": {
-            "x": 6.98003,
-            "y": 0.5659996,
-            "z": 1.145
+            "x": 1.91407752,
+            "y": 1.16481662,
+            "z": 3.08345532
           },
           "rotation": {
-            "x": 6.8212094E-12,
-            "y": 1.33226752E-15,
-            "z": 1.47792872E-11,
+            "x": 3.25962866E-08,
+            "y": -4.883622E-08,
+            "z": -6.373738E-08,
             "w": 1.0
           },
           "scale": null
@@ -266,23 +273,90 @@
             "w": 1.0
           },
           "scale": null
+        }
+      ],
+      "playerSavedPosition": {
+        "position": {
+          "x": 1.407703,
+          "y": 1.17400026,
+          "z": -0.730999947
         },
+        "rotation": {
+          "x": 0.0,
+          "y": -0.707106769,
+          "z": 0.0,
+          "w": 0.7071069
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      }
+    },
+    "Core": {
+      "rootObjects": [],
+      "savedWorldItems": [],
+      "playerSavedPosition": null
+    },
+    "Session": {
+      "rootObjects": [],
+      "savedWorldItems": [],
+      "playerSavedPosition": null
+    },
+    "LabCave": {
+      "rootObjects": [
         {
-          "itemID": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
+          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
+          "name": "Player",
+          "isActive": true,
           "position": {
-            "x": 1.91418016,
-            "y": 1.16483355,
-            "z": 3.08348036
+            "x": 0.656831861,
+            "y": 5.0215416,
+            "z": 3.15202665
           },
           "rotation": {
-            "x": 3.352761E-08,
-            "y": -4.86907E-08,
-            "z": -4.87198051E-08,
-            "w": 1.0
+            "x": 0.0008094691,
+            "y": 0.7672373,
+            "z": -0.000969483634,
+            "w": 0.641362131
           },
-          "scale": null
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "PlayerInteraction": {
+              "playerPosition": "0.6568319,5.021542,3.152027"
+            },
+            "PlayerHealth": {
+              "currentHealth": "75",
+              "maxHealth": "100"
+            }
+          },
+          "children": []
         }
-      ]
+      ],
+      "savedWorldItems": [],
+      "playerSavedPosition": {
+        "position": {
+          "x": 0.227756143,
+          "y": 5.375,
+          "z": 3.165234
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": -0.707106769,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      }
     }
   },
   "currentSceneName": "LabScene"

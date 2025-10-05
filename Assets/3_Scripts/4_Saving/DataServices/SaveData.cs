@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 
@@ -49,7 +50,13 @@ public class GameObjectSaveData
     }
 }
 
-
+[System.Serializable]
+public class PlayerSavedPosition
+{
+    public Vector3Data position;
+    public QuaternionData rotation;
+    public Vector3Data scale;
+}
 
 /// <summary>
 /// The root container for the entire scene save data.
@@ -60,6 +67,8 @@ public class SceneSaveData
     // A list of all the root-level objects in the scene that are saveable.
     public List<GameObjectSaveData> rootObjects;
     public List<WorldItemSaveData> savedWorldItems;
+    public PlayerSavedPosition playerSavedPosition;
+
     public SceneSaveData()
     {
         rootObjects = new List<GameObjectSaveData>();

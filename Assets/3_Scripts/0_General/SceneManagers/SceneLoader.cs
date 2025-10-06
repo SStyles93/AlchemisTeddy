@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class TriggerTransition : MonoBehaviour
+[RequireComponent(typeof(BoxCollider))]
+public class SceneLoader : MonoBehaviour
 {
     [Header("Scene transition settings")]
     [SerializeField] SceneDatabase.Scenes nextScene = SceneDatabase.Scenes.Null;

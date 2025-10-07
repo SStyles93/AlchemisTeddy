@@ -11,30 +11,26 @@ public class SceneLoader : MonoBehaviour
 
     [SerializeField] Transform playerPostition;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    private string currentScene;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
             GameObject player = other.gameObject;
+            currentScene = SceneManager.GetActiveScene().name;
             if (nextScene != SceneDatabase.Scenes.Null)
             {
                 SessionManager.Instance?.SaveScene(SceneManager.GetActiveScene().name, playerPostition);
                 player.GetComponent<PlayerInput>().enabled = false;
                 player.GetComponent<PlayerController>().enabled = false;
-                SessionManager.Instance?.LoadScene(NextScene);
-
+                SceneController.Instance?.NewTransition()
+                    .Load(NextScene)
+                    .Unload(currentScene)
+                    .WithOverlay()
+                    .WithClearUnusedAssets()
+                    .WithTransition()
+                    .Perform();
             }
         }
     }

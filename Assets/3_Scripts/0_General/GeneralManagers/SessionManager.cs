@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using static SceneController;
 
 public class SessionManager : MonoBehaviour
 {
@@ -29,13 +30,15 @@ public class SessionManager : MonoBehaviour
     private void OnEnable()
     {
         // This method is called by the SceneController when the scene transition is complete
-        SceneController.Instance.OnSceneTransitionComplete += RestoreSessionStateAfterSceneLoad;
+        SceneController.Instance.OnSessionTransitionComplete += RestoreScenesAndPlacePlayer;
+        SceneController.Instance.OnSceneLoadComplete += RestoreScene;
     }
 
     private void OnDisable()
     {
         // This method is called by the SceneController when the scene transition is complete
-        SceneController.Instance.OnSceneTransitionComplete -= RestoreSessionStateAfterSceneLoad;
+        SceneController.Instance.OnSessionTransitionComplete -= RestoreScenesAndPlacePlayer;
+        SceneController.Instance.OnSceneLoadComplete -= RestoreScene;
     }
 
     // --------------- CREATE SESSION -------------
@@ -88,6 +91,8 @@ public class SessionManager : MonoBehaviour
 
     public void SaveScene(string sceneName)
     {
+        if (currentSessionData == null) CreateNewSession();
+
         // 1. Save Player Data
         CapturePlayerData();
 
@@ -107,6 +112,8 @@ public class SessionManager : MonoBehaviour
 
     public void SaveScene(string sceneName, Transform savedTransform)
     {
+        if (currentSessionData == null) CreateNewSession();
+
         // 1. Save Player Data
         CapturePlayerData();
 
@@ -262,8 +269,8 @@ public class SessionManager : MonoBehaviour
         if (SceneController.Instance != null)
         {
             List<string> scenesToLoad = currentSessionData.sceneData.Keys.ToList();
-            List<string> scenesToUnload = new List<string>();
 
+            List<string> scenesToUnload = new List<string>();
             // Determine which currently loaded scenes are NOT in the save data and should be unloaded
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -276,111 +283,23 @@ public class SessionManager : MonoBehaviour
                 }
             }
 
-            // Start the scene transition via SceneController
-            StartCoroutine(SceneController.Instance.PerformSessionSceneTransition(
-                scenesToLoad,
-                scenesToUnload,
-                currentSessionData.currentSceneName,
-                true, // showOverlay
-                true  // clearAssets
-            ));
+            SceneController.Instance.NewTransition()
+                .Load(scenesToLoad, currentSessionData.currentSceneName)
+                .Unload(scenesToUnload)
+                .WithOverlay()
+                .WithClearUnusedAssets()
+                .Perform();
         }
     }
 
-    public void LoadScenes(List<string> scenesToLoad, string activeSceneName)
-    {
-        if (currentSessionData != null)
-        {
-            string sessionID = currentSessionData.sessionID;
-            sessionID ??= "1";
-            SessionSaveData loadedData = dataService.Load<SessionSaveData>(GetSessionFileName(sessionID));
-            if (loadedData == null)
-            {
-                Debug.LogWarning($"No session \'{sessionID}\' found.");
-                return;
-            }
-            currentSessionData = loadedData;
-        }
+    // ------------ RESTORE ON CALLBACK ------------
 
-        // Use SceneController for multi-scene loading
-        if (SceneController.Instance != null)
-        {
-            List<string> scenesToUnload = new List<string>();
-
-            // Determine which currently loaded scenes are NOT in the save data and should be unloaded
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                Scene scene = SceneManager.GetSceneAt(i);
-                // Exclude persistent scenes or scenes that are part of the new session
-                if (scene.name == "Core" || scene.name == "Session") continue;
-                if (scene.isLoaded && !scenesToLoad.Contains(scene.name))
-                {
-                    scenesToUnload.Add(scene.name);
-                }
-            }
-
-            // Start the scene transition via SceneController
-            StartCoroutine(SceneController.Instance.PerformSessionSceneTransition(
-            scenesToLoad,
-            scenesToUnload,
-            activeSceneName,
-            true, // showOverlay
-            true  // clearAssets
-            ));
-        }
-    }
-
-    public void LoadScene(string sceneToLoad)
-    {
-        if (currentSessionData != null)
-        {
-            string sessionID = currentSessionData.sessionID;
-            sessionID ??= "1";
-            SessionSaveData loadedData = dataService.Load<SessionSaveData>(GetSessionFileName(sessionID));
-            if (loadedData == null)
-            {
-                Debug.LogWarning($"No session \'{sessionID}\' found.");
-                return;
-            }
-
-            currentSessionData = loadedData;
-        }
-
-
-        // Use SceneController for multi-scene loading
-        if (SceneController.Instance != null)
-        {
-            List<string> scenesToUnload = new List<string>();
-
-            // Determine which currently loaded scenes are NOT in the save data and should be unloaded
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                Scene scene = SceneManager.GetSceneAt(i);
-                // Exclude persistent scenes or scenes that are part of the new session
-                if (scene.name == "Core" || scene.name == "Session") continue;
-                if (scene.isLoaded && sceneToLoad != scene.name)
-                {
-                    scenesToUnload.Add(scene.name);
-                }
-            }
-
-            List<string> scenesToLoad = new List<string>() { sceneToLoad };
-            // Start the scene transition via SceneController
-            StartCoroutine(SceneController.Instance.PerformSessionSceneTransition(
-                scenesToLoad,
-                scenesToUnload,
-                sceneToLoad,
-                true, // showOverlay
-                true  // clearAssets
-            ));
-        }
-    }
-
-    // This method is now called after SceneController finishes its transition
-    public void RestoreSessionStateAfterSceneLoad()
+    /// <summary>
+    /// Restores all the scenes and places the player in the current one
+    /// </summary>
+    public void RestoreScenesAndPlacePlayer()
     {
         if (currentSessionData == null) return; // Should not happen if called correctly
-
 
         //Instanciate player
         InstantiatePlayer();
@@ -422,6 +341,40 @@ public class SessionManager : MonoBehaviour
         Debug.Log($"Session \'{currentSessionData.sessionID}\' loaded successfully.");
     }
 
+    /// <summary>
+    /// Restores the state of the loaded scenes
+    /// </summary>
+    public void RestoreScenes()
+    {
+        // 2. Restore all scenes data (only for scenes that were loaded when saved)
+        foreach (var sceneEntry in currentSessionData.sceneData)
+        {
+            Scene scene = SceneManager.GetSceneByName(sceneEntry.Key);
+            if (scene.name == "Core" || scene.name == "Session") continue;
+            if (scene.isLoaded)
+            {
+                RestoreSceneData(scene, sceneEntry.Value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Restores a given scene
+    /// </summary>
+    /// <param name="sceneName">Name of the scene to restore</param>
+    public void RestoreScene(string sceneName)
+    {
+        if (!currentSessionData.sceneData.ContainsKey(sceneName)) return;
+        var sceneSaveData = currentSessionData.sceneData[sceneName];
+        Scene scene = SceneManager.GetSceneByName(sceneName);
+        if (scene.isLoaded)
+        {
+            RestoreSceneData(scene, sceneSaveData);
+        }
+    }
+
+    // --- HELPERS ---
+
     private void RestorePlayerData()
     {
         if (currentSessionData.playerData == null)
@@ -462,6 +415,8 @@ public class SessionManager : MonoBehaviour
                 Destroy(item.gameObject);
             }
         }
+        
+        if (scene.name == "Core" || scene.name == "Session") return;
 
         // Create a lookup for existing SaveableEntities in the scene by their UniqueId
         Dictionary<string, SaveableEntity> sceneEntities = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)
@@ -511,8 +466,6 @@ public class SessionManager : MonoBehaviour
             RestoreGameObjectRecursive(childData, sceneEntities);
         }
     }
-
-    // --- HELPERS ---
 
     private GameObject FindItemPrefabByID(string itemID, Dictionary<string, ItemData> itemDataLookup)
     {

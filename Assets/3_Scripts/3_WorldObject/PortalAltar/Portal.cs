@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -16,8 +17,21 @@ public class Portal : WorldObject, IActivatable
     [SerializeField] Animator animator;
 
     [Header("Scene transition settings")]
-    [SerializeField] SceneDatabase.Scenes nextScene = SceneDatabase.Scenes.ForestScene;
-    public string NextScene { get => nextScene.ToString();}
+    [SerializeField] List<SceneDatabase.Scenes> nextScenes = new List<SceneDatabase.Scenes>();
+    [SerializeField] Transform playerPostition;
+
+    public List<string> NextScenes
+    {
+        get
+        {
+            List<string> nextScenesNames = new List<string>();
+            foreach (var scene in nextScenes)
+            {
+                nextScenesNames.Add(scene.ToString());
+            }
+            return nextScenesNames;
+        }
+    }
 
     string currentScene = "";
 
@@ -72,20 +86,26 @@ public class Portal : WorldObject, IActivatable
         ////Disable player action before loading next scene (Removes possible Callback errors)
         player.GetComponent<PlayerInput>().enabled = false;
         player.GetComponent<PlayerController>().enabled = false;
+        player.GetComponent<NavMeshAgent>().isStopped = true;
 
         // Player going OUT of ORB
         if (orbData.OrbScene == currentScene)
         {
-            if(orbData.SavedScenes.Count <= 1)
+            if (orbData.SavedScenes.Count <= 1)
             {
-                orbData.AddSavedScene(NextScene);
-                orbData.AssignActiveScene(NextScene);
-                SessionManager.Instance.LoadScene(NextScene);
+                orbData.AddSavedScenes(NextScenes);
+                orbData.AssignActiveScene(NextScenes[0]);
             }
-            else
-                //Transition to Saved scene
-                SessionManager.Instance.LoadScenes(orbData.SavedScenes, orbData.ActiveScene);
 
+            SessionManager.Instance?.SaveScene(SceneManager.GetActiveScene().name, playerPostition);
+            //Transition to Saved scene
+            SceneController.Instance?.NewTransition()
+                .Load(orbData.SavedScenes, orbData.ActiveScene)
+                .Unload(currentScene)
+                .WithOverlay()
+                .WithClearUnusedAssets()
+                .WithTransition()
+                .Perform();
         }
         // Player going IN ORB
         else
@@ -100,9 +120,15 @@ public class Portal : WorldObject, IActivatable
             }
 
             // Transition to OrbScene
-            SessionManager.Instance.LoadScene(orbData.OrbScene);
+            SceneController.Instance?.NewTransition()
+             .Load(orbData.OrbScene)
+             .Unload(orbData.SavedScenes)
+             .WithOverlay()
+             .WithClearUnusedAssets()
+             .WithTransition()
+             .Perform();
         }
-            
+
     }
 
     /// <summary>
@@ -132,4 +158,15 @@ public class Portal : WorldObject, IActivatable
     {
         isPortalOpen = false;
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        DrawArrow.ForGizmo(
+            playerPostition.position,
+            (playerPostition.transform.position + playerPostition.transform.forward) - playerPostition.transform.position,
+            Color.green,
+            .25f, 20, 0.05f);
+
+    }
+
 }

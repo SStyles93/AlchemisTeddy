@@ -27,47 +27,14 @@ public class SceneController : MonoBehaviour
     private Dictionary<string, List<string>> loadedSceneBySlot = new();
     private bool isBusy = false;
 
-    public event Action OnSceneTransitionComplete;
+    public event Action OnSessionTransitionComplete;
+    public event Action<string> OnSceneLoadComplete;
 
     // API
 
     public SceneTransitionPlan NewTransition()
     {
         return new SceneTransitionPlan();
-    }
-
-    /// <summary>
-    /// Initiates a scene transition based on session data, using the SceneController\'s builder pattern.
-    /// </summary>
-    /// <param name="scenesToLoadNames">List of scene names to load additively.</param>
-    /// <param name="scenesToUnloadNames">List of scene names to unload.</param>
-    /// <param name="activeSceneName">The scene that should be set as active after loading.</param>
-    /// <param name="showOverlay">Whether to show the loading overlay.</param>
-    /// <param name="clearAssets">Whether to clear unused assets after unloading.</param>
-    /// <returns>The Coroutine executing the transition plan.</returns>
-    public IEnumerator PerformSessionSceneTransition(List<string> scenesToLoadNames, List<string> scenesToUnloadNames, string activeSceneName, bool showOverlay = true, bool clearAssets = true)
-    {
-        SceneTransitionPlan plan = new SceneTransitionPlan();
-
-        // Unload scenes
-        foreach (string sceneName in scenesToUnloadNames)
-        {
-            plan.Unload(sceneName);
-        }
-
-        // Load scenes
-        foreach (string sceneName in scenesToLoadNames)
-        {
-
-            plan.Load(SceneDatabase.Slots.SessionContent, sceneName);
-
-            if (sceneName == activeSceneName) plan.ActiveScene = activeSceneName; // Ensure active scene is set
-        }
-
-        if (showOverlay) plan.WithOverlay();
-        if (clearAssets) plan.WithClearUnusedAssets();
-
-        yield return ExecutePlan(plan);
     }
 
     private IEnumerator ExecutePlan(SceneTransitionPlan plan)
@@ -100,11 +67,26 @@ public class SceneController : MonoBehaviour
         foreach (var kvp in plan.ScenesToLoad)
         {
             string sceneSlot = kvp.Key; // Slot
-            string sceneName = kvp.Value; // The actual scene name string
-
-            // Check if scene is already loaded by its name
-            if (SceneManager.GetSceneByName(sceneName).isLoaded)
+            foreach (var sceneName in kvp.Value) // Scene Name
             {
+                // SCENE IS ALREADY LOADED
+                if (SceneManager.GetSceneByName(sceneName).isLoaded)
+                {
+                    if (plan.ActiveScene == sceneName)
+                    {
+                        Scene newScene = SceneManager.GetSceneByName(sceneName);
+                        if (newScene.IsValid() && newScene.isLoaded)
+                        {
+                            SceneManager.SetActiveScene(newScene);
+                        }
+                    }
+                }
+                // SCENE NOT YET LOADED
+                else
+                {
+                    yield return LoadAdditiveRoutine(sceneSlot, sceneName, plan.ActiveScene == sceneName);
+                }
+
                 // Make sure the dictionary has a list for this slot
                 if (!loadedSceneBySlot.ContainsKey(sceneSlot))
                     loadedSceneBySlot[sceneSlot] = new List<string>();
@@ -119,29 +101,19 @@ public class SceneController : MonoBehaviour
                     if (!loadedSceneBySlot[sceneSlot].Contains(sceneName))
                         loadedSceneBySlot[sceneSlot].Add(sceneName);
                 }
+            }
+        }
 
-                if (plan.ActiveScene == sceneName)
-                {
-                    Scene newScene = SceneManager.GetSceneByName(sceneName);
-                    if (newScene.IsValid() && newScene.isLoaded)
-                    {
-                        SceneManager.SetActiveScene(newScene);
-                    }
-                }
-            }
-            else
-            {
-                yield return LoadAdditiveRoutine(sceneSlot, sceneName, plan.ActiveScene == sceneName);
-            }
+        if (plan.IsTransition)
+        {
+            // Call restore of all scenes if a transition was made
+            OnSessionTransitionComplete?.Invoke();
         }
 
         if (plan.IsNewSession)
         {
             SessionManager.Instance.CreateNewSession();
         }
-
-        // Notify scene transition complete
-        OnSceneTransitionComplete?.Invoke();
 
         if (plan.Overlay)
         {
@@ -167,6 +139,10 @@ public class SceneController : MonoBehaviour
             yield return null;
         }
 
+        //Restore the Scene data
+        if (sceneName != "Core" || sceneName != "Session")
+        OnSceneLoadComplete?.Invoke(sceneName);
+
         if (setActive)
         {
             Scene newScene = SceneManager.GetSceneByName(sceneName);
@@ -174,19 +150,6 @@ public class SceneController : MonoBehaviour
             {
                 SceneManager.SetActiveScene(newScene);
             }
-        }
-
-        // If the slot is exclusive (only one scene allowed)
-        if (slot == SceneDatabase.Slots.Menu || slot == SceneDatabase.Slots.Session)
-        {
-            loadedSceneBySlot[slot] = new List<string> { sceneName };
-        }
-        else
-        {
-            if (!loadedSceneBySlot.ContainsKey(slot))
-                loadedSceneBySlot[slot] = new List<string>();
-
-            loadedSceneBySlot[slot].Add(sceneName);
         }
     }
 
@@ -234,27 +197,59 @@ public class SceneController : MonoBehaviour
     public class SceneTransitionPlan
     {
         // Key is slotName (string), Value is SceneDatabase.Scenes enum (for internal tracking if needed)
-        public Dictionary<string, string> ScenesToLoad { get; } = new();
+        public Dictionary<string, List<string>> ScenesToLoad { get; } = new();
         public List<string> ScenesToUnload { get; } = new(); // List of scene names to unload
         public string ActiveScene;// Renamed to avoid confusion with string name
         public bool ClearUnusedAssets { get; private set; } = false;
         public bool Overlay { get; private set; } = false;
         public bool IsNewSession { get; private set; } = false;
+        public bool IsTransition { get; private set; } = false;
 
-        public SceneTransitionPlan Load(string slotName, string scene, bool setActive = false)
+        public SceneTransitionPlan Load(string slotName, string sceneName, bool setActive = false)
         {
-            ScenesToLoad[slotName] = scene;
+            ScenesToLoad[slotName] = new List<string>() { sceneName };
             if (setActive)
             {
-                ActiveScene = scene;
+                ActiveScene = sceneName;
             }
             return this;
         }
+
+        public SceneTransitionPlan Load(string sceneName)
+        {
+            ScenesToLoad["SessionContent"] = new List<string>() { sceneName };
+            ActiveScene = sceneName;
+            return this;
+        }
+
+        public SceneTransitionPlan Load(List<string> scenesNames, string activeSceneName)
+        {
+            if (!ScenesToLoad.ContainsKey("SessionContent"))
+                ScenesToLoad["SessionContent"] = new List<string>();
+
+            foreach (string scene in scenesNames)
+            {
+                ScenesToLoad["SessionContent"].Add(scene);
+            }
+            ActiveScene = activeSceneName;
+
+            return this;
+        }
+
         public SceneTransitionPlan Unload(string sceneName)
         {
             ScenesToUnload.Add(sceneName);
             return this;
         }
+        public SceneTransitionPlan Unload(List<string> sceneNames)
+        {
+            foreach (string sceneName in sceneNames)
+            {
+                ScenesToUnload.Add(sceneName);
+            }
+            return this;
+        }
+
         public SceneTransitionPlan WithOverlay()
         {
             Overlay = true;
@@ -268,6 +263,11 @@ public class SceneController : MonoBehaviour
         public SceneTransitionPlan WithNewSession()
         {
             IsNewSession = true;
+            return this;
+        }
+        public SceneTransitionPlan WithTransition()
+        {
+            IsTransition = true;
             return this;
         }
 

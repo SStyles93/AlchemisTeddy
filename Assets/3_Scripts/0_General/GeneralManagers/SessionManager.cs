@@ -12,6 +12,7 @@ public class SessionManager : MonoBehaviour
     public GameObject CurrentPlayerInstance => currentPlayerInstance;
 
     [SerializeField] GameObject playerPrefab;
+    [SerializeField] GameObject cameraPrefab;
 
     private IDataService dataService;
     private const string SESSION_FILE_PREFIX = "session_";
@@ -301,8 +302,11 @@ public class SessionManager : MonoBehaviour
 
         if (withPlayerPlacement)
         {
-            //Instanciate player
+            // Instanciate Clayer
             InstantiatePlayer();
+
+            // Instantiate Camera
+            InstantiateCamera();
 
             // 1. Restore Player Data
             RestorePlayerData();
@@ -315,11 +319,11 @@ public class SessionManager : MonoBehaviour
             if (scene.name == "Core" || scene.name == "Session") continue;
             if (scene.isLoaded)
             {
-                RestoreSceneData(scene, sceneEntry.Value);
+                RestoreSceneData(scene, sceneEntry.Value, withPlayerPlacement);
 
                 if (withPlayerPlacement)
                 {
-                    // If player had a saved position place him there
+                    // Place Player if DATA EXISTS
                     if (sceneEntry.Value.playerSavedPosition != null)
                     {
                         // Set of the player's transform 
@@ -335,7 +339,7 @@ public class SessionManager : MonoBehaviour
 
         if (withPlayerPlacement)
         {
-            // If there is no data for the currently active scene place the player at the "StartPosition" in that scene
+            // Place the player at the "StartPosition" if NO DATA
             if (!currentSessionData.sceneData.ContainsKey(SceneManager.GetActiveScene().name))
             {
                 Transform playerStartTransform = GameObject.FindGameObjectWithTag("PlayerStart").transform;
@@ -379,7 +383,7 @@ public class SessionManager : MonoBehaviour
         // }
     }
 
-    private void RestoreSceneData(Scene scene, SceneSaveData sceneSaveData)
+    private void RestoreSceneData(Scene scene, SceneSaveData sceneSaveData, bool withPlayerData = true)
     {
         // Clear existing dynamic world items in the scene before restoring
         if (WorldItemTracker.Instance != null)
@@ -401,6 +405,7 @@ public class SessionManager : MonoBehaviour
         // Restore root SaveableEntities
         foreach (var rootObjectData in sceneSaveData.rootObjects)
         {
+            if (rootObjectData.name.Contains("Player") && !withPlayerData) continue;
             RestoreGameObjectRecursive(rootObjectData, sceneEntities);
         }
 
@@ -478,12 +483,19 @@ public class SessionManager : MonoBehaviour
     }
 
     // Call this method to initialize the player reference if it\'s not set via Inspector
-    public void InstantiatePlayer()
+    private void InstantiatePlayer()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
             currentPlayerInstance = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         else currentPlayerInstance = player;
+    }
+
+    private void InstantiateCamera()
+    {
+        GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+        if (cam == null)
+            Instantiate(cameraPrefab, Vector3.zero, Quaternion.identity);
     }
 
     // Method to list available save sessions

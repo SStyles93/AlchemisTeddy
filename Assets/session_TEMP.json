@@ -1,258 +1,11 @@
 {
   "sessionID": "TEMP",
-  "timestamp": "2025-10-08T12:10:43.2572723+02:00",
+  "timestamp": "2025-10-08T17:31:43.3267852+02:00",
   "playerData": {
-    "inventoryItemIDs": [
-      "ORB"
-    ],
+    "inventoryItemIDs": [],
     "playerHealth": 100.0
   },
   "sceneData": {
-    "LabScene": {
-      "rootObjects": [
-        {
-          "uniqueID": "5cee38ad-aa21-48d1-9a1d-719242a4342f",
-          "name": "CraftingTable",
-          "isActive": true,
-          "position": {
-            "x": 0.0,
-            "y": 1.016,
-            "z": 1.53
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "componentSaveData": {},
-          "children": [
-            {
-              "uniqueID": "9e15b27e-47b7-4440-8e87-895acdb28ca5",
-              "name": "Ingredient_Station",
-              "isActive": true,
-              "position": {
-                "x": -0.691,
-                "y": 2.513,
-                "z": 1.23
-              },
-              "rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0,
-                "w": 1.0
-              },
-              "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-              },
-              "componentSaveData": {
-                "IngredientStation": {}
-              },
-              "children": []
-            },
-            {
-              "uniqueID": "47d71da8-6d75-41ab-a3de-0367babe1bdd",
-              "name": "Ingredient_Station (1)",
-              "isActive": true,
-              "position": {
-                "x": 0.0,
-                "y": 2.513,
-                "z": 1.23
-              },
-              "rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0,
-                "w": 1.0
-              },
-              "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-              },
-              "componentSaveData": {
-                "IngredientStation": {}
-              },
-              "children": []
-            },
-            {
-              "uniqueID": "6f41790e-0c51-49ba-9daa-5b58f53e8cb8",
-              "name": "Ingredient_Station (2)",
-              "isActive": true,
-              "position": {
-                "x": 0.687,
-                "y": 2.513,
-                "z": 1.23
-              },
-              "rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0,
-                "w": 1.0
-              },
-              "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-              },
-              "componentSaveData": {
-                "IngredientStation": {}
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "uniqueID": "31cc0c80-a208-4b77-8c06-91c64fb06545",
-          "name": "Altar",
-          "isActive": true,
-          "position": {
-            "x": -4.48988,
-            "y": 1.0,
-            "z": -0.319239974
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "componentSaveData": {},
-          "children": []
-        },
-        {
-          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
-          "name": "Player",
-          "isActive": true,
-          "position": {
-            "x": -4.131578,
-            "y": 1.0734632,
-            "z": -1.01064694
-          },
-          "rotation": {
-            "x": -0.240599781,
-            "y": 0.7573642,
-            "z": -0.396173328,
-            "w": -0.459954321
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "componentSaveData": {
-            "PlayerInteraction": {
-              "playerPosition": "-4.131578,1.073463,-1.010647"
-            },
-            "PlayerHealth": {
-              "currentHealth": "75",
-              "maxHealth": "100"
-            }
-          },
-          "children": []
-        },
-        {
-          "uniqueID": "a87bd3df-196e-44d2-b3fb-d5efb7f5c4eb",
-          "name": "Barrel_02_CV01_001",
-          "isActive": true,
-          "position": {
-            "x": 4.422,
-            "y": 1.0,
-            "z": -0.723
-          },
-          "rotation": {
-            "x": -3.28312253E-17,
-            "y": 2.95042946E-06,
-            "z": -1.11276093E-11,
-            "w": 1.0
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "componentSaveData": {},
-          "children": []
-        }
-      ],
-      "savedWorldItems": [
-        {
-          "itemID": "WATER",
-          "position": {
-            "x": 6.98003,
-            "y": 0.565999866,
-            "z": 1.145
-          },
-          "rotation": {
-            "x": 3.63797837E-12,
-            "y": 4.44089157E-16,
-            "z": 7.389644E-12,
-            "w": 1.0
-          },
-          "scale": null
-        },
-        {
-          "itemID": "REC_RED_POTION",
-          "position": {
-            "x": 3.584082,
-            "y": 1.5523684,
-            "z": 3.95021057
-          },
-          "rotation": {
-            "x": -1.82539154E-07,
-            "y": -0.9238796,
-            "z": -4.396752E-07,
-            "w": 0.382683277
-          },
-          "scale": null
-        },
-        {
-          "itemID": "STRAWBERRY",
-          "position": {
-            "x": 1.9142828,
-            "y": 1.16485,
-            "z": 3.08350539
-          },
-          "rotation": {
-            "x": 3.073364E-08,
-            "y": -3.33238823E-08,
-            "z": -4.82541438E-08,
-            "w": 1.0
-          },
-          "scale": null
-        }
-      ],
-      "playerSavedPosition": {
-        "position": {
-          "x": -4.48988,
-          "y": 1.375,
-          "z": -1.58024
-        },
-        "rotation": {
-          "x": -8.103669E-15,
-          "y": -1.0,
-          "z": 1.4901163E-08,
-          "w": 5.8114523E-07
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        }
-      }
-    },
     "Core": {
       "rootObjects": [],
       "savedWorldItems": [],
@@ -290,18 +43,18 @@
         },
         {
           "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
-          "name": "Player(Clone)",
+          "name": "Player",
           "isActive": true,
           "position": {
-            "x": 17.9452839,
+            "x": 18.6373882,
             "y": 0.0500000119,
-            "z": 0.9908476
+            "z": 0.337161064
           },
           "rotation": {
             "x": 0.0,
-            "y": -0.931856,
+            "y": -0.9431252,
             "z": 0.0,
-            "w": 0.3628285
+            "w": 0.332438
           },
           "scale": {
             "x": 1.0,
@@ -310,7 +63,7 @@
           },
           "componentSaveData": {
             "PlayerInteraction": {
-              "playerPosition": "17.94528,0.05000001,0.9908476"
+              "playerPosition": "18.63739,0.05000001,0.3371611"
             },
             "PlayerHealth": {
               "currentHealth": "75",
@@ -328,7 +81,7 @@
       "savedWorldItems": [],
       "playerSavedPosition": null
     },
-    "LabCave": {
+    "Chapel": {
       "rootObjects": [],
       "savedWorldItems": [],
       "playerSavedPosition": null

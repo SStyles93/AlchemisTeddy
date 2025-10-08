@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3165869313887906202, guid: 7a165ecc07896214985caa0fc9147d3d, type: 3}
+  cameraPrefab: {fileID: 3030690551493636291, guid: e74a9a4043e500a418f2766ca67b5ac5, type: 3}

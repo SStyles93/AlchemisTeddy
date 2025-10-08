@@ -93,11 +93,8 @@ public class Portal : WorldObject, IActivatable
         // Player going OUT of ORB
         if (orbData.OrbScene == currentScene)
         {
-            if (orbData.SavedScenes.Count <= 1)
-            {
-                orbData.AddSavedScenes(NextScenes);
-                orbData.AssignActiveScene(NextScenes[0]);
-            }
+            orbData.AddSavedScenes(NextScenes);
+            orbData.AssignActiveScene(NextScenes[0]);
 
             //Transition to Saved scene
             SceneController.Instance?.NewTransition()

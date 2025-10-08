@@ -29,5 +29,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/0_Scenes/GameScenes/Graveyard.unity
     guid: b55b13beb6dc7784fa8b5dacad0b8797
+  - enabled: 1
+    path: Assets/0_Scenes/GameScenes/Chapel.unity
+    guid: 2f5579e02b2f4084f806a3d50b982c18
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

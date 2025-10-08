@@ -38,8 +38,13 @@ public class PlayerCamera : MonoBehaviour
     {
         if (target == null) target = transform;
 
+        if (m_camera == null)
+        {
+            m_camera = Camera.main;
+        }
+
         // Handle camera rotation when the middle mouse button is not held down
-        if(!isRotating)
+        if (!isRotating)
         ResetRotation();
 
         Vector3 tmpCameraPos = Vector3.Lerp(

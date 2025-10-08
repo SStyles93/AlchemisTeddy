@@ -1,21 +1,13 @@
 {
   "sessionID": "1",
-  "timestamp": "2025-10-08T11:46:34.7239469+02:00",
+  "timestamp": "2025-10-08T16:19:06.256762+02:00",
   "playerData": {
-    "inventoryItemIDs": [],
+    "inventoryItemIDs": [
+      "ORB"
+    ],
     "playerHealth": 100.0
   },
   "sceneData": {
-    "Core": {
-      "rootObjects": [],
-      "savedWorldItems": [],
-      "playerSavedPosition": null
-    },
-    "Session": {
-      "rootObjects": [],
-      "savedWorldItems": [],
-      "playerSavedPosition": null
-    },
     "LabScene": {
       "rootObjects": [
         {
@@ -145,15 +137,15 @@
           "name": "Player",
           "isActive": true,
           "position": {
-            "x": 6.62711,
-            "y": 0.4030189,
-            "z": -0.8936268
+            "x": -4.057154,
+            "y": 1.0734632,
+            "z": -0.9633329
           },
           "rotation": {
-            "x": -0.00165170548,
-            "y": -0.7531852,
-            "z": 0.00189544016,
-            "w": -0.6578038
+            "x": -0.215362683,
+            "y": 0.7792296,
+            "z": -0.3610043,
+            "w": -0.4648614
           },
           "scale": {
             "x": 1.0,
@@ -162,7 +154,7 @@
           },
           "componentSaveData": {
             "PlayerInteraction": {
-              "playerPosition": "6.62711,0.4030189,-0.8936268"
+              "playerPosition": "-4.057154,1.073463,-0.9633329"
             },
             "PlayerHealth": {
               "currentHealth": "75",
@@ -178,7 +170,7 @@
           "position": {
             "x": 4.422,
             "y": 1.0,
-            "z": 0.340226382
+            "z": -0.723
           },
           "rotation": {
             "x": -3.28312253E-17,
@@ -197,31 +189,31 @@
       ],
       "savedWorldItems": [
         {
-          "itemID": "WATER",
+          "itemID": "STRAWBERRY",
           "position": {
-            "x": 6.98003,
-            "y": 0.5659994,
-            "z": 1.145
+            "x": 1.9142828,
+            "y": 1.16485,
+            "z": 3.08350539
           },
           "rotation": {
-            "x": 1.00044409E-11,
-            "y": 1.77635663E-15,
-            "z": 2.22826167E-11,
+            "x": 3.073364E-08,
+            "y": -3.33238823E-08,
+            "z": -4.82541438E-08,
             "w": 1.0
           },
           "scale": null
         },
         {
-          "itemID": "STRAWBERRY",
+          "itemID": "WATER",
           "position": {
-            "x": 1.91417527,
-            "y": 1.16483259,
-            "z": 3.08347917
+            "x": 6.98003,
+            "y": 0.565999866,
+            "z": 1.145
           },
           "rotation": {
-            "x": 3.1664964E-08,
-            "y": -4.88944281E-08,
-            "z": -6.373738E-08,
+            "x": 3.63797837E-12,
+            "y": 4.44089157E-16,
+            "z": 7.389644E-12,
             "w": 1.0
           },
           "scale": null
@@ -229,14 +221,14 @@
         {
           "itemID": "REC_RED_POTION",
           "position": {
-            "x": 3.584081,
+            "x": 3.584082,
             "y": 1.5523684,
             "z": 3.95021057
           },
           "rotation": {
-            "x": -1.82539139E-07,
+            "x": -1.82539154E-07,
             "y": -0.9238796,
-            "z": -4.39784344E-07,
+            "z": -4.396752E-07,
             "w": 0.382683277
           },
           "scale": null
@@ -244,15 +236,15 @@
       ],
       "playerSavedPosition": {
         "position": {
-          "x": 6.36270237,
-          "y": 0.470080137,
-          "z": -0.869810939
+          "x": -4.48988,
+          "y": 1.375,
+          "z": -1.58024
         },
         "rotation": {
-          "x": 0.0,
-          "y": -0.707107067,
-          "z": 0.0,
-          "w": 0.707106531
+          "x": -8.103669E-15,
+          "y": -1.0,
+          "z": 1.4901163E-08,
+          "w": 5.8114523E-07
         },
         "scale": {
           "x": 1.0,
@@ -260,6 +252,16 @@
           "z": 1.0
         }
       }
+    },
+    "Core": {
+      "rootObjects": [],
+      "savedWorldItems": [],
+      "playerSavedPosition": null
+    },
+    "Session": {
+      "rootObjects": [],
+      "savedWorldItems": [],
+      "playerSavedPosition": null
     }
   },
   "currentSceneName": "LabScene"

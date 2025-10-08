@@ -50,7 +50,6 @@ public class SceneTrigger : MonoBehaviour
 
             // Swap adj.Scenes & scenesToUnload
             SwapAdjacentScenes();
-
         }
     }
 

@@ -23,6 +23,7 @@ public class SceneDatabase : MonoBehaviour
         LabScene,
         LabCave,
         ForestScene,
-        Graveyard
+        Graveyard,
+        Chapel
     }
 }

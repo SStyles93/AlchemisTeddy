@@ -65,6 +65,8 @@ public class SceneTrigger : MonoBehaviour
             .Unload(ScenesToUndload)
             .WithClearUnusedAssets()
             .Perform();
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(NextScene));
     }
 
     private void OnTriggerExit(Collider other)

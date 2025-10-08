@@ -30,15 +30,13 @@ public class SessionManager : MonoBehaviour
     private void OnEnable()
     {
         // This method is called by the SceneController when the scene transition is complete
-        SceneController.Instance.OnSessionTransitionComplete += RestoreScenesAndPlacePlayer;
-        SceneController.Instance.OnSceneLoadComplete += RestoreScene;
+        SceneController.Instance.OnSceneLoadComplete += RestoreScenes;
     }
 
     private void OnDisable()
     {
         // This method is called by the SceneController when the scene transition is complete
-        SceneController.Instance.OnSessionTransitionComplete -= RestoreScenesAndPlacePlayer;
-        SceneController.Instance.OnSceneLoadComplete -= RestoreScene;
+        SceneController.Instance.OnSceneLoadComplete -= RestoreScenes;
     }
 
     // --------------- CREATE SESSION -------------
@@ -297,15 +295,18 @@ public class SessionManager : MonoBehaviour
     /// <summary>
     /// Restores all the scenes and places the player in the current one
     /// </summary>
-    public void RestoreScenesAndPlacePlayer()
+    public void RestoreScenes(bool withPlayerPlacement)
     {
         if (currentSessionData == null) return; // Should not happen if called correctly
 
-        //Instanciate player
-        InstantiatePlayer();
+        if (withPlayerPlacement)
+        {
+            //Instanciate player
+            InstantiatePlayer();
 
-        // 1. Restore Player Data
-        RestorePlayerData();
+            // 1. Restore Player Data
+            RestorePlayerData();
+        }
 
         // 2. Restore all scenes data (only for scenes that were loaded when saved)
         foreach (var sceneEntry in currentSessionData.sceneData)
@@ -316,61 +317,34 @@ public class SessionManager : MonoBehaviour
             {
                 RestoreSceneData(scene, sceneEntry.Value);
 
-                // If player had a saved position place him there
-                if (sceneEntry.Value.playerSavedPosition != null)
+                if (withPlayerPlacement)
                 {
-                    // Set of the player's transform 
-                    currentPlayerInstance.transform.SetPositionAndRotation(
-                       sceneEntry.Value.playerSavedPosition.position.ToVector3(),
-                       sceneEntry.Value.playerSavedPosition.rotation.ToQuaternion());
-                    currentPlayerInstance.transform.localScale = sceneEntry.Value.playerSavedPosition.scale.ToVector3();
-                    currentPlayerInstance.GetComponent<NavMeshAgent>().Warp(currentPlayerInstance.transform.position);
+                    // If player had a saved position place him there
+                    if (sceneEntry.Value.playerSavedPosition != null)
+                    {
+                        // Set of the player's transform 
+                        currentPlayerInstance.transform.SetPositionAndRotation(
+                           sceneEntry.Value.playerSavedPosition.position.ToVector3(),
+                           sceneEntry.Value.playerSavedPosition.rotation.ToQuaternion());
+                        //currentPlayerInstance.transform.localScale = sceneEntry.Value.playerSavedPosition.scale.ToVector3();
+                        currentPlayerInstance.GetComponent<NavMeshAgent>().Warp(currentPlayerInstance.transform.position);
+                    }
                 }
             }
         }
 
-        // If there is no data for the currently active scene place the player at the "StartPosition" in that scene
-        if (!currentSessionData.sceneData.ContainsKey(SceneManager.GetActiveScene().name))
+        if (withPlayerPlacement)
         {
-            Transform playerStartTransform = GameObject.FindGameObjectWithTag("PlayerStart").transform;
-            currentPlayerInstance.transform.SetPositionAndRotation(playerStartTransform.position, playerStartTransform.rotation);
-            currentPlayerInstance.transform.localScale = playerStartTransform.localScale;
-            currentPlayerInstance.GetComponent<NavMeshAgent>().Warp(currentPlayerInstance.transform.position);
-        }
-
-        Debug.Log($"Session \'{currentSessionData.sessionID}\' loaded successfully.");
-    }
-
-    /// <summary>
-    /// Restores the state of the loaded scenes
-    /// </summary>
-    public void RestoreScenes()
-    {
-        // 2. Restore all scenes data (only for scenes that were loaded when saved)
-        foreach (var sceneEntry in currentSessionData.sceneData)
-        {
-            Scene scene = SceneManager.GetSceneByName(sceneEntry.Key);
-            if (scene.name == "Core" || scene.name == "Session") continue;
-            if (scene.isLoaded)
+            // If there is no data for the currently active scene place the player at the "StartPosition" in that scene
+            if (!currentSessionData.sceneData.ContainsKey(SceneManager.GetActiveScene().name))
             {
-                RestoreSceneData(scene, sceneEntry.Value);
+                Transform playerStartTransform = GameObject.FindGameObjectWithTag("PlayerStart").transform;
+                currentPlayerInstance.transform.SetPositionAndRotation(playerStartTransform.position, playerStartTransform.rotation);
+                //currentPlayerInstance.transform.localScale = playerStartTransform.localScale;
+                currentPlayerInstance.GetComponent<NavMeshAgent>().Warp(currentPlayerInstance.transform.position);
             }
         }
-    }
-
-    /// <summary>
-    /// Restores a given scene
-    /// </summary>
-    /// <param name="sceneName">Name of the scene to restore</param>
-    public void RestoreScene(string sceneName)
-    {
-        if (!currentSessionData.sceneData.ContainsKey(sceneName)) return;
-        var sceneSaveData = currentSessionData.sceneData[sceneName];
-        Scene scene = SceneManager.GetSceneByName(sceneName);
-        if (scene.isLoaded)
-        {
-            RestoreSceneData(scene, sceneSaveData);
-        }
+        Debug.Log($"Session \'{currentSessionData.sessionID}\' loaded successfully.");
     }
 
     // --- HELPERS ---
@@ -410,12 +384,13 @@ public class SessionManager : MonoBehaviour
         // Clear existing dynamic world items in the scene before restoring
         if (WorldItemTracker.Instance != null)
         {
-            foreach (WorldItem item in WorldItemTracker.Instance.GetAllItems().Where(item => item.gameObject.scene == scene).ToList())
+            var worldItemList = WorldItemTracker.Instance.GetAllItems().Where(item => item.gameObject.scene == scene).ToList();
+            foreach (WorldItem item in worldItemList)
             {
                 Destroy(item.gameObject);
             }
         }
-        
+
         if (scene.name == "Core" || scene.name == "Session") return;
 
         // Create a lookup for existing SaveableEntities in the scene by their UniqueId

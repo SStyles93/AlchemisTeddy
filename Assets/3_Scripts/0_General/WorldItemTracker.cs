@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,9 @@ public class WorldItemTracker : MonoBehaviour
 {
     // --- Singleton Pattern Implementation ---
     public static WorldItemTracker Instance { get; private set; }
+    public Dictionary<string, ItemData> AllItems => allItems;
+
+    private Dictionary<string, ItemData> allItems = new Dictionary<string, ItemData>();
 
     private void Awake()
     {
@@ -29,6 +33,11 @@ public class WorldItemTracker : MonoBehaviour
     }
     // --- End of Singleton Pattern ---
 
+    private void Start()
+    {
+        allItems = Resources.FindObjectsOfTypeAll<ItemData>()
+            .ToDictionary(item => item.ItemID);
+    }
 
     // The list that will hold all the active items.
     // It's private to prevent other scripts from modifying it directly.

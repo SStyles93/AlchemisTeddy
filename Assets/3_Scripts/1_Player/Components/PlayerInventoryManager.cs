@@ -14,7 +14,7 @@ public class PlayerInventoryManager : MonoBehaviour
     // references once in the Inspector or in Start(). This is far more performant.
     // By making the field private and using [SerializeField], we follow the principle
     // of encapsulation while still allowing designers to link objects in the editor.
-    
+
     [Tooltip("The UI Text element used to display status messages.")]
     [SerializeField] private TMPro.TMP_Text statusText;
 
@@ -196,8 +196,11 @@ public class PlayerInventoryManager : MonoBehaviour
             return;
         }
 
-        var allItems = Resources.FindObjectsOfTypeAll<ItemData>()
-            .ToDictionary(item => item.ItemID);
+        var allItems = WorldItemTracker.Instance?.AllItems;
+        
+        if(allItems.Count == 0) 
+            Resources.FindObjectsOfTypeAll<ItemData>()
+                .ToDictionary(item => item.ItemID);
 
         foreach (var id in ids)
         {

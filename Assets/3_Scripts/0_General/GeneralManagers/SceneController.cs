@@ -27,8 +27,7 @@ public class SceneController : MonoBehaviour
     private Dictionary<string, List<string>> loadedSceneBySlot = new();
     private bool isBusy = false;
 
-    public event Action OnSessionTransitionComplete;
-    public event Action<string> OnSceneLoadComplete;
+    public event Action<bool> OnSceneLoadComplete;
 
     // API
 
@@ -104,11 +103,8 @@ public class SceneController : MonoBehaviour
             }
         }
 
-        if (plan.IsTransition)
-        {
-            // Call restore of all scenes if a transition was made
-            OnSessionTransitionComplete?.Invoke();
-        }
+        // Call restore of all scenes if a transition was made
+        OnSceneLoadComplete?.Invoke(plan.IsTransition);
 
         if (plan.IsNewSession)
         {
@@ -138,10 +134,6 @@ public class SceneController : MonoBehaviour
         {
             yield return null;
         }
-
-        //Restore the Scene data
-        if (sceneName != "Core" || sceneName != "Session")
-        OnSceneLoadComplete?.Invoke(sceneName);
 
         if (setActive)
         {
@@ -282,6 +274,7 @@ public class SceneController : MonoBehaviour
         List<string> sceneList = new List<string>();
         foreach (string sceneName in loadedSceneBySlot[SceneDatabase.Slots.SessionContent])
         {
+            if (sceneName == "Core" || sceneName == "Session") continue;
             sceneList.Add(sceneName);
         }
         return sceneList;

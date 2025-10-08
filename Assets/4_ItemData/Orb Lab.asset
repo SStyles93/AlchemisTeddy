@@ -22,6 +22,8 @@ MonoBehaviour:
   - {r: 0.43922853, g: 0, b: 1, a: 1}
   itemType: 3
   isStackable: 0
-  itemID: _4337cf3f-4cbc-42b0-a858-b8863b5e3509
+  itemID: ORB
   orbScene: 4
-  savedScenes: []
+  savedScenes:
+  - ForestScene
+  - Graveyard

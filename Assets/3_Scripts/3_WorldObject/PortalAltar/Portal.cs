@@ -88,6 +88,8 @@ public class Portal : WorldObject, IActivatable
         player.GetComponent<PlayerController>().enabled = false;
         player.GetComponent<NavMeshAgent>().isStopped = true;
 
+        SessionManager.Instance?.SaveScene(SceneManager.GetActiveScene().name, playerPostition);
+
         // Player going OUT of ORB
         if (orbData.OrbScene == currentScene)
         {
@@ -97,7 +99,6 @@ public class Portal : WorldObject, IActivatable
                 orbData.AssignActiveScene(NextScenes[0]);
             }
 
-            SessionManager.Instance?.SaveScene(SceneManager.GetActiveScene().name, playerPostition);
             //Transition to Saved scene
             SceneController.Instance?.NewTransition()
                 .Load(orbData.SavedScenes, orbData.ActiveScene)

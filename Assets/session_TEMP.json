@@ -1,147 +1,13 @@
 {
   "sessionID": "TEMP",
-  "timestamp": "2025-10-07T17:37:42.3949509+02:00",
+  "timestamp": "2025-10-08T12:10:43.2572723+02:00",
   "playerData": {
-    "inventoryItemIDs": [],
+    "inventoryItemIDs": [
+      "ORB"
+    ],
     "playerHealth": 100.0
   },
   "sceneData": {
-    "Core": {
-      "rootObjects": [],
-      "savedWorldItems": [],
-      "playerSavedPosition": null
-    },
-    "Session": {
-      "rootObjects": [],
-      "savedWorldItems": [],
-      "playerSavedPosition": null
-    },
-    "ForestScene": {
-      "rootObjects": [
-        {
-          "uniqueID": "31cc0c80-a208-4b77-8c06-91c64fb06545",
-          "name": "Altar",
-          "isActive": true,
-          "position": {
-            "x": 0.125,
-            "y": 2.49,
-            "z": 6.75
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "componentSaveData": {},
-          "children": []
-        },
-        {
-          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
-          "name": "Player",
-          "isActive": true,
-          "position": {
-            "x": 19.7274723,
-            "y": 0.0500000119,
-            "z": -0.0503840446
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.9067682,
-            "z": 0.0,
-            "w": -0.421629518
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "componentSaveData": {
-            "PlayerInteraction": {
-              "playerPosition": "19.72747,0.05000001,-0.05038404"
-            },
-            "PlayerHealth": {
-              "currentHealth": "75",
-              "maxHealth": "100"
-            }
-          },
-          "children": []
-        }
-      ],
-      "savedWorldItems": [
-        {
-          "itemID": "_67b0d69e-0e75-4710-840e-4f7ffd8c329c",
-          "position": {
-            "x": 6.98003,
-            "y": -2066.78662,
-            "z": 1.145
-          },
-          "rotation": {
-            "x": 6.8212094E-12,
-            "y": 1.33226752E-15,
-            "z": 1.47792872E-11,
-            "w": 1.0
-          },
-          "scale": null
-        },
-        {
-          "itemID": "_91655866-a8a4-4a73-99e1-7e6d98cd36e3",
-          "position": {
-            "x": 1.91010082,
-            "y": 0.132782117,
-            "z": 2.22457337
-          },
-          "rotation": {
-            "x": 3.352761E-08,
-            "y": -4.86907E-08,
-            "z": -4.87198051E-08,
-            "w": 1.0
-          },
-          "scale": null
-        },
-        {
-          "itemID": "Recipe_RED_Potion_cd446750-5c45-4946-9ec7-e6c5fe69b9ee",
-          "position": {
-            "x": 3.584064,
-            "y": -1817.55542,
-            "z": 3.95022726
-          },
-          "rotation": {
-            "x": -1.82689348E-07,
-            "y": -0.9238796,
-            "z": -4.43451427E-07,
-            "w": 0.382683277
-          },
-          "scale": null
-        },
-        {
-          "itemID": "_4337cf3f-4cbc-42b0-a858-b8863b5e3509",
-          "position": {
-            "x": -4.52572727,
-            "y": 0.183727741,
-            "z": -2.40640879
-          },
-          "rotation": {
-            "x": -0.0402221829,
-            "y": 4.93844077E-09,
-            "z": 0.0656363741,
-            "w": 0.9970326
-          },
-          "scale": null
-        }
-      ],
-      "playerSavedPosition": null
-    },
-    "Graveyard": {
-      "rootObjects": [],
-      "savedWorldItems": [],
-      "playerSavedPosition": null
-    },
     "LabScene": {
       "rootObjects": [
         {
@@ -267,6 +133,37 @@
           "children": []
         },
         {
+          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
+          "name": "Player",
+          "isActive": true,
+          "position": {
+            "x": -4.131578,
+            "y": 1.0734632,
+            "z": -1.01064694
+          },
+          "rotation": {
+            "x": -0.240599781,
+            "y": 0.7573642,
+            "z": -0.396173328,
+            "w": -0.459954321
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "PlayerInteraction": {
+              "playerPosition": "-4.131578,1.073463,-1.010647"
+            },
+            "PlayerHealth": {
+              "currentHealth": "75",
+              "maxHealth": "100"
+            }
+          },
+          "children": []
+        },
+        {
           "uniqueID": "a87bd3df-196e-44d2-b3fb-d5efb7f5c4eb",
           "name": "Barrel_02_CV01_001",
           "isActive": true,
@@ -290,6 +187,144 @@
           "children": []
         }
       ],
+      "savedWorldItems": [
+        {
+          "itemID": "WATER",
+          "position": {
+            "x": 6.98003,
+            "y": 0.565999866,
+            "z": 1.145
+          },
+          "rotation": {
+            "x": 3.63797837E-12,
+            "y": 4.44089157E-16,
+            "z": 7.389644E-12,
+            "w": 1.0
+          },
+          "scale": null
+        },
+        {
+          "itemID": "REC_RED_POTION",
+          "position": {
+            "x": 3.584082,
+            "y": 1.5523684,
+            "z": 3.95021057
+          },
+          "rotation": {
+            "x": -1.82539154E-07,
+            "y": -0.9238796,
+            "z": -4.396752E-07,
+            "w": 0.382683277
+          },
+          "scale": null
+        },
+        {
+          "itemID": "STRAWBERRY",
+          "position": {
+            "x": 1.9142828,
+            "y": 1.16485,
+            "z": 3.08350539
+          },
+          "rotation": {
+            "x": 3.073364E-08,
+            "y": -3.33238823E-08,
+            "z": -4.82541438E-08,
+            "w": 1.0
+          },
+          "scale": null
+        }
+      ],
+      "playerSavedPosition": {
+        "position": {
+          "x": -4.48988,
+          "y": 1.375,
+          "z": -1.58024
+        },
+        "rotation": {
+          "x": -8.103669E-15,
+          "y": -1.0,
+          "z": 1.4901163E-08,
+          "w": 5.8114523E-07
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      }
+    },
+    "Core": {
+      "rootObjects": [],
+      "savedWorldItems": [],
+      "playerSavedPosition": null
+    },
+    "Session": {
+      "rootObjects": [],
+      "savedWorldItems": [],
+      "playerSavedPosition": null
+    },
+    "ForestScene": {
+      "rootObjects": [
+        {
+          "uniqueID": "31cc0c80-a208-4b77-8c06-91c64fb06545",
+          "name": "Altar",
+          "isActive": true,
+          "position": {
+            "x": 0.125,
+            "y": 2.49,
+            "z": 6.75
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {},
+          "children": []
+        },
+        {
+          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
+          "name": "Player(Clone)",
+          "isActive": true,
+          "position": {
+            "x": 17.9452839,
+            "y": 0.0500000119,
+            "z": 0.9908476
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": -0.931856,
+            "z": 0.0,
+            "w": 0.3628285
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "PlayerInteraction": {
+              "playerPosition": "17.94528,0.05000001,0.9908476"
+            },
+            "PlayerHealth": {
+              "currentHealth": "75",
+              "maxHealth": "100"
+            }
+          },
+          "children": []
+        }
+      ],
+      "savedWorldItems": [],
+      "playerSavedPosition": null
+    },
+    "Graveyard": {
+      "rootObjects": [],
       "savedWorldItems": [],
       "playerSavedPosition": null
     },

@@ -22,7 +22,7 @@ MonoBehaviour:
   - {r: 9.849155, g: 2.0153177, b: 0, a: 1}
   itemType: 1
   isStackable: 1
-  itemID: _ab776f9f-cd22-4298-b8b2-7f3eba44284c
+  itemID: RED_POTION
   useMessage: Postion was used
   healthToRestore: 20
   isHealOverTime: 1

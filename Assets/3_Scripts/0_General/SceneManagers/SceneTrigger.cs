@@ -1,6 +1,4 @@
-using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,7 +14,7 @@ public class SceneTrigger : MonoBehaviour
     public List<string> AdjacentScenes
     {
         get
-        {   
+        {
             List<string> sceneNames = new List<string>();
             foreach (var scene in adjacentScenes)
             {
@@ -38,26 +36,51 @@ public class SceneTrigger : MonoBehaviour
         }
     }
 
+    private Vector3 enterDirection = Vector3.zero;
+    private Vector3 exitDirection = Vector3.zero;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        // If the currenty activated scene is the next scene swap current and next (Invert scenes)
-        if (SceneManager.GetActiveScene().buildIndex == (int)nextScene)
-        {
-            // Swap current & next
-            SwapActiveScene();
-
-            // Swap adj.Scenes & scenesToUnload
-            SwapAdjacentScenes();
-        }
-    }
+    private Vector3 playerPosition;
 
     private void OnTriggerEnter(Collider other)
     {
         // Save current Scene
         SessionManager.Instance.SaveScene(CurrentScene);
+        
+        // Get the direction of enter : Pos <- Player
+        enterDirection = (transform.position - other.transform.position).normalized;
+        enterDirection.y = 0;
+        
+        //playerPosition = other.transform.position;
+    }
 
+    private void OnTriggerExit(Collider other)
+    {
+        // Get the direction of exit
+        exitDirection = (other.transform.position - transform.position).normalized;
+        exitDirection.y = 0;
+
+
+        // Player exits from on same side than entrance
+        if (Vector3.Dot(enterDirection, exitDirection) < 0.0f) return;
+
+        // Player enters-exits on intended side
+        if (Vector3.Dot(transform.forward, exitDirection) > 0.0f)
+        {
+            ActivateNextScenes();
+        }
+        // Player enters-exit on opposite side
+        else
+        {
+            SwapActiveScene();
+            SwapAdjacentScenes();
+            ActivateNextScenes();
+            SwapActiveScene();
+            SwapAdjacentScenes();
+        }
+    }
+
+    private void ActivateNextScenes()
+    {
         // Trigger Loading of Adj Scenes & Unload scenesToUnload
         SceneController.Instance?.NewTransition()
             .Load(AdjacentScenes, NextScene)
@@ -67,16 +90,6 @@ public class SceneTrigger : MonoBehaviour
 
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(NextScene));
     }
-
-    private void OnTriggerExit(Collider other)
-    {
-        // Set current Scene 
-        SwapActiveScene();
-
-        // Swap AjdScenes With ScenesToUnload
-        SwapAdjacentScenes();
-    }
-
 
     /// <summary>
     /// Method used to Swap between the current and next scene
@@ -94,4 +107,10 @@ public class SceneTrigger : MonoBehaviour
         adjacentScenes = scenesToUndload;
         scenesToUndload = tmpList;
     }
+
+    //private void OnDrawGizmos()
+    //{
+    //    DrawArrow.ForDebug(playerPosition, enterDirection, Color.green);
+    //    DrawArrow.ForDebug(transform.position, exitDirection, Color.red);
+    //}
 }

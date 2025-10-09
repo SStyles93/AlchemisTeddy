@@ -1,6 +1,6 @@
 {
   "sessionID": "TEMP",
-  "timestamp": "2025-10-08T17:31:43.3267852+02:00",
+  "timestamp": "2025-10-09T10:02:15.2830596+02:00",
   "playerData": {
     "inventoryItemIDs": [],
     "playerHealth": 100.0
@@ -46,15 +46,15 @@
           "name": "Player",
           "isActive": true,
           "position": {
-            "x": 18.6373882,
+            "x": 18.94172,
             "y": 0.0500000119,
-            "z": 0.337161064
+            "z": 0.399559021
           },
           "rotation": {
             "x": 0.0,
-            "y": -0.9431252,
+            "y": 0.9781981,
             "z": 0.0,
-            "w": 0.332438
+            "w": -0.207674041
           },
           "scale": {
             "x": 1.0,
@@ -63,7 +63,7 @@
           },
           "componentSaveData": {
             "PlayerInteraction": {
-              "playerPosition": "18.63739,0.05000001,0.3371611"
+              "playerPosition": "18.94172,0.05000001,0.399559"
             },
             "PlayerHealth": {
               "currentHealth": "75",

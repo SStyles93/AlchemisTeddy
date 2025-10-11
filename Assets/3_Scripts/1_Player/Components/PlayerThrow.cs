@@ -45,6 +45,12 @@ public class PlayerThrow : MonoBehaviour
 
     }
 
+    //Method called by the animator when throw is ready
+    public void StartDraw()
+    {
+
+    }
+
     private void UpdateThrowLine(Ray ray)
     {
         if (!lineRenderer.enabled) return;
@@ -55,9 +61,6 @@ public class PlayerThrow : MonoBehaviour
     {
         lineRenderer.enabled = true;
         lineRenderer.positionCount = linePoints;
-        DrawThrowLine(ray);
-
-
         //Start animation of throw && Block at a certain point
     }
 

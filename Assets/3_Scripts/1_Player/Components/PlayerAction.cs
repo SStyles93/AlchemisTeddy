@@ -1,50 +1,63 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAction : MonoBehaviour
 {
     //Reference Scripts
-    [SerializeField] private PlayerInteraction playerInteraction;
-    [SerializeField] private Camera playerCamera;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private Camera mainCamera;
 
     // Action params
-    [Header("Layer Settings")]
-    [SerializeField] private GraphicRaycaster playerScreenSpaceCanvasRaycaster;
-    [SerializeField] private LayerMask interactableLayers;
+    [SerializeField] private float movementRayDelay = 0.25f;
 
-    //Reference GameObjects
-    [Header("Player's targer")]
-    [SerializeField] private GameObject target;
-    private Image pointerImage;
-
-    //List of bools used for Actions
-    [Header("Action's variables")]
-    [Range(0.0f, 1.0f)]
-    [SerializeField] private float _aimCorrection;
+    ////List of bools used for Actions
+    //[Header("Action's variables")]
+    //[Range(0.0f, 1.0f)]
+    //[SerializeField] private float _aimCorrection;
 
     // --- Private variables ---
     private Ray currentRay;
-    private bool isPointerOverUI = false;
+    private float currentMovementRayDelay = 0.25f;
+    private bool isLeftClickPressed = false;
+    private bool isRightClickPressed = false;
 
+    public event Action<Ray> OnRay;
+
+    public event Action<Ray> OnRightClickPressed;
+    public event Action OnRightClickReleased;
+
+    public event Action<Ray> OnLeftClickPressed;
+    public event Action OnLeftClickReleased;
+
+    public event Action<Vector2> OnMiddleClickPressed;
+    public event Action OnMiddleClickReleased;
+    
+    public event Action<float> OnZoom;
 
     void Awake()
     {
-        playerInteraction = GetComponent<PlayerInteraction>();
-        if (target != null) pointerImage = target.GetComponent<Image>();
-    }
-    private void Start()
-    {
-        if (playerCamera == null) playerCamera = Camera.main;
-        //aim.transform.localPosition = new Vector3(0.0f, -0.5f, 0.0f);
+
+        if(playerController == null) playerController = GetComponent<PlayerController>();
     }
 
-    void Update()
+    private void OnEnable()
     {
-        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+        playerController.OnAim += AimCheck;
+    }
+
+    private void OnDisable()
+    {
+        playerController.OnAim -= AimCheck;
+    }
+
+    private void Start()
+    {
+        if (mainCamera == null) mainCamera = Camera.main;
+        currentMovementRayDelay = movementRayDelay;
+        //aim.transform.localPosition = new Vector3(0.0f, -0.5f, 0.0f);
     }
 
     /// <summary>
@@ -52,34 +65,30 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void AimCheck(Vector2 mousePosition)
     {
-        if (playerCamera == null) playerCamera = Camera.main;
-
+        if (mainCamera == null) mainCamera = Camera.main;
 
         // Get Ray from mouse position
-        currentRay = playerCamera.ScreenPointToRay(mousePosition);
+        currentRay = mainCamera.ScreenPointToRay(mousePosition);
+        OnRay?.Invoke(currentRay);
 
-        // Moves the mouse pointer according to the mousePosition
-        target.transform.position = mousePosition;
-
-        if (DetectInteractableUIUnderPointer(mousePosition))
+        // Continuous Left Click 
+        if (isLeftClickPressed)
         {
-            pointerImage.color = Color.green;
-            return;
-        }
-        else if (!isPointerOverUI)
-        {
-            // If not check with world objects
-            if (Physics.Raycast(currentRay, out RaycastHit hit, 100f, interactableLayers))
+            // Check Delay
+            if (currentMovementRayDelay > 0.0f)
             {
-                pointerImage.color = Color.green;
-                //TODO: change image (interaction pointer)
+                //Return if bigger than 0
+                currentMovementRayDelay -= Time.deltaTime;
+                return;
             }
             else
             {
-                pointerImage.color = Color.red;
-                //TODO: Change image (normal pointer)
+                // Set delay and continue
+                currentMovementRayDelay = movementRayDelay;
+                HandleLeftClick();
             }
         }
+
         #region ControlScheme TODO
         //switch (playerController.ControlScheme)
         //{
@@ -122,7 +131,10 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void HandleLeftClick()
     {
-        playerInteraction.HandleLeftClick(currentRay);
+        if (isRightClickPressed) return;
+        // bool used to re-trigger on aim change
+        isLeftClickPressed = true;
+        OnLeftClickPressed?.Invoke(currentRay);
     }
 
     /// <summary>
@@ -130,34 +142,44 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void HandleLeftClickUp()
     {
-        playerInteraction.HandleLeftClickUp();
+        isLeftClickPressed = false;
+        OnLeftClickReleased?.Invoke();
     }
 
-    bool DetectInteractableUIUnderPointer(Vector2 mousePosition)
+    /// <summary>
+    /// Handles the Right Click when pressed
+    /// </summary>
+    public void HandleRightClick()
     {
-        PointerEventData pointerData = new PointerEventData(EventSystem.current)
-        {
-            position = mousePosition
-        };
+        OnRightClickPressed?.Invoke(currentRay);
+    }
 
-        List<RaycastResult> results = new List<RaycastResult>();
-        playerScreenSpaceCanvasRaycaster.Raycast(pointerData, results);
+    /// <summary>
+    /// Handles the Right Click when released
+    /// </summary>
+    public void HandleRightClickUp()
+    {
+        OnRightClickReleased?.Invoke();
+    }
 
-        if (results.Count > 0)
-        {
-            // Topmost UI element (first one hit)
-            GameObject hitUI = results[0].gameObject;
-            if ((interactableLayers & (1 << hitUI.layer)) != 0)
-            {
-                return true;
-            }
-            //Debug.Log($"UI Hit: {hitUI.name} | Layer: {LayerMask.LayerToName(hitUI.layer)}");
-        }
-        //else
-        //{
-        //    Debug.Log("No UI element under mouse");
-        //}
+    /// <summary>
+    /// Handles the Middle Click when pressed
+    /// </summary>
+    public void HandleMiddleClick(Vector2 position)
+    {
+        OnMiddleClickPressed?.Invoke(position);
+    }
 
-        return false;
+    /// <summary>
+    /// Handles the Middle Click when released
+    /// </summary>
+    public void HandleMiddleClickUp()
+    {
+        OnMiddleClickReleased?.Invoke();
+    }
+
+    public void HandleZoom(float zoomValue)
+    {
+        OnZoom?.Invoke(zoomValue);
     }
 }

@@ -12,6 +12,9 @@ using static UnityEngine.GraphicsBuffer;
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerInteraction : MonoBehaviour, ISaveable
 {
+    [Header("Reference Components")]
+    [SerializeField] private PlayerAction playerAction;
+
     [Header("Interaction Settings")]
     [Tooltip("The distance from which the player can execute an interaction.")]
     [SerializeField] private float interactionDistance = 2f;
@@ -46,6 +49,27 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
         navMeshAgent.updateRotation = false;
 
         if (inventoryManager == null) inventoryManager = GetComponent<PlayerInventoryManager>();
+
+        playerAction = GetComponent<PlayerAction>();
+    }
+
+    private void OnEnable()
+    {
+        playerAction.OnLeftClickPressed += HandleLeftClick;
+        playerAction.OnLeftClickReleased += HandleLeftClickUp;
+
+        playerAction.OnRightClickPressed += HandleRightClick;
+        playerAction.OnRightClickReleased += HandleRightClickUp;
+
+    }
+
+    private void OnDisable()
+    {
+        playerAction.OnLeftClickPressed -= HandleLeftClick;
+        playerAction.OnLeftClickReleased -= HandleLeftClickUp;
+
+        playerAction.OnRightClickPressed -= HandleRightClick;
+        playerAction.OnRightClickReleased -= HandleRightClickUp;
     }
 
     void Update()
@@ -129,6 +153,22 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
             currentButton3D.Release();
             currentButton3D = null;
         }
+    }
+
+    private void HandleRightClick(Ray ray)
+    {
+        navMeshAgent.isStopped = true;
+        navMeshAgent.SetDestination(transform.position);
+        StopPlacement();
+        StopInteraction();
+        playerAction.OnLeftClickPressed -= HandleLeftClick;
+    }
+
+    private void HandleRightClickUp()
+    {
+        navMeshAgent.isStopped = false;
+        playerAction.OnLeftClickPressed -= HandleLeftClick;
+        playerAction.OnLeftClickPressed += HandleLeftClick;
     }
 
     public void Move(Vector3 destination)

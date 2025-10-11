@@ -1,32 +1,25 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerAction playerActions;
-    [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerInventoryManager playerInventoryManager;
-    [SerializeField] private float interactionDelay = 0.25f;
-    //[SerializeField] float loadingDelay = 1.5f;
-
 
     public string ControlScheme { get => controlScheme; private set => controlScheme = value; }
 
     // Private action variables
     private string controlScheme;
     private Vector2 aim;
-    private Vector2 startRotationPosition;
-    private bool isLeftClickPressed = false;
-    private bool isMiddleClickPressed = false;
     private bool pause = false;
-    private float currentInteractionDelay = 0.25f;
-    //private float currentLoadingDelay = 1.5f;
+
+    public event Action<Vector2> OnAim;
 
     private void Awake()
     {
         playerActions = GetComponent<PlayerAction>();
-        playerCamera = GetComponent<PlayerCamera>();
         playerInput = GetComponent<PlayerInput>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
     }
@@ -34,16 +27,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         controlScheme = playerInput.currentControlScheme;
-        currentInteractionDelay = interactionDelay;
-        //currentLoadingDelay = loadingDelay;
-    }
-
-    public void Update()
-    {
-        //if (currentLoadingDelay > 0)
-        //{
-        //    currentLoadingDelay -= Time.deltaTime;
-        //}
     }
 
     public void OnMove(InputAction.CallbackContext value)
@@ -57,28 +40,8 @@ public class PlayerController : MonoBehaviour
     public void OnLook(InputAction.CallbackContext value)
     {
         aim = value.ReadValue<Vector2>();
-        playerActions.AimCheck(aim);
+        OnAim?.Invoke(value.ReadValue<Vector2>());
         //Debug.Log($"PlayerControler - OnLook: {aim}");
-        if (isLeftClickPressed && currentInteractionDelay <= 0.0f)
-        {
-            playerActions.HandleLeftClick();
-            currentInteractionDelay = interactionDelay;
-        }
-        else
-        {
-            currentInteractionDelay -= Time.deltaTime;
-        }
-
-        if (isMiddleClickPressed)
-        {
-            if(startRotationPosition == -Vector2.one)
-                startRotationPosition = aim;
-            else
-            {
-                float rotationDelta = startRotationPosition.x - aim.x;
-                playerCamera.HandleRotation(rotationDelta);
-            }
-        }
     }
 
     public void OnMiddleClick(InputAction.CallbackContext value)
@@ -86,33 +49,29 @@ public class PlayerController : MonoBehaviour
         //if (value.started) Debug.Log($"PlayerControler - OnMiddleClick - Started");
         if (value.performed)
         {
-            isMiddleClickPressed = true;
-            playerCamera.isRotating = true;
-            startRotationPosition = -Vector3.one;
+            playerActions.HandleMiddleClick(aim);
             //Debug.Log($"PlayerControler - OnMiddleClick - Performed");
         }
         if (value.canceled)
-        { 
-            isMiddleClickPressed = false;
-            playerCamera.isRotating = false;
+        {
+            playerActions.HandleMiddleClickUp();
             //Debug.Log($"PlayerControler - OnMiddleClick - Canceled");
         }
     }
 
     public void OnLeftClick(InputAction.CallbackContext value)
     {
-        if (playerInput == null /*|| currentLoadingDelay > 0*/) return;
+        if (playerInput == null) return;
+        // Right click takes precedence on left (throw stops movement)
 
         if (value.performed)
         {
-            isLeftClickPressed = true;
             playerActions.AimCheck(aim);
             playerActions.HandleLeftClick();
             //Debug.Log($"PlayerControler - OnLeftClick - Performed");
         }
-        if(value.canceled)
+        if (value.canceled)
         {
-            isLeftClickPressed = false;
             playerActions.HandleLeftClickUp();
             //Debug.Log($"PlayerControler - OnLeftClick - Canceled");
         }
@@ -120,15 +79,23 @@ public class PlayerController : MonoBehaviour
 
     public void OnRightClick(InputAction.CallbackContext value)
     {
-        //if (currentLoadingDelay > 0) return;
+        if (playerInput == null /*|| currentLoadingDelay > 0*/) return;
 
-        //rightClick = value.isPressed;
-        //Debug.Log($"PlayerControler - OnRightClick");
+        if (value.performed)
+        {
+            playerActions.HandleRightClick();
+            //Debug.Log($"PlayerControler - OnRightClick - Performed");
+        }
+        if (value.canceled)
+        {
+            playerActions.HandleRightClickUp();
+            //Debug.Log($"PlayerControler - OnRightClick - Canceled");
+        }
     }
 
     public void OnZoom(InputAction.CallbackContext value)
     {
-        playerCamera.HandleZoom(value.ReadValue<float>());
+        playerActions.HandleZoom(value.ReadValue<float>());
         //Debug.Log($"Zoom value: {value.ReadValue<float>()}");
     }
 

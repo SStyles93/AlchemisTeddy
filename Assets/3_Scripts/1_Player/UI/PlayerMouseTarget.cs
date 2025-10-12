@@ -9,6 +9,7 @@ public class PlayerMouseTarget : MonoBehaviour
     //Reference GameObjects
     [Header("Player's target")]
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerAction playerAction;
     [SerializeField] private GameObject target;
     [SerializeField] private GraphicRaycaster playerScreenSpaceCanvasRaycaster;
     private Image pointerImage;
@@ -18,27 +19,35 @@ public class PlayerMouseTarget : MonoBehaviour
     [SerializeField] private LayerMask interactableLayers;
 
 
-
     private void Awake()
     {
         if (target != null) pointerImage = target.GetComponent<Image>();
-        if(playerController == null) playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            if (playerController == null) playerController = player.GetComponent<PlayerController>();
+            if (playerAction == null) playerAction = player.GetComponent<PlayerAction>();
+        }
     }
 
     private void OnEnable()
     {
         playerController.OnAim += UpdateTarget;
+        playerAction.OnRightClickPressed += DisableTarget;
+        playerAction.OnRightClickReleased += EnableTarget;
     }
 
     private void OnDisable()
     {
         playerController.OnAim -= UpdateTarget;
+        playerAction.OnRightClickPressed -= DisableTarget;
+        playerAction.OnRightClickReleased -= EnableTarget;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -47,30 +56,14 @@ public class PlayerMouseTarget : MonoBehaviour
         isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
     }
 
-    private void UpdateTarget(Vector2 mousePosition)
+    private void EnableTarget()
     {
-        // Moves the mouse pointer according to the mousePosition
-        target.transform.position = mousePosition;
+        target.SetActive(true);
+    }
 
-        if (DetectInteractableUIUnderPointer(mousePosition))
-        {
-            pointerImage.color = Color.green;
-            return;
-        }
-        else if (!isPointerOverUI)
-        {
-            // If not check with world objects
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(mousePosition), out RaycastHit hit, 100f, interactableLayers))
-            {
-                pointerImage.color = Color.green;
-                //TODO: change image (interaction pointer)
-            }
-            else
-            {
-                pointerImage.color = Color.red;
-                //TODO: Change image (normal pointer)
-            }
-        }
+    private void DisableTarget(Ray ray)
+    {
+        target.SetActive(false);
     }
 
     private bool DetectInteractableUIUnderPointer(Vector2 mousePosition)
@@ -99,5 +92,31 @@ public class PlayerMouseTarget : MonoBehaviour
         //}
 
         return false;
+    }
+
+    private void UpdateTarget(Vector2 mousePosition)
+    {
+        // Moves the mouse pointer according to the mousePosition
+        target.transform.position = mousePosition;
+
+        if (DetectInteractableUIUnderPointer(mousePosition))
+        {
+            pointerImage.color = Color.green;
+            return;
+        }
+        else if (!isPointerOverUI)
+        {
+            // If not check with world objects
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(mousePosition), out RaycastHit hit, 100f, interactableLayers))
+            {
+                pointerImage.color = Color.green;
+                //TODO: change image (interaction pointer)
+            }
+            else
+            {
+                pointerImage.color = Color.red;
+                //TODO: Change image (normal pointer)
+            }
+        }
     }
 }

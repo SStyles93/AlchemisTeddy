@@ -157,8 +157,6 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
 
     private void HandleRightClick(Ray ray)
     {
-        navMeshAgent.isStopped = true;
-        navMeshAgent.SetDestination(transform.position);
         StopPlacement();
         StopInteraction();
         playerAction.OnLeftClickPressed -= HandleLeftClick;
@@ -166,7 +164,6 @@ public class PlayerInteraction : MonoBehaviour, ISaveable
 
     private void HandleRightClickUp()
     {
-        navMeshAgent.isStopped = false;
         playerAction.OnLeftClickPressed -= HandleLeftClick;
         playerAction.OnLeftClickPressed += HandleLeftClick;
     }

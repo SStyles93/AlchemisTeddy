@@ -1,27 +1,27 @@
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
-
 
 [RequireComponent(typeof(BoxCollider))]
 public class PortalAltar : Station
 {
+    [Header("Portal Parts")]
     [SerializeField]
     private Portal portal = null;
     private float interactionSafeguardTimer = 1.0f;
+
 
     private void Awake()
     {
         if (interactableCollider == null)
             interactableCollider = GetComponent<BoxCollider>();
-        if(portal == null)
+        if (portal == null)
             portal = GetComponentInChildren<Portal>();
     }
 
     private void Update()
     {
-        if(interactionSafeguardTimer > 0) interactionSafeguardTimer -= Time.deltaTime;
+        if (interactionSafeguardTimer > 0) interactionSafeguardTimer -= Time.deltaTime;
     }
 
     public override void Activate(GameObject activator)
@@ -53,7 +53,7 @@ public class PortalAltar : Station
             Debug.Log($"Removed {currentItem.itemName} on holder {gameObject.name}.");
             // Nullify the Item
             currentItem = null;
-            
+
             //Close portal
             portal.Close();
         }
@@ -77,8 +77,11 @@ public class PortalAltar : Station
             currentWorldItem.GetComponent<Rigidbody>().isKinematic = true;
             currentWorldItem.layer = 0;
 
+
+            PortalOrb portalOrb = (PortalOrb)currentItem;
+            
             // Open Portal and Give the OrbData to it
-            portal.Open((PortalOrb)currentItem);
+            portal.Open(portalOrb);
         }
         else
         {

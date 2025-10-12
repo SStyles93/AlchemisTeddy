@@ -778,6 +778,58 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: 'candles.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: 'candles.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: 'candles.Array.data[2]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: 'candles.Array.data[3]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.data[0].candle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.data[1].candle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.data[2].candle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.data[3].candle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.data[0].color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.data[0].color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 222407762635104445, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: candles.Array.data[0].color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 968067777648564618, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2.53
+      objectReference: {fileID: 0}
     - target: {fileID: 2658215819157722939, guid: b6e483ce0cc15594e89848cdfdafdf02, type: 3}
       propertyPath: m_Name
       value: Altar

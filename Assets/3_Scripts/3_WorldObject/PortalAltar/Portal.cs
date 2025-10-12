@@ -143,6 +143,8 @@ public class Portal : WorldObject, IActivatable
 
         // Get the current scene index
         currentScene = SceneManager.GetActiveScene().name;
+
+
     }
 
     //Called by the Open Animation

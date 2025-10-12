@@ -8,7 +8,7 @@ public class PlayerAnimatorController : MonoBehaviour
     [Header("Player Components")]
     [SerializeField] private Animator animator;
     [SerializeField] private NavMeshAgent navMeshAgent;
-    [SerializeField] private PlayerController playerControler;
+    [SerializeField] private PlayerAction playerAction;
 
     // --- Body Parts ---
     [Header("Body Parts")]
@@ -29,6 +29,8 @@ public class PlayerAnimatorController : MonoBehaviour
 
     int MovementSpeed = 0;
     int PickUpTrigger = 0;
+    int StartThrow = 0;
+    int Throw = 0;
 
     float savedNavMeshSpeed = 0;
 
@@ -36,11 +38,15 @@ public class PlayerAnimatorController : MonoBehaviour
     private void OnEnable()
     {
         PlayerInteraction.OnCollect += StartCollectAnimation;
+        playerAction.OnRightClickPressed += StartThrowAnimation;
+        playerAction.OnRightClickReleased += StopThrowAnimation;
     }
 
     private void OnDisable()
     {
         PlayerInteraction.OnCollect -= StartCollectAnimation;
+        playerAction.OnRightClickPressed -= StartThrowAnimation;
+        playerAction.OnRightClickReleased -= StopThrowAnimation;
     }
 
     void Awake()
@@ -53,9 +59,9 @@ public class PlayerAnimatorController : MonoBehaviour
         {
             animator = anim;
         }
-        if (playerControler == null && TryGetComponent<PlayerController>(out var action))
+        if (playerAction == null && TryGetComponent<PlayerAction>(out var action))
         {
-            playerControler = action;
+            playerAction = action;
         }
         if (HandIkRig == null)
         {
@@ -71,13 +77,15 @@ public class PlayerAnimatorController : MonoBehaviour
         HandIkRig.weight = 0;
         MovementSpeed = Animator.StringToHash("MovementSpeed");
         PickUpTrigger = Animator.StringToHash("PickUp");
+        StartThrow = Animator.StringToHash("StartThrow");
+        Throw = Animator.StringToHash("Throw");
     }
 
     void Update()
     {
         if (animator != null && navMeshAgent != null)
         {
-            animator.SetFloat(MovementSpeed, navMeshAgent.velocity.magnitude/5f);
+            animator.SetFloat(MovementSpeed, navMeshAgent.velocity.magnitude / 5f);
         }
     }
 
@@ -94,6 +102,37 @@ public class PlayerAnimatorController : MonoBehaviour
         {
             savedNavMeshSpeed = navMeshAgent.speed;
             navMeshAgent.speed = 0;
+        }
+    }
+
+    void StartThrowAnimation(Ray ray)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(StartThrow, true);
+            // Make sure there is no double subscription
+            playerAction.OnLeftClickReleased -= TriggerThrow;
+            // Enable throw on Left click
+            playerAction.OnLeftClickReleased += TriggerThrow;
+        }
+    }
+
+    public void TriggerThrow()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger(Throw);
+            animator.SetBool(StartThrow, false);
+        }
+    }
+
+    void StopThrowAnimation()
+    {
+        if (animator != null)
+        {
+            animator.SetBool(StartThrow, false);
+            // Disable throw on Left click
+            playerAction.OnLeftClickReleased -= TriggerThrow;
         }
     }
 

@@ -100,6 +100,7 @@ public class WallShaderUpdater : MonoBehaviour
     {
         {
             if (m_player == null) return;
+            if (m_camera == null) return;
 
             Vector3 origin = m_player.position + (Vector3.up * playerHeightCorrection);
             Vector3 dir = direction.normalized;

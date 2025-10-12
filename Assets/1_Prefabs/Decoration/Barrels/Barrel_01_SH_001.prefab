@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6277876760445163362
+--- !u!1 &5150648754280273397
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,11 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1812507020365950279}
-  - component: {fileID: 116747332058409666}
-  - component: {fileID: 6113740541798427432}
-  - component: {fileID: 940538743326706329}
-  - component: {fileID: 9117784110753490086}
+  - component: {fileID: 1690194553334610657}
+  - component: {fileID: 5844161585619342996}
+  - component: {fileID: 2999793575715166138}
+  - component: {fileID: 1481993362930588332}
+  - component: {fileID: 2680492242982349820}
   m_Layer: 0
   m_Name: Barrel_01_SH_001
   m_TagString: Untagged
@@ -20,36 +20,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1812507020365950279
+--- !u!4 &1690194553334610657
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6277876760445163362}
+  m_GameObject: {fileID: 5150648754280273397}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.65727663, y: 1.04, z: -0.57941484}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &116747332058409666
+--- !u!33 &5844161585619342996
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6277876760445163362}
-  m_Mesh: {fileID: 9074897455620971628, guid: d48bd286a18550a4485e2bf66edfe8bd, type: 3}
---- !u!23 &6113740541798427432
+  m_GameObject: {fileID: 5150648754280273397}
+  m_Mesh: {fileID: 9074897455620971628, guid: 224f94ee5b8d0c34f80b9fedc58d21ae, type: 3}
+--- !u!23 &2999793575715166138
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6277876760445163362}
+  m_GameObject: {fileID: 5150648754280273397}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -67,7 +67,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: b6d36d4d650ba754e9590f0a597a795f, type: 2}
-  - {fileID: 2100000, guid: 80e860135d662f34896c2aa7d7736b31, type: 2}
+  - {fileID: 2100000, guid: ba11fb53ba12f274598b87e17a8610a4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -89,13 +89,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &940538743326706329
+--- !u!64 &1481993362930588332
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6277876760445163362}
+  m_GameObject: {fileID: 5150648754280273397}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -110,20 +110,20 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 9074897455620971628, guid: d48bd286a18550a4485e2bf66edfe8bd, type: 3}
---- !u!208 &9117784110753490086
+  m_Mesh: {fileID: 9074897455620971628, guid: 224f94ee5b8d0c34f80b9fedc58d21ae, type: 3}
+--- !u!208 &2680492242982349820
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6277876760445163362}
+  m_GameObject: {fileID: 5150648754280273397}
   m_Enabled: 1
   serializedVersion: 3
-  m_Shape: 0
-  m_Extents: {x: 0.5, y: 0.56, z: 0.5}
+  m_Shape: 1
+  m_Extents: {x: 0.546, y: 0.56, z: 0.546}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 0.56, z: 0}
   m_TimeToStationary: 0.5

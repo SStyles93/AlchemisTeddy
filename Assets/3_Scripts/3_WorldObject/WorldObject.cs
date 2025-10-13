@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// The Behaviour of WorldObject (IPointer(Enter/Exit)Handler requires PhysicsRaycaster on Camera
+/// </summary>
 public abstract class WorldObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("WorldObject Attributes")]

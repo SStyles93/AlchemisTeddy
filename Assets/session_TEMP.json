@@ -1,20 +1,213 @@
 {
   "sessionID": "TEMP",
-  "timestamp": "2025-10-09T10:02:15.2830596+02:00",
+  "timestamp": "2025-10-13T16:41:15.719768+02:00",
   "playerData": {
-    "inventoryItemIDs": [],
+    "inventoryItemIDs": [
+      "RED_POTION",
+      "ORB",
+      "REC_RED_POTION"
+    ],
     "playerHealth": 100.0
   },
   "sceneData": {
-    "Core": {
-      "rootObjects": [],
+    "LabScene": {
+      "rootObjects": [
+        {
+          "uniqueID": "31cc0c80-a208-4b77-8c06-91c64fb06545",
+          "name": "Altar",
+          "isActive": true,
+          "position": {
+            "x": -4.48988,
+            "y": 1.0,
+            "z": -0.319239974
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {},
+          "children": []
+        },
+        {
+          "uniqueID": "7109b370-18f3-4305-9703-85c4f8391838",
+          "name": "Player",
+          "isActive": true,
+          "position": {
+            "x": -3.69741845,
+            "y": 1.0734632,
+            "z": -0.779542446
+          },
+          "rotation": {
+            "x": -0.145878851,
+            "y": 0.8213186,
+            "z": -0.241694719,
+            "w": -0.495720416
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {
+            "PlayerInteraction": {
+              "playerPosition": "-3.697418,1.073463,-0.7795424"
+            },
+            "PlayerHealth": {
+              "currentHealth": "75",
+              "maxHealth": "100"
+            }
+          },
+          "children": []
+        },
+        {
+          "uniqueID": "a87bd3df-196e-44d2-b3fb-d5efb7f5c4eb",
+          "name": "Barrel_02_CV01_001",
+          "isActive": true,
+          "position": {
+            "x": 4.422,
+            "y": 1.0,
+            "z": 0.6209636
+          },
+          "rotation": {
+            "x": -3.28312253E-17,
+            "y": 2.95042946E-06,
+            "z": -1.11276093E-11,
+            "w": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {},
+          "children": []
+        },
+        {
+          "uniqueID": "513574cf-22fb-41d3-a3f5-950b523cb07d",
+          "name": "CraftingTable_001",
+          "isActive": true,
+          "position": {
+            "x": -1.5016793,
+            "y": 1.1,
+            "z": 3.54058027
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": -1.0,
+            "z": 0.0,
+            "w": 5.8114523E-07
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "componentSaveData": {},
+          "children": [
+            {
+              "uniqueID": "f5f5cad7-9da3-4557-b075-41470ff85bed",
+              "name": "Ingredient_Station",
+              "isActive": true,
+              "position": {
+                "x": -2.59799528,
+                "y": 2.57,
+                "z": 2.776359
+              },
+              "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "componentSaveData": {
+                "IngredientStation": {}
+              },
+              "children": []
+            },
+            {
+              "uniqueID": "0fa17766-69ae-4e19-8f38-80a34ddd4317",
+              "name": "Ingredient_Station (1)",
+              "isActive": true,
+              "position": {
+                "x": -1.5069952,
+                "y": 2.57,
+                "z": 2.776359
+              },
+              "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "componentSaveData": {
+                "IngredientStation": {}
+              },
+              "children": []
+            },
+            {
+              "uniqueID": "75c2c306-74d2-4350-bc0a-184a245e9366",
+              "name": "Ingredient_Station (2)",
+              "isActive": true,
+              "position": {
+                "x": -0.2569952,
+                "y": 2.57,
+                "z": 2.776359
+              },
+              "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "componentSaveData": {
+                "IngredientStation": {}
+              },
+              "children": []
+            }
+          ]
+        }
+      ],
       "savedWorldItems": [],
-      "playerSavedPosition": null
-    },
-    "Session": {
-      "rootObjects": [],
-      "savedWorldItems": [],
-      "playerSavedPosition": null
+      "playerSavedPosition": {
+        "position": {
+          "x": -4.48988,
+          "y": 1.375,
+          "z": -1.58024
+        },
+        "rotation": {
+          "x": -8.103669E-15,
+          "y": -1.0,
+          "z": 1.4901163E-08,
+          "w": 5.8114523E-07
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      }
     },
     "ForestScene": {
       "rootObjects": [
@@ -46,15 +239,15 @@
           "name": "Player",
           "isActive": true,
           "position": {
-            "x": 18.94172,
-            "y": 0.0500000119,
-            "z": 0.399559021
+            "x": -0.5544939,
+            "y": 2.50070715,
+            "z": 5.986495
           },
           "rotation": {
-            "x": 0.0,
-            "y": 0.9781981,
-            "z": 0.0,
-            "w": -0.207674041
+            "x": 0.375622749,
+            "y": 0.620672762,
+            "z": -0.4417571,
+            "w": 0.5277533
           },
           "scale": {
             "x": 1.0,
@@ -63,7 +256,7 @@
           },
           "componentSaveData": {
             "PlayerInteraction": {
-              "playerPosition": "18.94172,0.05000001,0.399559"
+              "playerPosition": "-0.5544939,2.500707,5.986495"
             },
             "PlayerHealth": {
               "currentHealth": "75",
@@ -74,17 +267,46 @@
         }
       ],
       "savedWorldItems": [],
-      "playerSavedPosition": null
+      "playerSavedPosition": {
+        "position": {
+          "x": 0.125,
+          "y": 2.865,
+          "z": 5.489
+        },
+        "rotation": {
+          "x": -8.103669E-15,
+          "y": -1.0,
+          "z": 1.4901163E-08,
+          "w": 5.8114523E-07
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      }
     },
     "Graveyard": {
       "rootObjects": [],
       "savedWorldItems": [],
-      "playerSavedPosition": null
-    },
-    "Chapel": {
-      "rootObjects": [],
-      "savedWorldItems": [],
-      "playerSavedPosition": null
+      "playerSavedPosition": {
+        "position": {
+          "x": 0.125,
+          "y": 2.865,
+          "z": 5.489
+        },
+        "rotation": {
+          "x": -8.103669E-15,
+          "y": -1.0,
+          "z": 1.4901163E-08,
+          "w": 5.8114523E-07
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      }
     }
   },
   "currentSceneName": null

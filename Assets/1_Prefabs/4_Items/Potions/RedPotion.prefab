@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6879051358485924069}
   - component: {fileID: 2752010804645256645}
   - component: {fileID: 8815290901230290570}
-  - component: {fileID: 8776720661056014262}
+  - component: {fileID: 555145420857721343}
   m_Layer: 10
   m_Name: WorldItemUI
   m_TagString: Untagged
@@ -29,7 +29,7 @@ RectTransform:
   m_GameObject: {fileID: 738531731417125416}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8561130392674088543}
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f367a25c01cc7f14e99f3cd281205277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8776720661056014262
+--- !u!114 &555145420857721343
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,11 +199,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 738531731417125416}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c83d55d1f14359418a86ff118d14186, type: 3}
+  m_Script: {fileID: 11500000, guid: ff715af4ee3b2d84893f2a2fcb7b4457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldItem: {fileID: 0}
-  textMesh: {fileID: 0}
+  worldObject: {fileID: 4820980441899362272}
+  textMesh: {fileID: 2752010804645256645}
 --- !u!1 &2446534828912657917
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,6 +499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17373cd7b95bf4145a491b3748e04793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectName: 
   itemData: {fileID: 11400000, guid: 36505a88e3352c645958f9e02d189286, type: 2}
 --- !u!114 &5508494398747733986
 MonoBehaviour:

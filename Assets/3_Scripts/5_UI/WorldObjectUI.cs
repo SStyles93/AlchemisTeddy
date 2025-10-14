@@ -10,13 +10,13 @@ public class WorldObjectUI : MonoBehaviour
     private void OnEnable()
     {
         if (worldObject != null)
-            worldObject.OnMouseOverObject += ShowName;
+            worldObject.OnMouseOverUIObject += ShowName;
     }
 
     private void OnDisable()
     {
         if (worldObject != null)
-            worldObject.OnMouseOverObject -= ShowName;
+            worldObject.OnMouseOverUIObject -= ShowName;
     }
 
     private void Awake()

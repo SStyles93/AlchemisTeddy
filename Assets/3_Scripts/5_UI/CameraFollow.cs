@@ -1,10 +1,17 @@
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class CameraFollow : MonoBehaviour
 {
+    private enum ObjectType
+    {
+        TwoD,
+        ThreeD
+    }
+
+    [SerializeField] private ObjectType objectType = ObjectType.TwoD;
     private Camera mainCamera;
     private Vector3 offset;
+
 
     private void Awake()
     {
@@ -15,6 +22,14 @@ public class CameraFollow : MonoBehaviour
     {
         if (mainCamera == null) return;
         transform.position = transform.parent.position + offset;
-        transform.forward = mainCamera.transform.forward;
+        switch (objectType)
+        {
+            case ObjectType.TwoD:
+                transform.forward = mainCamera.transform.forward;
+                break;
+            case ObjectType.ThreeD:
+                transform.up = mainCamera.transform.forward;
+                break;
+        }
     }
 }

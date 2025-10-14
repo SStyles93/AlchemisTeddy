@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -10,26 +9,17 @@ public class SignpostDecal
     public Texture2D decalTexture;
 }
 
-public class Signpost : MonoBehaviour
+[RequireComponent(typeof(BoxCollider), typeof(DecalProjector))]
+public class Signpost : WorldObject
 {
-    [SerializeField] private List<SignpostDecal> postDecals = new List<SignpostDecal>();
-
-
+    [Space(10)]
+    [SerializeField] private SignpostDecal postDecal = new SignpostDecal();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        foreach(var post in postDecals)
-        {
-            Material postMat = new Material(post.decalProjector.material);
-            postMat.SetTexture("Base_Map", post.decalTexture);
-            post.decalProjector.material = postMat;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Material postMat = new Material(postDecal.decalProjector.material);
+        postMat.SetTexture("Base_Map", postDecal.decalTexture);
+        postDecal.decalProjector.material = postMat;
     }
 }

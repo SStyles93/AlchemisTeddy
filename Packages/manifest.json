@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.domybest.mybox": "https://github.com/Deadcows/MyBox.git",
     "com.roytheunissen.assetpalette": "https://github.com/RoyTheunissen/Asset-Palette.git",
     "com.unity.ai.navigation": "2.0.8",
     "com.unity.animation.rigging": "1.3.1",

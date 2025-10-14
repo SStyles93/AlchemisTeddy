@@ -7,6 +7,15 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.domybest.mybox": {
+      "version": "https://github.com/Deadcows/MyBox.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "503ffe0a552d76678357de8677e6d6900cd60172"
+    },
     "com.roytheunissen.assetpalette": {
       "version": "https://github.com/RoyTheunissen/Asset-Palette.git",
       "depth": 0,

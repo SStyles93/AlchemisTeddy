@@ -2,13 +2,8 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    private enum ObjectType
-    {
-        TwoD,
-        ThreeD
-    }
-
-    [SerializeField] private ObjectType objectType = ObjectType.TwoD;
+    [SerializeField] private WorldObject worldObject = null;
+    private ObjectType objectType = ObjectType.TwoD;
     private Camera mainCamera;
     private Vector3 offset;
 
@@ -17,6 +12,10 @@ public class CameraFollow : MonoBehaviour
     {
         mainCamera = Camera.main;
         offset = transform.position - transform.parent.position;
+        if (worldObject == null)
+            objectType = GetComponentInParent<WorldObject>().GetObjectType();
+        else
+            objectType = worldObject.GetObjectType();
     }
     private void LateUpdate()
     {
